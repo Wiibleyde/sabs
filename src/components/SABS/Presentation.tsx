@@ -125,7 +125,10 @@ export function Presentation() {
                 ></div>
             </div>
 
-            <div ref={containerRef} className="relative z-10 container mx-auto px-4 sm:px-6 md:px-8 min-h-screen flex items-center">
+            <div
+                ref={containerRef}
+                className="relative z-10 container mx-auto px-4 sm:px-6 md:px-8 min-h-screen flex items-center"
+            >
                 <div className="max-w-6xl mx-auto text-center w-full">
                     <div className="mb-6 md:mb-8">
                         <h2
@@ -156,10 +159,17 @@ export function Presentation() {
                             chaque moment en une expérience audiovisuelle de qualité.
                         </p>
 
-                        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-8 md:mt-12 max-w-5xl mx-auto">
+                        <div
+                            ref={cardsRef}
+                            className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-8 md:mt-12 max-w-5xl mx-auto"
+                        >
                             <div className="group p-4 md:p-6 bg-white/70 backdrop-blur-xl rounded-2xl md:rounded-[1.5rem] border border-gray-200/50 shadow-[0_8px_32px_0_rgba(31,38,135,0.1)] hover:shadow-[0_20px_40px_0_rgba(31,38,135,0.15)] transition-all duration-500 hover:scale-[1.02] will-change-transform">
                                 <div className="w-10 md:w-12 h-10 md:h-12 bg-gradient-to-br from-sabs-gradient-1 to-sabs-gradient-2 rounded-lg md:rounded-xl flex items-center justify-center mb-3 md:mb-4 group-hover:scale-110 transition-transform duration-500">
-                                    <svg className="w-5 md:w-6 h-5 md:h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <svg
+                                        className="w-5 md:w-6 h-5 md:h-6 text-white"
+                                        fill="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
                                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                                     </svg>
                                 </div>
@@ -172,18 +182,28 @@ export function Presentation() {
                             </div>
                             <div className="group p-4 md:p-6 bg-white/70 backdrop-blur-xl rounded-2xl md:rounded-[1.5rem] border border-gray-200/50 shadow-[0_8px_32px_0_rgba(31,38,135,0.1)] hover:shadow-[0_20px_40px_0_rgba(31,38,135,0.15)] transition-all duration-500 hover:scale-[1.02] will-change-transform">
                                 <div className="w-10 md:w-12 h-10 md:h-12 bg-gradient-to-br from-sabs-gradient-2 to-sabs-gradient-3 rounded-lg md:rounded-xl flex items-center justify-center mb-3 md:mb-4 group-hover:scale-110 transition-transform duration-500">
-                                    <svg className="w-5 md:w-6 h-5 md:h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <svg
+                                        className="w-5 md:w-6 h-5 md:h-6 text-white"
+                                        fill="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
                                         <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                                     </svg>
                                 </div>
-                                <h3 className="text-sabs-primary font-semibold text-lg md:text-xl mb-2 md:mb-3 tracking-tight">Direct</h3>
+                                <h3 className="text-sabs-primary font-semibold text-lg md:text-xl mb-2 md:mb-3 tracking-tight">
+                                    Direct
+                                </h3>
                                 <p className="text-gray-600 text-sm md:text-base leading-relaxed">
                                     Retransmission en temps réel de vos événements
                                 </p>
                             </div>
                             <div className="group p-4 md:p-6 bg-white/70 backdrop-blur-xl rounded-2xl md:rounded-[1.5rem] border border-gray-200/50 shadow-[0_8px_32px_0_rgba(31,38,135,0.1)] hover:shadow-[0_20px_40px_0_rgba(31,38,135,0.15)] transition-all duration-500 hover:scale-[1.02] will-change-transform">
                                 <div className="w-10 md:w-12 h-10 md:h-12 bg-gradient-to-br from-sabs-gradient-3 to-sabs-primary rounded-lg md:rounded-xl flex items-center justify-center mb-3 md:mb-4 group-hover:scale-110 transition-transform duration-500">
-                                    <svg className="w-5 md:w-6 h-5 md:h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <svg
+                                        className="w-5 md:w-6 h-5 md:h-6 text-white"
+                                        fill="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
                                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
                                     </svg>
                                 </div>

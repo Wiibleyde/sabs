@@ -184,12 +184,19 @@ export function Footer() {
                     </div>
 
                     {/* Main Content */}
-                    <div ref={contentRef} className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-8 md:mb-12 max-w-4xl mx-auto">
+                    <div
+                        ref={contentRef}
+                        className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-8 md:mb-12 max-w-4xl mx-auto"
+                    >
                         {/* Contact Info */}
                         <div className="group p-4 md:p-6 bg-white/5 backdrop-blur-xl rounded-xl md:rounded-2xl border border-white/10 hover:bg-white/10 transition-all duration-500">
                             <h3 className="text-sabs-primary font-semibold text-lg md:text-xl mb-3 md:mb-4 tracking-tight flex items-center gap-3">
                                 <div className="w-6 md:w-8 h-6 md:h-8 bg-gradient-to-br from-sabs-primary to-sabs-gradient-1 rounded-lg flex items-center justify-center">
-                                    <svg className="w-3 md:w-4 h-3 md:h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <svg
+                                        className="w-3 md:w-4 h-3 md:h-4 text-white"
+                                        fill="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
                                         <path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                                     </svg>
                                 </div>
@@ -234,7 +241,11 @@ export function Footer() {
                         <div className="group p-4 md:p-6 bg-white/5 backdrop-blur-xl rounded-xl md:rounded-2xl border border-white/10 hover:bg-white/10 transition-all duration-500">
                             <h3 className="text-sabs-primary font-semibold text-lg md:text-xl mb-3 md:mb-4 tracking-tight flex items-center gap-3">
                                 <div className="w-6 md:w-8 h-6 md:h-8 bg-gradient-to-br from-sabs-gradient-2 to-sabs-gradient-3 rounded-lg flex items-center justify-center">
-                                    <svg className="w-3 md:w-4 h-3 md:h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                    <svg
+                                        className="w-3 md:w-4 h-3 md:h-4 text-white"
+                                        fill="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
                                         <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" />
                                     </svg>
                                 </div>
@@ -270,13 +281,22 @@ export function Footer() {
                                 Service. Tous droits réservés.
                             </p>
                             <div className="flex flex-col sm:flex-row items-center gap-4 md:gap-6 text-sm text-gray-400">
-                                <a href="#" className="hover:text-sabs-primary transition-colors duration-300 min-h-[44px] flex items-center">
+                                <a
+                                    href="#"
+                                    className="hover:text-sabs-primary transition-colors duration-300 min-h-[44px] flex items-center"
+                                >
                                     Mentions légales
                                 </a>
-                                <a href="#" className="hover:text-sabs-primary transition-colors duration-300 min-h-[44px] flex items-center">
+                                <a
+                                    href="#"
+                                    className="hover:text-sabs-primary transition-colors duration-300 min-h-[44px] flex items-center"
+                                >
                                     Confidentialité
                                 </a>
-                                <a href="#" className="hover:text-sabs-primary transition-colors duration-300 min-h-[44px] flex items-center">
+                                <a
+                                    href="#"
+                                    className="hover:text-sabs-primary transition-colors duration-300 min-h-[44px] flex items-center"
+                                >
                                     CGU
                                 </a>
                             </div>
