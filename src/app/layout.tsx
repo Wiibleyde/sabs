@@ -11,12 +11,12 @@ export const metadata: Metadata = {
     },
     openGraph: {
         type: 'website',
-        url: 'https://nathan.bonnell.fr/sabs',
+        url: 'https://sabs.vercel.app/sabs',
         title: "SABS - Page d'accueil",
         description: "Page d'accueil du site SABS, le site de la micro entreprise SABS.",
         images: [
             {
-                url: 'https://nathan.bonnell.fr/img/sabs/sabs-logo.png',
+                url: 'https://sabs.vercel.app/img/sabs/sabs-logo.png',
                 width: 1200,
                 height: 1200,
                 alt: "SABS - Page d'accueil",
