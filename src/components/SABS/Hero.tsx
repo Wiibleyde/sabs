@@ -101,54 +101,54 @@ export function Hero() {
             {/* Effet de vignette */}
             <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-black/30"></div>
 
-            {/* Grille décorative futuriste */}
-            <div className="absolute inset-0 opacity-5">
+            {/* Grille décorative futuriste - hidden on mobile */}
+            <div className="absolute inset-0 opacity-5 hidden md:block">
                 <div className="absolute inset-0 bg-[linear-gradient(rgba(99,102,241,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(99,102,241,0.1)_1px,transparent_1px)] bg-[size:60px_60px] animate-pulse"></div>
             </div>
 
-            {/* Particules améliorées */}
+            {/* Particules améliorées - reduced on mobile */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-1/4 left-1/4 w-3 h-3 bg-gradient-to-r from-sabs-primary to-sabs-gradient-1 rounded-full animate-bounce [animation-delay:0s] [animation-duration:3s] shadow-lg shadow-sabs-primary/50"></div>
-                <div className="absolute top-3/4 right-1/4 w-2 h-2 bg-gradient-to-r from-sabs-gradient-2 to-sabs-gradient-3 rounded-full animate-bounce [animation-delay:1s] [animation-duration:4s] shadow-lg shadow-sabs-gradient-2/50"></div>
-                <div className="absolute top-1/2 left-1/3 w-2.5 h-2.5 bg-gradient-to-r from-sabs-gradient-1 to-sabs-primary rounded-full animate-bounce [animation-delay:2s] [animation-duration:5s] shadow-lg shadow-sabs-gradient-1/50"></div>
-                <div className="absolute top-1/3 right-1/3 w-1.5 h-1.5 bg-gradient-to-r from-sabs-gradient-3 to-sabs-gradient-2 rounded-full animate-bounce [animation-delay:0.5s] [animation-duration:3.5s] shadow-lg shadow-sabs-gradient-3/50"></div>
-                <div className="absolute top-2/3 left-2/3 w-2 h-2 bg-gradient-to-r from-sabs-primary to-sabs-gradient-3 rounded-full animate-bounce [animation-delay:1.5s] [animation-duration:4.5s] shadow-lg shadow-sabs-primary/50"></div>
+                <div className="absolute top-1/4 left-1/4 w-2 md:w-3 h-2 md:h-3 bg-gradient-to-r from-sabs-primary to-sabs-gradient-1 rounded-full animate-bounce [animation-delay:0s] [animation-duration:3s] shadow-lg shadow-sabs-primary/50"></div>
+                <div className="absolute top-3/4 right-1/4 w-1.5 md:w-2 h-1.5 md:h-2 bg-gradient-to-r from-sabs-gradient-2 to-sabs-gradient-3 rounded-full animate-bounce [animation-delay:1s] [animation-duration:4s] shadow-lg shadow-sabs-gradient-2/50"></div>
+                <div className="absolute top-1/2 left-1/3 w-2 md:w-2.5 h-2 md:h-2.5 bg-gradient-to-r from-sabs-gradient-1 to-sabs-primary rounded-full animate-bounce [animation-delay:2s] [animation-duration:5s] shadow-lg shadow-sabs-gradient-1/50"></div>
+                <div className="absolute top-1/3 right-1/3 w-1 md:w-1.5 h-1 md:h-1.5 bg-gradient-to-r from-sabs-gradient-3 to-sabs-gradient-2 rounded-full animate-bounce [animation-delay:0.5s] [animation-duration:3.5s] shadow-lg shadow-sabs-gradient-3/50"></div>
+                <div className="absolute top-2/3 left-2/3 w-1.5 md:w-2 h-1.5 md:h-2 bg-gradient-to-r from-sabs-primary to-sabs-gradient-3 rounded-full animate-bounce [animation-delay:1.5s] [animation-duration:4.5s] shadow-lg shadow-sabs-primary/50"></div>
             </div>
 
-            {/* Rayons lumineux */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            {/* Rayons lumineux - hidden on mobile */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none hidden md:block">
                 <div className="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-sabs-primary/20 to-transparent animate-pulse [animation-delay:0s] [animation-duration:4s]"></div>
                 <div className="absolute top-0 right-1/3 w-px h-full bg-gradient-to-b from-transparent via-sabs-gradient-1/20 to-transparent animate-pulse [animation-delay:2s] [animation-duration:6s]"></div>
                 <div className="absolute top-0 left-2/3 w-px h-full bg-gradient-to-b from-transparent via-sabs-gradient-2/15 to-transparent animate-pulse [animation-delay:1s] [animation-duration:5s]"></div>
             </div>
 
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-6 z-10">
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-4 sm:px-6 z-10">
                 {/* Logo avec design premium */}
-                <div ref={logoRef} className="mb-10 group">
-                    <div className="relative p-10 rounded-[4rem] bg-gradient-to-br from-white/15 via-white/8 to-white/5 backdrop-blur-3xl border-2 border-white/30 shadow-[0_35px_80px_-15px_rgba(0,0,0,0.4)] hover:shadow-[0_45px_100px_-15px_rgba(139,92,246,0.3)] transition-all duration-1000 hover:scale-110 hover:rotate-3">
-                        {/* Éclats décoratifs */}
-                        <div className="absolute -top-3 -right-3 w-6 h-6 bg-gradient-to-r from-sabs-primary to-sabs-gradient-1 rounded-full animate-ping shadow-lg shadow-sabs-primary/50"></div>
-                        <div className="absolute -bottom-3 -left-3 w-4 h-4 bg-gradient-to-r from-sabs-gradient-2 to-sabs-gradient-3 rounded-full animate-pulse shadow-lg shadow-sabs-gradient-2/50"></div>
-                        <div className="absolute top-2 right-2 w-2 h-2 bg-gradient-to-r from-sabs-gradient-1 to-sabs-primary rounded-full animate-bounce shadow-lg shadow-sabs-gradient-1/50"></div>
+                <div ref={logoRef} className="mb-8 md:mb-10 group">
+                    <div className="relative p-6 md:p-10 rounded-2xl md:rounded-[4rem] bg-gradient-to-br from-white/15 via-white/8 to-white/5 backdrop-blur-3xl border-2 border-white/30 shadow-[0_35px_80px_-15px_rgba(0,0,0,0.4)] hover:shadow-[0_45px_100px_-15px_rgba(139,92,246,0.3)] transition-all duration-1000 hover:scale-110 hover:rotate-3">
+                        {/* Éclats décoratifs - scaled for mobile */}
+                        <div className="absolute -top-2 md:-top-3 -right-2 md:-right-3 w-4 md:w-6 h-4 md:h-6 bg-gradient-to-r from-sabs-primary to-sabs-gradient-1 rounded-full animate-ping shadow-lg shadow-sabs-primary/50"></div>
+                        <div className="absolute -bottom-2 md:-bottom-3 -left-2 md:-left-3 w-3 md:w-4 h-3 md:h-4 bg-gradient-to-r from-sabs-gradient-2 to-sabs-gradient-3 rounded-full animate-pulse shadow-lg shadow-sabs-gradient-2/50"></div>
+                        <div className="absolute top-1 md:top-2 right-1 md:right-2 w-1.5 md:w-2 h-1.5 md:h-2 bg-gradient-to-r from-sabs-gradient-1 to-sabs-primary rounded-full animate-bounce shadow-lg shadow-sabs-gradient-1/50"></div>
 
                         <Image
                             src={Logo}
                             alt="SABS Logo"
-                            width={140}
-                            height={140}
-                            className="drop-shadow-2xl filter brightness-125 contrast-125 saturate-110"
+                            width={100}
+                            height={100}
+                            className="drop-shadow-2xl filter brightness-125 contrast-125 saturate-110 md:w-[140px] md:h-[140px] w-[100px] h-[100px]"
                         />
 
                         {/* Aura magique */}
-                        <div className="absolute inset-0 rounded-[4rem] bg-gradient-conic from-sabs-primary via-sabs-gradient-1 to-sabs-gradient-2 blur-2xl opacity-0 group-hover:opacity-30 transition-opacity duration-1000 -z-10"></div>
-                        <div className="absolute inset-0 rounded-[4rem] bg-gradient-to-r from-sabs-gradient-1/30 via-sabs-primary/30 to-sabs-gradient-3/30 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                        <div className="absolute inset-0 rounded-2xl md:rounded-[4rem] bg-gradient-conic from-sabs-primary via-sabs-gradient-1 to-sabs-gradient-2 blur-2xl opacity-0 group-hover:opacity-30 transition-opacity duration-1000 -z-10"></div>
+                        <div className="absolute inset-0 rounded-2xl md:rounded-[4rem] bg-gradient-to-r from-sabs-gradient-1/30 via-sabs-primary/30 to-sabs-gradient-3/30 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                     </div>
                 </div>
 
-                {/* Titre épique */}
+                {/* Titre épique - responsive font sizes */}
                 <h1
                     ref={titleRef}
-                    className="text-7xl md:text-9xl font-extralight mb-6 text-center tracking-[-0.04em] leading-[0.8] relative"
+                    className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-extralight mb-4 md:mb-6 text-center tracking-[-0.04em] leading-[0.8] relative"
                 >
                     <span className="inline-block text-transparent bg-gradient-to-br from-sabs-gradient-1 to-sabs-primary bg-clip-text hover:scale-125 transition-all duration-500 cursor-default filter drop-shadow-2xl">
                         S
@@ -164,31 +164,31 @@ export function Hero() {
                     </span>
 
                     {/* Éclat épique derrière le texte */}
-                    <div className="absolute inset-0 blur-3xl opacity-40 bg-gradient-conic from-sabs-gradient-1 via-sabs-primary to-sabs-gradient-3 text-7xl md:text-9xl font-extralight tracking-[-0.04em] leading-[0.8] -z-10 animate-pulse">
+                    <div className="absolute inset-0 blur-3xl opacity-40 bg-gradient-conic from-sabs-gradient-1 via-sabs-primary to-sabs-gradient-3 text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-extralight tracking-[-0.04em] leading-[0.8] -z-10 animate-pulse">
                         SABS
                     </div>
                 </h1>
 
-                {/* Sous-titre élégant */}
-                <div className="relative mb-16">
+                {/* Sous-titre élégant - responsive sizing */}
+                <div className="relative mb-12 md:mb-16">
                     <p
                         ref={subtitleRef}
-                        className="text-2xl md:text-3xl text-center font-light text-white/95 max-w-4xl leading-relaxed"
+                        className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-center font-light text-white/95 max-w-xs sm:max-w-2xl md:max-w-4xl leading-relaxed px-4"
                     >
                         <span className="relative inline-block">
-                            <span className="text-transparent bg-gradient-to-r from-sabs-primary to-sabs-gradient-1 bg-clip-text font-bold text-3xl md:text-4xl">
+                            <span className="text-transparent bg-gradient-to-r from-sabs-primary to-sabs-gradient-1 bg-clip-text font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl">
                                 S
                             </span>
                             an
-                            <span className="text-transparent bg-gradient-to-r from-sabs-gradient-2 to-sabs-gradient-1 bg-clip-text font-bold text-3xl md:text-4xl ml-3">
+                            <span className="text-transparent bg-gradient-to-r from-sabs-gradient-2 to-sabs-gradient-1 bg-clip-text font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl ml-2 md:ml-3">
                                 A
                             </span>
                             ndreas
-                            <span className="text-transparent bg-gradient-to-r from-sabs-gradient-3 to-sabs-gradient-2 bg-clip-text font-bold text-3xl md:text-4xl ml-3">
+                            <span className="text-transparent bg-gradient-to-r from-sabs-gradient-3 to-sabs-gradient-2 bg-clip-text font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl ml-2 md:ml-3">
                                 B
                             </span>
                             roadcast
-                            <span className="text-transparent bg-gradient-to-r from-sabs-primary to-sabs-gradient-3 bg-clip-text font-bold text-3xl md:text-4xl ml-3">
+                            <span className="text-transparent bg-gradient-to-r from-sabs-primary to-sabs-gradient-3 bg-clip-text font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl ml-2 md:ml-3">
                                 S
                             </span>
                             ervice
@@ -196,27 +196,27 @@ export function Hero() {
                     </p>
 
                     {/* Lignes décoratives multiples */}
-                    <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 flex flex-col gap-1">
-                        <div className="w-40 h-px bg-gradient-to-r from-transparent via-sabs-primary to-transparent"></div>
-                        <div className="w-24 h-px bg-gradient-to-r from-transparent via-sabs-gradient-2 to-transparent mx-auto"></div>
+                    <div className="absolute -bottom-3 md:-bottom-4 left-1/2 transform -translate-x-1/2 flex flex-col gap-1">
+                        <div className="w-24 md:w-40 h-px bg-gradient-to-r from-transparent via-sabs-primary to-transparent"></div>
+                        <div className="w-16 md:w-24 h-px bg-gradient-to-r from-transparent via-sabs-gradient-2 to-transparent mx-auto"></div>
                     </div>
                 </div>
 
-                {/* Bouton CTA spectaculaire */}
+                {/* Bouton CTA spectaculaire - touch-friendly */}
                 <button
                     ref={buttonRef}
-                    className="group relative px-12 py-6 bg-gradient-to-r from-white/15 to-white/10 backdrop-blur-3xl border-2 border-white/40 rounded-full text-white font-bold text-xl transition-all duration-700 hover:from-sabs-primary/30 hover:to-sabs-gradient-2/30 hover:scale-110 hover:shadow-[0_30px_60px_-12px_rgba(139,92,246,0.6)] active:scale-95 will-change-transform overflow-hidden"
+                    className="group relative px-8 md:px-12 py-4 md:py-6 bg-gradient-to-r from-white/15 to-white/10 backdrop-blur-3xl border-2 border-white/40 rounded-full text-white font-bold text-lg md:text-xl transition-all duration-700 hover:from-sabs-primary/30 hover:to-sabs-gradient-2/30 hover:scale-110 hover:shadow-[0_30px_60px_-12px_rgba(139,92,246,0.6)] active:scale-95 will-change-transform overflow-hidden min-h-[56px] md:min-h-auto"
                     onClick={scrollToTarget}
                 >
                     {/* Effet de vague SABS */}
                     <div className="absolute inset-0 bg-gradient-to-r from-sabs-gradient-1/0 via-sabs-primary/30 to-sabs-gradient-3/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1500 ease-out"></div>
 
-                    <span className="relative z-10 tracking-wider flex items-center gap-4">
+                    <span className="relative z-10 tracking-wider flex items-center justify-center gap-3 md:gap-4">
                         <span className="text-transparent bg-gradient-to-r from-sabs-primary to-sabs-gradient-1 bg-clip-text font-extrabold">
                             Découvrir
                         </span>
                         <svg
-                            className="w-6 h-6 group-hover:translate-x-2 group-hover:scale-110 transition-all duration-500 text-sabs-primary"
+                            className="w-5 md:w-6 h-5 md:h-6 group-hover:translate-x-2 group-hover:scale-110 transition-all duration-500 text-sabs-primary"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"

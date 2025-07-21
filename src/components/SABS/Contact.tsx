@@ -176,7 +176,7 @@ export function Contact() {
 
     return (
         <div
-            className="snap-start h-screen relative bg-gradient-to-br from-gray-50 via-white to-gray-100 py-8"
+            className="snap-start relative bg-gradient-to-br from-gray-50 via-white to-gray-100 py-8 md:py-16"
             style={{ fontFamily: BeVietnam.style.fontFamily }}
         >
             {/* Subtle background pattern */}
@@ -190,20 +190,20 @@ export function Contact() {
                 ></div>
             </div>
 
-            <div ref={containerRef} className="relative z-10 container mx-auto px-8 h-full flex items-center">
+            <div ref={containerRef} className="relative z-10 container mx-auto px-4 sm:px-6 md:px-8">
                 <div className="max-w-4xl mx-auto w-full">
-                    <div className="text-center mb-8">
+                    <div className="text-center mb-8 md:mb-12">
                         <h2
                             ref={titleRef}
-                            className="text-3xl md:text-5xl font-thin text-gray-900 mb-4 tracking-[-0.02em]"
+                            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-thin text-gray-900 mb-4 tracking-[-0.02em] px-4"
                         >
                             Contactez <span className="text-sabs-primary font-medium">SABS</span>
                         </h2>
                         <div
                             ref={dividerRef}
-                            className="w-24 h-[2px] bg-gradient-to-r from-sabs-gradient-1 via-sabs-gradient-2 to-sabs-primary mx-auto mb-6 rounded-full"
+                            className="w-16 md:w-24 h-[2px] bg-gradient-to-r from-sabs-gradient-1 via-sabs-gradient-2 to-sabs-primary mx-auto mb-4 md:mb-6 rounded-full"
                         ></div>
-                        <p className="text-lg text-gray-600 max-w-2xl mx-auto font-light leading-relaxed">
+                        <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto font-light leading-relaxed px-4">
                             Prêt à transformer votre événement ? Contactez-nous pour discuter de votre projet.
                         </p>
                     </div>
@@ -211,10 +211,10 @@ export function Contact() {
                     <form
                         ref={formRef}
                         onSubmit={handleSubmit}
-                        className="bg-white/80 backdrop-blur-2xl rounded-[1.5rem] p-8 border border-gray-200/50 shadow-[0_20px_40px_0_rgba(31,38,135,0.1)]"
+                        className="bg-white/80 backdrop-blur-2xl rounded-2xl md:rounded-[1.5rem] p-4 sm:p-6 md:p-8 border border-gray-200/50 shadow-[0_20px_40px_0_rgba(31,38,135,0.1)] max-w-3xl mx-auto"
                     >
                         {/* Nom et Prénom */}
-                        <div className="grid md:grid-cols-2 gap-6 mb-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-5">
                             <div>
                                 <label
                                     htmlFor="prenom"
@@ -229,7 +229,7 @@ export function Contact() {
                                     value={formData.prenom}
                                     onChange={handleInputChange}
                                     required
-                                    className="w-full px-4 py-3 bg-gray-50/80 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sabs-primary/30 focus:border-sabs-primary/50 transition-all duration-300 text-sm font-light"
+                                    className="w-full px-3 md:px-4 py-3 md:py-3 bg-gray-50/80 border border-gray-200 rounded-lg md:rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sabs-primary/30 focus:border-sabs-primary/50 transition-all duration-300 text-sm font-light min-h-[44px]"
                                     placeholder="Votre prénom"
                                 />
                             </div>
@@ -247,14 +247,14 @@ export function Contact() {
                                     value={formData.nom}
                                     onChange={handleInputChange}
                                     required
-                                    className="w-full px-4 py-3 bg-gray-50/80 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sabs-primary/30 focus:border-sabs-primary/50 transition-all duration-300 text-sm font-light"
+                                    className="w-full px-3 md:px-4 py-3 md:py-3 bg-gray-50/80 border border-gray-200 rounded-lg md:rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sabs-primary/30 focus:border-sabs-primary/50 transition-all duration-300 text-sm font-light min-h-[44px]"
                                     placeholder="Votre nom"
                                 />
                             </div>
                         </div>
 
                         {/* Email et Téléphone */}
-                        <div className="grid md:grid-cols-2 gap-6 mb-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-5">
                             <div>
                                 <label
                                     htmlFor="email"
@@ -262,7 +262,7 @@ export function Contact() {
                                 >
                                     Email Discord *
                                 </label>
-                                <div className="relative flex items-center bg-gray-50/80 border border-gray-200 rounded-xl focus-within:ring-2 focus-within:ring-sabs-primary/30 focus-within:border-sabs-primary/50 transition-all duration-300 overflow-hidden">
+                                <div className="relative flex items-stretch bg-gray-50/80 border border-gray-200 rounded-lg md:rounded-xl focus-within:ring-2 focus-within:ring-sabs-primary/30 focus-within:border-sabs-primary/50 transition-all duration-300 overflow-hidden min-h-[44px]">
                                     <input
                                         type="text"
                                         id="email"
@@ -270,12 +270,12 @@ export function Contact() {
                                         value={formData.email}
                                         onChange={handleInputChange}
                                         required
-                                        className="flex-1 px-4 py-3 bg-transparent text-gray-900 placeholder-gray-400 focus:outline-none text-sm font-light min-w-0"
+                                        className="flex-1 px-3 md:px-4 py-3 bg-transparent text-gray-900 placeholder-gray-400 focus:outline-none text-sm font-light min-w-0"
                                         placeholder="username"
                                         pattern="^[a-zA-Z0-9._-]+$"
                                         title="Seuls les lettres, chiffres, points, tirets et underscores sont autorisés"
                                     />
-                                    <div className="px-3 py-3 bg-gradient-to-r from-sabs-primary/10 to-sabs-gradient-2/10 text-sabs-primary font-medium text-sm border-l border-sabs-primary/20 flex-shrink-0">
+                                    <div className="px-2 md:px-3 py-3 bg-gradient-to-r from-sabs-primary/10 to-sabs-gradient-2/10 text-sabs-primary font-medium text-xs md:text-sm border-l border-sabs-primary/20 flex-shrink-0 flex items-center">
                                         @discord.gg
                                     </div>
                                 </div>
@@ -290,8 +290,8 @@ export function Contact() {
                                 >
                                     Téléphone *
                                 </label>
-                                <div className="relative flex items-center bg-gray-50/80 border border-gray-200 rounded-xl focus-within:ring-2 focus-within:ring-sabs-primary/30 focus-within:border-sabs-primary/50 transition-all duration-300 overflow-hidden">
-                                    <div className="px-3 py-3 bg-gradient-to-r from-sabs-primary/10 to-sabs-gradient-2/10 text-sabs-primary font-medium text-sm border-r border-sabs-primary/20 flex-shrink-0">
+                                <div className="relative flex items-stretch bg-gray-50/80 border border-gray-200 rounded-lg md:rounded-xl focus-within:ring-2 focus-within:ring-sabs-primary/30 focus-within:border-sabs-primary/50 transition-all duration-300 overflow-hidden min-h-[44px]">
+                                    <div className="px-2 md:px-3 py-3 bg-gradient-to-r from-sabs-primary/10 to-sabs-gradient-2/10 text-sabs-primary font-medium text-xs md:text-sm border-r border-sabs-primary/20 flex-shrink-0 flex items-center">
                                         555-
                                     </div>
                                     <input
@@ -301,7 +301,7 @@ export function Contact() {
                                         value={formData.phone.replace('555-', '')}
                                         onChange={handleInputChange}
                                         required
-                                        className="flex-1 px-4 py-3 bg-transparent text-gray-900 placeholder-gray-400 focus:outline-none text-sm font-light min-w-0"
+                                        className="flex-1 px-3 md:px-4 py-3 bg-transparent text-gray-900 placeholder-gray-400 focus:outline-none text-sm font-light min-w-0"
                                         placeholder="1234"
                                         maxLength={4}
                                         inputMode="numeric"
@@ -315,7 +315,7 @@ export function Contact() {
                         </div>
 
                         {/* Type d'événement et Objet */}
-                        <div className="grid md:grid-cols-2 gap-6 mb-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-5">
                             <div>
                                 <label
                                     htmlFor="typeEvent"
@@ -329,7 +329,7 @@ export function Contact() {
                                     value={formData.typeEvent}
                                     onChange={handleInputChange}
                                     required
-                                    className="w-full px-4 py-3 bg-gray-50/80 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-sabs-primary/30 focus:border-sabs-primary/50 transition-all duration-300 text-sm font-light appearance-none cursor-pointer"
+                                    className="w-full px-3 md:px-4 py-3 bg-gray-50/80 border border-gray-200 rounded-lg md:rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-sabs-primary/30 focus:border-sabs-primary/50 transition-all duration-300 text-sm font-light appearance-none cursor-pointer min-h-[44px]"
                                 >
                                     <option value="" className="bg-white">
                                         Sélectionnez un type
@@ -355,14 +355,14 @@ export function Contact() {
                                     value={formData.objet}
                                     onChange={handleInputChange}
                                     required
-                                    className="w-full px-4 py-3 bg-gray-50/80 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sabs-primary/30 focus:border-sabs-primary/50 transition-all duration-300 text-sm font-light"
+                                    className="w-full px-3 md:px-4 py-3 bg-gray-50/80 border border-gray-200 rounded-lg md:rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sabs-primary/30 focus:border-sabs-primary/50 transition-all duration-300 text-sm font-light min-h-[44px]"
                                     placeholder="Objet de votre demande"
                                 />
                             </div>
                         </div>
 
                         {/* Message */}
-                        <div className="mb-6">
+                        <div className="mb-4 md:mb-5">
                             <label
                                 htmlFor="message"
                                 className="block text-gray-700 font-medium mb-2 text-sm tracking-wide"
@@ -375,15 +375,15 @@ export function Contact() {
                                 value={formData.message}
                                 onChange={handleInputChange}
                                 required
-                                rows={4}
-                                className="w-full px-4 py-3 bg-gray-50/80 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sabs-primary/30 focus:border-sabs-primary/50 transition-all duration-300 resize-none text-sm font-light leading-relaxed"
+                                rows={3}
+                                className="w-full px-3 md:px-4 py-3 bg-gray-50/80 border border-gray-200 rounded-lg md:rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sabs-primary/30 focus:border-sabs-primary/50 transition-all duration-300 resize-none text-sm font-light leading-relaxed min-h-[80px]"
                                 placeholder="Décrivez votre projet en détail..."
                             />
                         </div>
 
                         {submitStatus === 'success' && (
-                            <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-xl text-green-700 text-sm flex items-center gap-2">
-                                <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                            <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg md:rounded-xl text-green-700 text-sm flex items-start gap-2">
+                                <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                                     <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                                         <path
                                             fillRule="evenodd"
@@ -392,13 +392,13 @@ export function Contact() {
                                         />
                                     </svg>
                                 </div>
-                                Message envoyé avec succès ! Nous vous recontacterons bientôt.
+                                <span>Message envoyé avec succès ! Nous vous recontacterons bientôt.</span>
                             </div>
                         )}
 
                         {submitStatus === 'error' && (
-                            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-center gap-2">
-                                <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0">
+                            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg md:rounded-xl text-red-700 text-sm flex items-start gap-2">
+                                <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                                     <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                                         <path
                                             fillRule="evenodd"
@@ -407,14 +407,14 @@ export function Contact() {
                                         />
                                     </svg>
                                 </div>
-                                Une erreur s&apos;est produite. Veuillez réessayer.
+                                <span>Une erreur s&apos;est produite. Veuillez réessayer.</span>
                             </div>
                         )}
 
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="w-full bg-gradient-to-r from-sabs-gradient-1 via-sabs-gradient-2 to-sabs-primary hover:shadow-[0_10px_30px_0_rgba(115,115,180,0.3)] text-white font-medium py-4 px-6 rounded-xl transition-all duration-500 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none active:scale-[0.98] will-change-transform text-base tracking-wide"
+                            className="w-full bg-gradient-to-r from-sabs-gradient-1 via-sabs-gradient-2 to-sabs-primary hover:shadow-[0_10px_30px_0_rgba(115,115,180,0.3)] text-white font-medium py-4 px-6 rounded-lg md:rounded-xl transition-all duration-500 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none active:scale-[0.98] will-change-transform text-base tracking-wide min-h-[56px] flex items-center justify-center"
                         >
                             {isSubmitting ? (
                                 <span className="flex items-center justify-center gap-2">

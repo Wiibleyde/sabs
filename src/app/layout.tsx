@@ -16,9 +16,9 @@ export const metadata: Metadata = {
         description: "Page d'accueil du site SABS, le site de la micro entreprise SABS.",
         images: [
             {
-                url: 'https://sabs.vercel.app/img/sabs/sabs-logo.png',
-                width: 1200,
-                height: 1200,
+                url: 'https://sabs.vercel.app/img/sabs/sabs-logo-small.png',
+                width: 320,
+                height: 320,
                 alt: "SABS - Page d'accueil",
             },
         ],

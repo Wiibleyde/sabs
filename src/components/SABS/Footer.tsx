@@ -122,7 +122,7 @@ export function Footer() {
 
     return (
         <footer
-            className="snap-start h-screen relative bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900"
+            className="snap-start min-h-screen relative bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900"
             style={{ fontFamily: BeVietnam.style.fontFamily }}
         >
             {/* Background pattern */}
@@ -136,42 +136,42 @@ export function Footer() {
                 ></div>
             </div>
 
-            {/* Subtle grid pattern */}
-            <div className="absolute inset-0 opacity-5">
+            {/* Subtle grid pattern - hidden on mobile */}
+            <div className="absolute inset-0 opacity-5 hidden md:block">
                 <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
             </div>
 
-            {/* Animated particles */}
+            {/* Animated particles - reduced on mobile */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-gradient-to-r from-sabs-primary to-sabs-gradient-1 rounded-full animate-pulse [animation-delay:0s] [animation-duration:3s] shadow-lg shadow-sabs-primary/30"></div>
-                <div className="absolute top-3/4 right-1/4 w-1.5 h-1.5 bg-gradient-to-r from-sabs-gradient-2 to-sabs-gradient-3 rounded-full animate-pulse [animation-delay:1s] [animation-duration:4s] shadow-lg shadow-sabs-gradient-2/30"></div>
-                <div className="absolute top-1/2 left-1/3 w-2.5 h-2.5 bg-gradient-to-r from-sabs-gradient-1 to-sabs-primary rounded-full animate-pulse [animation-delay:2s] [animation-duration:5s] shadow-lg shadow-sabs-gradient-1/30"></div>
+                <div className="absolute top-1/4 left-1/4 w-1.5 md:w-2 h-1.5 md:h-2 bg-gradient-to-r from-sabs-primary to-sabs-gradient-1 rounded-full animate-pulse [animation-delay:0s] [animation-duration:3s] shadow-lg shadow-sabs-primary/30"></div>
+                <div className="absolute top-3/4 right-1/4 w-1 md:w-1.5 h-1 md:h-1.5 bg-gradient-to-r from-sabs-gradient-2 to-sabs-gradient-3 rounded-full animate-pulse [animation-delay:1s] [animation-duration:4s] shadow-lg shadow-sabs-gradient-2/30"></div>
+                <div className="absolute top-1/2 left-1/3 w-2 md:w-2.5 h-2 md:h-2.5 bg-gradient-to-r from-sabs-gradient-1 to-sabs-primary rounded-full animate-pulse [animation-delay:2s] [animation-duration:5s] shadow-lg shadow-sabs-gradient-1/30"></div>
                 <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-gradient-to-r from-sabs-gradient-3 to-sabs-gradient-2 rounded-full animate-pulse [animation-delay:0.5s] [animation-duration:3.5s] shadow-lg shadow-sabs-gradient-3/30"></div>
             </div>
 
             <div
                 ref={containerRef}
-                className="relative z-10 container mx-auto px-8 h-full flex flex-col justify-center"
+                className="relative z-10 container mx-auto px-4 sm:px-6 md:px-8 min-h-screen flex flex-col justify-center"
             >
                 <div className="max-w-6xl mx-auto w-full">
                     {/* Header Section */}
-                    <div className="text-center mb-12">
-                        <div ref={logoRef} className="mb-8 group">
-                            <div className="relative p-6 rounded-3xl bg-gradient-to-br from-white/10 via-white/5 to-white/2 backdrop-blur-2xl border border-white/20 shadow-[0_20px_40px_0_rgba(0,0,0,0.3)] hover:shadow-[0_30px_60px_0_rgba(139,92,246,0.2)] transition-all duration-700 hover:scale-105 inline-block">
+                    <div className="text-center mb-8 md:mb-12">
+                        <div ref={logoRef} className="mb-6 md:mb-8 group">
+                            <div className="relative p-4 md:p-6 rounded-2xl md:rounded-3xl bg-gradient-to-br from-white/10 via-white/5 to-white/2 backdrop-blur-2xl border border-white/20 shadow-[0_20px_40px_0_rgba(0,0,0,0.3)] hover:shadow-[0_30px_60px_0_rgba(139,92,246,0.2)] transition-all duration-700 hover:scale-105 inline-block">
                                 <Image
                                     src={Logo}
                                     alt="SABS Logo"
-                                    width={80}
-                                    height={80}
-                                    className="drop-shadow-xl filter brightness-110"
+                                    width={60}
+                                    height={60}
+                                    className="drop-shadow-xl filter brightness-110 md:w-[80px] md:h-[80px]"
                                 />
-                                <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-sabs-gradient-1/20 via-sabs-primary/20 to-sabs-gradient-3/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
+                                <div className="absolute inset-0 rounded-2xl md:rounded-3xl bg-gradient-to-r from-sabs-gradient-1/20 via-sabs-primary/20 to-sabs-gradient-3/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
                             </div>
                         </div>
 
                         <h2
                             ref={titleRef}
-                            className="text-4xl md:text-6xl font-thin text-white mb-4 tracking-[-0.02em]"
+                            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-thin text-white mb-4 tracking-[-0.02em]"
                         >
                             <span className="text-transparent bg-gradient-to-r from-sabs-gradient-1 to-sabs-primary bg-clip-text font-medium">
                                 SABS
@@ -179,17 +179,17 @@ export function Footer() {
                         </h2>
                         <div
                             ref={dividerRef}
-                            className="w-32 h-[2px] bg-gradient-to-r from-sabs-gradient-1 via-sabs-gradient-2 to-sabs-primary mx-auto mb-8 rounded-full"
+                            className="w-20 md:w-32 h-[2px] bg-gradient-to-r from-sabs-gradient-1 via-sabs-gradient-2 to-sabs-primary mx-auto mb-6 md:mb-8 rounded-full"
                         ></div>
                     </div>
 
                     {/* Main Content */}
-                    <div ref={contentRef} className="grid md:grid-cols-2 gap-8 mb-12 max-w-4xl mx-auto">
+                    <div ref={contentRef} className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-8 md:mb-12 max-w-4xl mx-auto">
                         {/* Contact Info */}
-                        <div className="group p-6 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 hover:bg-white/10 transition-all duration-500">
-                            <h3 className="text-sabs-primary font-semibold text-xl mb-4 tracking-tight flex items-center gap-3">
-                                <div className="w-8 h-8 bg-gradient-to-br from-sabs-primary to-sabs-gradient-1 rounded-lg flex items-center justify-center">
-                                    <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <div className="group p-4 md:p-6 bg-white/5 backdrop-blur-xl rounded-xl md:rounded-2xl border border-white/10 hover:bg-white/10 transition-all duration-500">
+                            <h3 className="text-sabs-primary font-semibold text-lg md:text-xl mb-3 md:mb-4 tracking-tight flex items-center gap-3">
+                                <div className="w-6 md:w-8 h-6 md:h-8 bg-gradient-to-br from-sabs-primary to-sabs-gradient-1 rounded-lg flex items-center justify-center">
+                                    <svg className="w-3 md:w-4 h-3 md:h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                                     </svg>
                                 </div>
@@ -198,18 +198,18 @@ export function Footer() {
                             <div className="space-y-3 text-gray-300">
                                 <div className="flex items-center gap-3">
                                     <svg
-                                        className="w-5 h-5 text-sabs-gradient-1"
+                                        className="w-4 md:w-5 h-4 md:h-5 text-sabs-gradient-1 flex-shrink-0"
                                         fill="currentColor"
                                         viewBox="0 0 24 24"
                                     >
                                         <path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586l-8 8-8-8V4z" />
                                         <path d="M2 7.414V18a2 2 0 002 2h16a2 2 0 002-2V7.414l-8 8-8-8z" />
                                     </svg>
-                                    <span className="text-sm">max.janssens@sabs.com</span>
+                                    <span className="text-sm break-all">max.janssens@sabs.com</span>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <svg
-                                        className="w-5 h-5 text-sabs-gradient-2"
+                                        className="w-4 md:w-5 h-4 md:h-5 text-sabs-gradient-2 flex-shrink-0"
                                         fill="currentColor"
                                         viewBox="0 0 24 24"
                                     >
@@ -219,7 +219,7 @@ export function Footer() {
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <svg
-                                        className="w-5 h-5 text-sabs-gradient-3"
+                                        className="w-4 md:w-5 h-4 md:h-5 text-sabs-gradient-3 flex-shrink-0"
                                         fill="currentColor"
                                         viewBox="0 0 24 24"
                                     >
@@ -231,10 +231,10 @@ export function Footer() {
                         </div>
 
                         {/* Services */}
-                        <div className="group p-6 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 hover:bg-white/10 transition-all duration-500">
-                            <h3 className="text-sabs-primary font-semibold text-xl mb-4 tracking-tight flex items-center gap-3">
-                                <div className="w-8 h-8 bg-gradient-to-br from-sabs-gradient-2 to-sabs-gradient-3 rounded-lg flex items-center justify-center">
-                                    <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <div className="group p-4 md:p-6 bg-white/5 backdrop-blur-xl rounded-xl md:rounded-2xl border border-white/10 hover:bg-white/10 transition-all duration-500">
+                            <h3 className="text-sabs-primary font-semibold text-lg md:text-xl mb-3 md:mb-4 tracking-tight flex items-center gap-3">
+                                <div className="w-6 md:w-8 h-6 md:h-8 bg-gradient-to-br from-sabs-gradient-2 to-sabs-gradient-3 rounded-lg flex items-center justify-center">
+                                    <svg className="w-3 md:w-4 h-3 md:h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" />
                                     </svg>
                                 </div>
@@ -242,41 +242,41 @@ export function Footer() {
                             </h3>
                             <ul className="space-y-2 text-gray-300 text-sm">
                                 <li className="flex items-center gap-2">
-                                    <div className="w-1.5 h-1.5 bg-sabs-gradient-1 rounded-full"></div>
-                                    Retransmission multicaméra
+                                    <div className="w-1.5 h-1.5 bg-sabs-gradient-1 rounded-full flex-shrink-0"></div>
+                                    <span>Retransmission multicaméra</span>
                                 </li>
                                 <li className="flex items-center gap-2">
-                                    <div className="w-1.5 h-1.5 bg-sabs-gradient-2 rounded-full"></div>
-                                    Production en direct
+                                    <div className="w-1.5 h-1.5 bg-sabs-gradient-2 rounded-full flex-shrink-0"></div>
+                                    <span>Production en direct</span>
                                 </li>
                                 <li className="flex items-center gap-2">
-                                    <div className="w-1.5 h-1.5 bg-sabs-gradient-3 rounded-full"></div>
-                                    Couverture événementielle
+                                    <div className="w-1.5 h-1.5 bg-sabs-gradient-3 rounded-full flex-shrink-0"></div>
+                                    <span>Couverture événementielle</span>
                                 </li>
                                 <li className="flex items-center gap-2">
-                                    <div className="w-1.5 h-1.5 bg-sabs-primary rounded-full"></div>
-                                    Solutions audiovisuelles
+                                    <div className="w-1.5 h-1.5 bg-sabs-primary rounded-full flex-shrink-0"></div>
+                                    <span>Solutions audiovisuelles</span>
                                 </li>
                             </ul>
                         </div>
                     </div>
 
                     {/* Copyright */}
-                    <div ref={copyrightRef} className="border-t border-white/10 pt-8">
-                        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                            <p className="text-gray-400 text-sm">
+                    <div ref={copyrightRef} className="border-t border-white/10 pt-6 md:pt-8">
+                        <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+                            <p className="text-gray-400 text-sm leading-relaxed">
                                 &copy; {new Date().getFullYear()}{' '}
                                 <span className="text-sabs-primary font-medium">SABS</span> - San Andreas Broadcast
                                 Service. Tous droits réservés.
                             </p>
-                            <div className="flex items-center gap-6 text-sm text-gray-400">
-                                <a href="#" className="hover:text-sabs-primary transition-colors duration-300">
+                            <div className="flex flex-col sm:flex-row items-center gap-4 md:gap-6 text-sm text-gray-400">
+                                <a href="#" className="hover:text-sabs-primary transition-colors duration-300 min-h-[44px] flex items-center">
                                     Mentions légales
                                 </a>
-                                <a href="#" className="hover:text-sabs-primary transition-colors duration-300">
+                                <a href="#" className="hover:text-sabs-primary transition-colors duration-300 min-h-[44px] flex items-center">
                                     Confidentialité
                                 </a>
-                                <a href="#" className="hover:text-sabs-primary transition-colors duration-300">
+                                <a href="#" className="hover:text-sabs-primary transition-colors duration-300 min-h-[44px] flex items-center">
                                     CGU
                                 </a>
                             </div>
