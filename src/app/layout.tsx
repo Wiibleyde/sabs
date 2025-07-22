@@ -36,6 +36,9 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="fr">
+            <head>
+                <meta name="google-site-verification" content="z8LfwSZrZTZFup781IidjqL78fkW3nJ70BmwdgG0MOY" />
+            </head>
             <body className={`antialiased ${montserrat.className} bg-black`}>{children}</body>
         </html>
     );
