@@ -176,7 +176,7 @@ export function Contact() {
 
     return (
         <div
-            className="snap-start relative bg-gradient-to-br from-gray-50 via-white to-gray-100 py-8 md:py-16"
+            className="snap-start relative bg-gradient-to-br from-gray-50 via-white to-gray-100 py-8 md:py-16 min-h-screen"
             style={{ fontFamily: BeVietnam.style.fontFamily }}
         >
             {/* Subtle background pattern */}
