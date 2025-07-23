@@ -1,4 +1,5 @@
 import { RTMPConnectionItem } from "@/mediamtx";
+import Link from "next/link";
 
 interface RTMPSectionProps {
     type: 'publish' | 'read';
@@ -86,8 +87,9 @@ export function RTMPSection({ type, connections, title }: RTMPSectionProps) {
             ) : (
                 <div className="space-y-2">
                     {connections.map((conn) => (
-                        <div 
+                        <Link 
                             key={conn.id} 
+                            href={`http://rtmp-api.bonnell.fr:8888/${conn.path}`}
                             className={`group/item flex items-center justify-between p-3 bg-white/50 backdrop-blur-xl rounded-lg hover:bg-white/80 transition-all duration-200 border border-gray-200/30 ${config.hoverBorder} shadow-sm hover:shadow-md will-change-transform`}
                         >
                             <div className="flex items-center space-x-3 flex-1 min-w-0">
@@ -98,13 +100,13 @@ export function RTMPSection({ type, connections, title }: RTMPSectionProps) {
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="font-medium text-gray-900 text-sm truncate group-hover/item:text-sabs-primary transition-colors duration-200">{conn.path}</div>
-                                    <div className="text-gray-500 text-xs font-light truncate opacity-0 group-hover/item:opacity-100 transition-opacity duration-200">{conn.remoteAddr}</div>
+                                    {/* <div className="text-gray-500 text-xs font-light truncate opacity-0 group-hover/item:opacity-100 transition-opacity duration-200">{conn.remoteAddr}</div> */}
                                 </div>
                             </div>
                             <span className={`px-2 py-1 rounded-md text-xs font-medium ${getStatusColor(conn.state)} transition-all duration-200`}>
                                 {capitalize(conn.state)}
                             </span>
-                        </div>
+                        </Link>
                     ))}
                 </div>
             )}

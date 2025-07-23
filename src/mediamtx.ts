@@ -9,7 +9,7 @@ interface RTMPConnectionResponse {
 export interface RTMPConnectionItem {
     id: string;
     created: string;
-    remoteAddr: string;
+    // remoteAddr: string; // Volontary commented out to avoid exposing sensitive information
     state: string;
     path: string;
     query: string;
