@@ -110,7 +110,7 @@ export function Presentation() {
 
     return (
         <div
-            className="snap-start min-h-screen relative bg-gradient-to-br from-slate-50 via-gray-100 to-slate-200 py-8 md:py-12"
+            className="snap-start min-h-screen max-h-screen relative bg-gradient-to-br from-slate-50 via-gray-100 to-slate-200 py-8 md:py-12"
             style={{ fontFamily: BeVietnam.style.fontFamily }}
             id="presentation"
         >
