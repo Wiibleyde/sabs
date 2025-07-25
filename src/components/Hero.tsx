@@ -82,8 +82,7 @@ export function Hero() {
 
     return (
         <div
-            className="h-screen w-full snap-start relative overflow-hidden"
-            style={{ fontFamily: BeVietnam.style.fontFamily }}
+            className={`h-screen w-full snap-start relative overflow-hidden ${BeVietnam.className}`}
         >
             {/* Video Background avec parallax effect */}
             <video
