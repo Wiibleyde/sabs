@@ -10,8 +10,10 @@
     "format": "prettier --write \"**/*.{tsx,ts}\""
   },
   "dependencies": {
+    "@types/jsonwebtoken": "^9.0.10",
     "axios": "^1.11.0",
     "gsap": "^3.13.0",
+    "jsonwebtoken": "^9.0.2",
     "markdown-to-jsx": "^7.7.12",
     "next": "15.4.4",
     "react": "19.1.0",
