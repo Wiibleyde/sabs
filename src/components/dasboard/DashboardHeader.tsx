@@ -1,7 +1,7 @@
 'use client';
 
 import { Be_Vietnam_Pro } from 'next/font/google';
-import { useAuth } from '@/hooks/useAuth';
+import { useLogout } from '@/hooks/useLogout';
 
 const BeVietnam = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -9,23 +9,18 @@ const BeVietnam = Be_Vietnam_Pro({
 });
 
 export function DashboardHeader() {
-    const { logout } = useAuth();
-
-    const handleLogout = async () => {
-        if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
-            await logout();
-            // Petite pause pour permettre la transition
-            setTimeout(() => {
-                window.location.reload();
-            }, 300);
-        }
-    };
+    const { logoutWithConfirm } = useLogout({
+        confirmMessage: 'Êtes-vous sûr de vouloir vous déconnecter ?',
+        redirectAfter: true,
+        redirectUrl: '/dashboard',
+        redirectDelay: 300
+    });
 
     return (
         <div className="text-center mb-8 md:mb-12 relative" style={{ fontFamily: BeVietnam.style.fontFamily }}>
             {/* Bouton de déconnexion */}
             <button
-                onClick={handleLogout}
+                onClick={logoutWithConfirm}
                 className="absolute top-0 right-0 md:right-4 px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-600 hover:text-red-700 border border-red-500/20 hover:border-red-500/30 rounded-lg transition-all duration-300 text-sm font-medium"
                 title="Se déconnecter"
             >
