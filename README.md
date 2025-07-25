@@ -5,7 +5,7 @@ Une plateforme de diffusion en temps réel avec dashboard sécurisé pour la ges
 ## 🚀 Démarrage rapide
 
 ### Prérequis
-- Node.js 18+
+- Node.js 24+
 - npm/yarn/pnpm
 
 ### Installation
@@ -34,7 +34,7 @@ Le projet inclut un système d'authentification complet basé sur des codes PIN 
 
 ### Accès rapide
 - **Dashboard** : [http://localhost:3000/dashboard](http://localhost:3000/dashboard)
-- **PIN par défaut** : `2444` (configurable dans `.env.local`)
+- **PIN par défaut** : `1234` (configurable dans `.env.local`)
 
 ### Documentation complète
 📖 **[Guide d'authentification complet](./docs/AUTHENTICATION.md)**
@@ -79,7 +79,7 @@ src/
 
 ```env
 # Authentification
-DASHBOARD_PIN=2444
+DASHBOARD_PIN=2587
 JWT_SECRET=votre-cle-secrete-jwt
 
 # Discord (notifications)
@@ -137,27 +137,6 @@ npm run type-check
 - 🔗 **[API Reference](./docs/API.md)** - Documentation des endpoints (à venir)
 - 🎨 **[Guide de style](./docs/STYLING.md)** - Conventions CSS et design (à venir)
 
-## 🤝 Contribution
-
-1. Fork le projet
-2. Créez une branche pour votre fonctionnalité
-3. Committez vos changements
-4. Pushez vers la branche
-5. Ouvrez une Pull Request
-
-## 📄 Licence
-
-Ce projet est sous licence [MIT](./LICENSE).
-
-## 🆘 Support
-
-- **Issues** : [GitHub Issues](https://github.com/Wiibleyde/sabs/issues)
-- **Discord** : Notifications via webhook configuré
-- **Email** : [contact@example.com](mailto:contact@example.com)
-
----
-
-Développé avec ❤️ pour la communauté San Andreas
 
 ## Deploy on Vercel
 
