@@ -7,10 +7,7 @@ const BeVietnam = Be_Vietnam_Pro({
 
 export function DashboardHeader() {
     return (
-        <div 
-            className="text-center mb-8 md:mb-12"
-            style={{ fontFamily: BeVietnam.style.fontFamily }}
-        >
+        <div className="text-center mb-8 md:mb-12" style={{ fontFamily: BeVietnam.style.fontFamily }}>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-thin text-gray-900 mb-4 tracking-[-0.02em]">
                 Tableau de bord <span className="text-sabs-primary font-medium">SABS</span>
             </h1>

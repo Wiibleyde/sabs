@@ -1,5 +1,5 @@
-import { MediaMTX, RTMPConnectionItem } from "@/mediamtx";
-import { NextResponse } from "next/server";
+import { MediaMTX, RTMPConnectionItem } from '@/mediamtx';
+import { NextResponse } from 'next/server';
 
 // Cache configuration
 const CACHE_DURATION = 3000; // 3 seconds in milliseconds
@@ -17,15 +17,15 @@ let cache: CacheData | null = null;
 export async function GET(): Promise<NextResponse> {
     // Check if cache is valid
     const now = Date.now();
-    if (cache && (now - cache.timestamp) < CACHE_DURATION) {
+    if (cache && now - cache.timestamp < CACHE_DURATION) {
         return NextResponse.json(cache.data);
     }
 
     // Fetch fresh data
     const mediaMTX = new MediaMTX(
-        process.env.MEDIAMTX_URL ?? "",
-        process.env.MEDIAMTX_USERNAME ?? "",
-        process.env.MEDIAMTX_PASSWORD ?? ""
+        process.env.MEDIAMTX_URL ?? '',
+        process.env.MEDIAMTX_USERNAME ?? '',
+        process.env.MEDIAMTX_PASSWORD ?? ''
     );
 
     const activePublishConnections = await mediaMTX.getActiveStreamConnections();
@@ -33,13 +33,13 @@ export async function GET(): Promise<NextResponse> {
 
     const responseData = {
         activePublishConnections,
-        activeReadConnections
+        activeReadConnections,
     };
 
     // Update cache
     cache = {
         data: responseData,
-        timestamp: now
+        timestamp: now,
     };
 
     return NextResponse.json(responseData);

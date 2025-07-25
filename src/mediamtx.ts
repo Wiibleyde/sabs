@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 
 interface RTMPConnectionResponse {
     itemCount: number;
@@ -44,7 +44,7 @@ export class MediaMTX {
             const data = await this.listConnections();
             // Sort the items by path and filter by state 'publish'
             const activeConnections = data.items
-                .filter(item => item.state === 'publish')
+                .filter((item) => item.state === 'publish')
                 .sort((a, b) => a.path.localeCompare(b.path));
             return activeConnections;
         } catch (error) {
@@ -58,7 +58,7 @@ export class MediaMTX {
             const data = await this.listConnections();
             // Sort the items by path and filter by state 'read'
             const activeConnections = data.items
-                .filter(item => item.state === 'read')
+                .filter((item) => item.state === 'read')
                 .sort((a, b) => a.path.localeCompare(b.path));
             return activeConnections;
         } catch (error) {

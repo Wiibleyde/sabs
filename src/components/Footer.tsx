@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import Image from 'next/image';
 import Logo from '@public/img/sabs/sabs-logo.png';
+import Link from 'next/link';
 
 const BeVietnam = Be_Vietnam_Pro({
     subsets: ['latin'],
@@ -276,29 +277,16 @@ export function Footer() {
                     <div ref={copyrightRef} className="border-t border-white/10 pt-6 md:pt-8">
                         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
                             <p className="text-gray-400 text-sm leading-relaxed">
-                                &copy; {new Date().getFullYear()}{' '}
                                 <span className="text-sabs-primary font-medium">SABS</span> - San Andreas Broadcast
-                                Service. Tous droits réservés.
+                                Service.
                             </p>
                             <div className="flex flex-col sm:flex-row items-center gap-4 md:gap-6 text-sm text-gray-400">
-                                <a
-                                    href="#"
+                                <Link
+                                    href="/legal-mentions"
                                     className="hover:text-sabs-primary transition-colors duration-300 min-h-[44px] flex items-center"
                                 >
                                     Mentions légales
-                                </a>
-                                <a
-                                    href="#"
-                                    className="hover:text-sabs-primary transition-colors duration-300 min-h-[44px] flex items-center"
-                                >
-                                    Confidentialité
-                                </a>
-                                <a
-                                    href="#"
-                                    className="hover:text-sabs-primary transition-colors duration-300 min-h-[44px] flex items-center"
-                                >
-                                    CGU
-                                </a>
+                                </Link>
                             </div>
                         </div>
                     </div>

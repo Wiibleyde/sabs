@@ -8,7 +8,7 @@ export function DashboardGrid() {
             <div className="lg:col-span-2">
                 <RTMPStatus />
             </div>
-            
+
             <SystemStats />
             <RecentEvents />
         </div>
