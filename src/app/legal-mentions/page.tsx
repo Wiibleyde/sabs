@@ -286,7 +286,7 @@ Hébergé avec Docker, Nginx, Proxmox et Rocky Linux.
 
 L'ensemble des contenus présents sur ce site (textes, images, vidéos, etc.) sont la propriété exclusive de Nathan Bonnell, sauf mention contraire.
 
-La vidéo présente sur la page d'accueil est une vidéo indiqué comme étant libre de droits.
+La vidéo présente sur la page d'accueil est une vidéo indiquée comme étant libre de droits.
 
 Les logos de San Andreas Broadcast Service sont des créations originales.
 
@@ -300,5 +300,5 @@ Ce site ne collecte aucune donnée personnelle à des fins commerciales. Pour to
 
 ## Droit applicable
 
-Les présentes mentions légales sont soumises au droit français. En cas de litige, les tribunaux français seront seuls compétents.
+LES PRÉSENTES MENTIONS LÉGALES SONT SOUMISES AU DROIT FRANÇAIS. EN CAS DE LITIGE, LES TRIBUNAUX FRANÇAIS SERONT SEULS COMPÉTENTS.
 `;

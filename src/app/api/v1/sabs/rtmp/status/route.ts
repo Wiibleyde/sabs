@@ -2,7 +2,7 @@ import { MediaMTX, RTMPConnectionItem } from '@/mediamtx';
 import { NextResponse } from 'next/server';
 
 // Cache configuration
-const CACHE_DURATION = 3000; // 3 seconds in milliseconds
+const CACHE_DURATION = 2000; // 3 seconds in milliseconds
 
 interface CacheData {
     data: {
