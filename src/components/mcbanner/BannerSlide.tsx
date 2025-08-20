@@ -8,7 +8,6 @@ export function BannerSlide({
     iconColor,
     bgGradient,
     borderColor,
-    pulseColor,
     url,
     urlBg,
     urlBorder
@@ -17,7 +16,6 @@ export function BannerSlide({
     iconColor: string;
     bgGradient: string;
     borderColor: string;
-    pulseColor: string;
     url: string;
     urlBg: string;
     urlBorder: string;

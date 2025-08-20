@@ -17,7 +17,6 @@ export default function BannerPage() {
             iconColor="text-[#29abe0]" // Ko-fi bleu
             bgGradient="bg-gradient-to-br from-[#29abe0] to-[#f05a9b]" // Ko-fi bleu vers rose
             borderColor="border-[#29abe0]/40"
-            pulseColor="from-[#29abe0] to-[#f05a9b]"
             url="ko-fi.com/mindcityrp"
             urlBg="bg-[#29abe0]/40"
             urlBorder="border-[#29abe0]/60"
@@ -28,7 +27,6 @@ export default function BannerPage() {
             iconColor="text-[#3b82f6]" // Bleu doux
             bgGradient="bg-gradient-to-br from-[#3b82f6] via-[#60a5fa] to-[#1e293b]" // Bleu clair vers bleu foncé
             borderColor="border-[#3b82f6]/40"
-            pulseColor="from-[#3b82f6] to-[#60a5fa]"
             url="top-serveurs.net/gta/vote/mindcity-rp-wl-18"
             urlBg="bg-[#3b82f6]/40"
             urlBorder="border-[#3b82f6]/60"
@@ -39,7 +37,6 @@ export default function BannerPage() {
             iconColor="text-[#5865F2]" // Discord blurple
             bgGradient="bg-gradient-to-br from-[#5865F2] to-[#23272A]" // Blurple vers gris foncé
             borderColor="border-[#5865F2]/40"
-            pulseColor="from-[#5865F2] to-[#23272A]"
             url="discord.com/invite/mindcityrp"
             urlBg="bg-[#5865F2]/40"
             urlBorder="border-[#5865F2]/60"

@@ -1,8 +1,6 @@
 import React from 'react';
 
-interface IcBaselineDiscordProps extends React.SVGProps<SVGSVGElement> {}
-
-export function IcBaselineDiscord(props: IcBaselineDiscordProps) {
+export function IcBaselineDiscord(props: React.SVGProps<SVGSVGElement>) {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
