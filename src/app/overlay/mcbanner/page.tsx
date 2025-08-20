@@ -72,7 +72,7 @@ export default function BannerPage() {
                     }
                 });
             }
-        }, 10000);
+        }, 6000);
 
         return () => clearInterval(interval);
     }, [slides.length]);
