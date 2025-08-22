@@ -12,11 +12,11 @@ const BeVietnam = Be_Vietnam_Pro({
 
 export function BRTemp() {
     const { data, error, isLoading } = useSWR<{
-        number: string; // <-- change ici
+        number: string;
         name: string;
     }>('/api/v1/mindcity/br/game', fetcher, { refreshInterval: 1000 });
     
-    const [number, setNumber] = useState<string>(data?.number ?? ""); // <-- string
+    const [number, setNumber] = useState<string>(data?.number ?? "");
     const [name, setName] = useState<string>(data?.name ?? "");
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -28,13 +28,17 @@ export function BRTemp() {
             const res = await fetch("/api/v1/mindcity/br/game", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ number, name }), // number est string
+                body: JSON.stringify({ number, name }),
             });
             if (!res.ok) {
                 throw new Error("Erreur lors de la modification.");
             }
-        } catch (err: any) {
-            setErrorMsg(err.message || "Erreur inconnue.");
+        } catch (err) {
+            setErrorMsg(
+                typeof err === "object" && err !== null && "message" in err
+                    ? String((err as { message?: unknown }).message)
+                    : "Erreur inconnue."
+            );
         } finally {
             setLoading(false);
         }

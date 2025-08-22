@@ -1,5 +1,4 @@
 import { DashboardCard } from './DashboardCard';
-import { ComingSoonPlaceholder } from './ComingSoonPlaceholder';
 import { BRTemp } from './BRTemp';
 
 export function BRTempCard() {
