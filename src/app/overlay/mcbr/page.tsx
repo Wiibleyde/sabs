@@ -31,7 +31,7 @@ export default function MCBRPage() {
                     <div className="flex items-center gap-8 text-center">
                         <div className="flex items-center gap-6">
                             <div>
-                                <div className="text-7xl font-bold text-[#007292] font-mono">
+                                <div className="text-7xl font-bold text-[#007292] font-mono" style={{ textShadow: '0 0 10px #007292', WebkitTextStroke: '0.5px white' }}>
                                     Partie n°{data?.number ?? "N/A"}
                                 </div>
                             </div>
@@ -39,7 +39,7 @@ export default function MCBRPage() {
                                 -
                             </p>
                             <div>
-                                <div className="text-6xl text-[#5419a2] font-mono font-black">
+                                <div className="text-6xl text-[#5419a2] font-mono font-black" style={{ textShadow: '0 0 10px #5419a2', WebkitTextStroke: '0.5px white' }}>
                                     {data?.name ?? "En attente..."}
                                 </div>
                             </div>
