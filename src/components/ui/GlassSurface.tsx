@@ -43,7 +43,8 @@ export interface GlassSurfaceProps {
 }
 
 const useDarkMode = () => {
-    const [isDark, setIsDark] = useState(false);
+    // Start with null to indicate we don't know yet (prevents hydration mismatch)
+    const [isDark, setIsDark] = useState<boolean | null>(null);
 
     useEffect(() => {
         if (typeof window === "undefined") return;
@@ -56,7 +57,8 @@ const useDarkMode = () => {
         return () => mediaQuery.removeEventListener("change", handler);
     }, []);
 
-    return isDark;
+    // Return false by default during SSR to match initial client render
+    return isDark ?? false;
 };
 
 const GlassSurface: React.FC<GlassSurfaceProps> = ({
@@ -94,6 +96,11 @@ const GlassSurface: React.FC<GlassSurfaceProps> = ({
     const gaussianBlurRef = useRef<SVGFEGaussianBlurElement>(null);
 
     const isDarkMode = useDarkMode();
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
     const generateDisplacementMap = () => {
         const rect = containerRef.current?.getBoundingClientRect();
@@ -196,6 +203,9 @@ const GlassSurface: React.FC<GlassSurfaceProps> = ({
     }, [width, height]);
 
     const supportsSVGFilters = () => {
+        // Always return false during SSR to ensure consistent initial render
+        if (!isClient || typeof window === "undefined") return false;
+        
         const isWebkit =
             /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
         const isFirefox = /Firefox/.test(navigator.userAgent);
@@ -210,7 +220,8 @@ const GlassSurface: React.FC<GlassSurfaceProps> = ({
     };
 
     const supportsBackdropFilter = () => {
-        if (typeof window === "undefined") return false;
+        // Always return false during SSR to ensure consistent initial render
+        if (!isClient || typeof window === "undefined") return false;
         return CSS.supports("backdrop-filter", "blur(10px)");
     };
 
@@ -220,8 +231,9 @@ const GlassSurface: React.FC<GlassSurfaceProps> = ({
             width: typeof width === "number" ? `${width}px` : width,
             height: typeof height === "number" ? `${height}px` : height,
             borderRadius: `${borderRadius}px`,
-            "--glass-frost": backgroundOpacity,
-            "--glass-saturation": saturation,
+            // CSS custom properties must be strings
+            "--glass-frost": String(backgroundOpacity),
+            "--glass-saturation": String(saturation),
         } as React.CSSProperties;
 
         const svgSupported = supportsSVGFilters();
