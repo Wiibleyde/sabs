@@ -68,8 +68,8 @@ export default function LegalMentions() {
 				<div
 					className="absolute inset-0"
 					style={{
-						backgroundImage: `radial-gradient(circle at 25% 25%, #7373B4 0%, transparent 70%), 
-                                     radial-gradient(circle at 75% 75%, #85527E 0%, transparent 70%)`,
+						backgroundImage: `radial-gradient(circle at 25% 25%, #3bd1ab 0%, transparent 70%), 
+                                     radial-gradient(circle at 75% 75%, #61437f 0%, transparent 70%)`,
 					}}
 				></div>
 			</div>

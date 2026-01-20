@@ -190,8 +190,8 @@ export function Contact() {
 				<div
 					className="absolute inset-0"
 					style={{
-						backgroundImage: `radial-gradient(circle at 25% 25%, #7373B4 0%, transparent 70%), 
-                                     radial-gradient(circle at 75% 75%, #85527E 0%, transparent 70%)`,
+						backgroundImage: `radial-gradient(circle at 25% 25%, #3bd1ab 0%, transparent 70%), 
+                                     radial-gradient(circle at 75% 75%, #61437f 0%, transparent 70%)`,
 					}}
 				></div>
 			</div>
@@ -437,7 +437,7 @@ export function Contact() {
 						<button
 							type="submit"
 							disabled={isSubmitting}
-							className="w-full bg-gradient-to-r from-sabs-gradient-1 via-sabs-gradient-2 to-sabs-primary hover:shadow-[0_10px_30px_0_rgba(115,115,180,0.3)] text-white font-medium py-4 px-6 rounded-lg md:rounded-xl transition-all duration-500 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none active:scale-[0.98] will-change-transform text-base tracking-wide min-h-[56px] flex items-center justify-center"
+							className="w-full bg-gradient-to-r from-sabs-gradient-1 via-sabs-gradient-2 to-sabs-primary hover:shadow-[0_10px_30px_0_rgba(59,209,171,0.3)] text-white font-medium py-4 px-6 rounded-lg md:rounded-xl transition-all duration-500 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none active:scale-[0.98] will-change-transform text-base tracking-wide min-h-[56px] flex items-center justify-center"
 						>
 							{isSubmitting ? (
 								<span className="flex items-center justify-center gap-2">
