@@ -387,19 +387,29 @@ export function Projects() {
 						<button
 							type="button"
 							onClick={() => handleScroll("left")}
-							className="hidden md:flex flex-shrink-0 w-9 h-9 rounded-full border border-white/20 bg-white/5 text-white hover:bg-sabs-primary/15 hover:border-sabs-primary/50 hover:text-sabs-primary transition-all duration-300 items-center justify-center"
+							className="hidden md:flex flex-shrink-0 items-center justify-center text-white hover:text-sabs-primary transition-colors duration-300"
 							aria-label="Voir les projets précédents"
 						>
-							<svg className="w-4 h-4" fill="none" viewBox="0 0 24 24">
-								<title>Précédent</title>
-								<path
-									d="M15 18l-6-6 6-6"
-									stroke="currentColor"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								/>
-							</svg>
+							<GlassSurface
+								width={36}
+								height={36}
+								borderRadius={18}
+								blur={14}
+								backgroundOpacity={0.12}
+								brightness={62}
+								opacity={0.96}
+							>
+								<svg className="w-4 h-4" fill="none" viewBox="0 0 24 24">
+									<title>Précédent</title>
+									<path
+										d="M15 18l-6-6 6-6"
+										stroke="currentColor"
+										strokeWidth="2"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+									/>
+								</svg>
+							</GlassSurface>
 						</button>
 
 						{/* Scroll rail */}
@@ -420,19 +430,29 @@ export function Projects() {
 						<button
 							type="button"
 							onClick={() => handleScroll("right")}
-							className="hidden md:flex flex-shrink-0 w-9 h-9 rounded-full border border-white/20 bg-white/5 text-white hover:bg-sabs-primary/15 hover:border-sabs-primary/50 hover:text-sabs-primary transition-all duration-300 items-center justify-center"
+							className="hidden md:flex flex-shrink-0 items-center justify-center text-white hover:text-sabs-primary transition-colors duration-300"
 							aria-label="Voir les projets suivants"
 						>
-							<svg className="w-4 h-4" fill="none" viewBox="0 0 24 24">
-								<title>Suivant</title>
-								<path
-									d="M9 6l6 6-6 6"
-									stroke="currentColor"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								/>
-							</svg>
+							<GlassSurface
+								width={36}
+								height={36}
+								borderRadius={18}
+								blur={14}
+								backgroundOpacity={0.12}
+								brightness={62}
+								opacity={0.96}
+							>
+								<svg className="w-4 h-4" fill="none" viewBox="0 0 24 24">
+									<title>Suivant</title>
+									<path
+										d="M9 6l6 6-6 6"
+										stroke="currentColor"
+										strokeWidth="2"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+									/>
+								</svg>
+							</GlassSurface>
 						</button>
 					</div>
 

@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import { Be_Vietnam_Pro } from "next/font/google";
 import Image from "next/image";
 import { useEffect, useRef } from "react";
+import GlassSurface from "@/components/ui/GlassSurface";
 import { useScroll } from "@/hooks/useScroll";
 
 const BeVietnam = Be_Vietnam_Pro({
@@ -132,7 +133,18 @@ export function Hero() {
 			<div className="absolute inset-0 flex flex-col items-center justify-center text-white px-4 sm:px-6 z-10">
 				{/* Logo avec design premium */}
 				<div ref={logoRef} className="mb-8 md:mb-10 group">
-					<div className="relative p-6 md:p-10 rounded-2xl md:rounded-[4rem] bg-gradient-to-br from-white/15 via-white/8 to-white/5 backdrop-blur-3xl border-2 border-white/30 shadow-[0_35px_80px_-15px_rgba(0,0,0,0.4)] hover:shadow-[0_45px_100px_-15px_rgba(139,92,246,0.3)] transition-all duration-1000 hover:scale-110 hover:rotate-3">
+					<div className="relative p-6 md:p-10 rounded-2xl md:rounded-[4rem] shadow-[0_35px_80px_-15px_rgba(0,0,0,0.4)] hover:shadow-[0_45px_100px_-15px_rgba(139,92,246,0.3)] transition-all duration-1000 hover:scale-110 hover:rotate-3">
+						<GlassSurface
+							width="100%"
+							height="100%"
+							borderRadius={40}
+							blur={16}
+							backgroundOpacity={0.12}
+							brightness={62}
+							opacity={0.96}
+							style={{ position: "absolute", inset: 0 }}
+							className="pointer-events-none"
+						/>
 						{/* Éclats décoratifs - scaled for mobile */}
 						<div className="absolute -top-2 md:-top-3 -right-2 md:-right-3 w-4 md:w-6 h-4 md:h-6 bg-gradient-to-r from-sabs-primary to-sabs-gradient-1 rounded-full animate-ping shadow-lg shadow-sabs-primary/50"></div>
 						<div className="absolute -bottom-2 md:-bottom-3 -left-2 md:-left-3 w-3 md:w-4 h-3 md:h-4 bg-gradient-to-r from-sabs-gradient-2 to-sabs-gradient-3 rounded-full animate-pulse shadow-lg shadow-sabs-gradient-2/50"></div>
