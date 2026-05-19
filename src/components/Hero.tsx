@@ -17,6 +17,7 @@ export function Hero() {
 	const logoRef = useRef<HTMLDivElement>(null);
 	const titleRef = useRef<HTMLHeadingElement>(null);
 	const subtitleRef = useRef<HTMLParagraphElement>(null);
+	const definitionRef = useRef<HTMLDivElement>(null);
 	const buttonRef = useRef<HTMLButtonElement>(null);
 
 	const { scrollToTarget } = useScroll({ targetId: "presentation" });
@@ -30,6 +31,7 @@ export function Hero() {
 				logoRef.current,
 				titleRef.current,
 				subtitleRef.current,
+				definitionRef.current,
 				buttonRef.current,
 			],
 			{
@@ -67,6 +69,16 @@ export function Hero() {
 					ease: "power2.out",
 				},
 				"-=0.2",
+			)
+			.to(
+				definitionRef.current,
+				{
+					opacity: 1,
+					y: 0,
+					duration: 0.5,
+					ease: "power2.out",
+				},
+				"-=0.1",
 			)
 			.to(
 				buttonRef.current,
@@ -218,6 +230,15 @@ export function Hero() {
 					<div className="absolute -bottom-3 md:-bottom-4 left-1/2 transform -translate-x-1/2 flex flex-col gap-1">
 						<div className="w-24 md:w-40 h-px bg-gradient-to-r from-transparent via-sabs-primary to-transparent"></div>
 						<div className="w-16 md:w-24 h-px bg-gradient-to-r from-transparent via-sabs-gradient-2 to-transparent mx-auto"></div>
+					</div>
+				</div>
+
+				{/* Définition style tag/street */}
+				<div ref={definitionRef} className="relative mb-10 md:mb-14 -rotate-1">
+					<div className="px-5 md:px-7 py-3 md:py-4 border-l-[3px] border-sabs-gradient-1 bg-white/5 backdrop-blur-sm rounded-r-xl text-left">
+						<p className="font-black text-sm sm:text-base tracking-[0.25em] uppercase text-transparent bg-gradient-to-r from-white via-white/90 to-white/60 bg-clip-text">
+							SABS quel régie !
+						</p>
 					</div>
 				</div>
 

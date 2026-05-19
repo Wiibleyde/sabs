@@ -32,7 +32,7 @@ export const COMPETENCIES: Competency[] = [
 	"Mise en scène",
 	"Caméraman",
 	"Diffusion en direct/rediffusion",
-]
+];
 
 export const COMPETENCY_COLORS: Record<Competency, string> = {
 	"Régie Vidéo": "from-violet-500 to-purple-600",
