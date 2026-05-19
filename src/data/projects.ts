@@ -32,7 +32,7 @@ export const COMPETENCIES: Competency[] = [
 	"Mise en scène",
 	"Caméraman",
 	"Diffusion en direct/rediffusion",
-];
+]
 
 export const COMPETENCY_COLORS: Record<Competency, string> = {
 	"Régie Vidéo": "from-violet-500 to-purple-600",
@@ -50,6 +50,20 @@ export const projects: Project[] = [
 		media: {
 			type: "youtube",
 			url: "https://youtu.be/C4agP4iUgOQ",
+		},
+		competencies: [
+			"Caméraman",
+			"Diffusion en direct/rediffusion",
+			"Régie Vidéo",
+		],
+	},
+	{
+		id: "triathlon-2026",
+		title: "Triathlon 2026",
+		date: "2026-05-15",
+		media: {
+			type: "image",
+			url: "https://mindcity-rp.fr/photo/photo_6a076ff4109045.09318455.png",
 		},
 		competencies: [
 			"Caméraman",
