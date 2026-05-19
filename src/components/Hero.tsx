@@ -237,7 +237,7 @@ export function Hero() {
 				<div ref={definitionRef} className="relative mb-10 md:mb-14 -rotate-1">
 					<div className="px-5 md:px-7 py-3 md:py-4 border-l-[3px] border-sabs-gradient-1 bg-white/5 backdrop-blur-sm rounded-r-xl text-left">
 						<p className="font-black text-sm sm:text-base tracking-[0.25em] uppercase text-transparent bg-gradient-to-r from-white via-white/90 to-white/60 bg-clip-text">
-							SABS quel régie !
+							SABS quelle régie !
 						</p>
 					</div>
 				</div>
