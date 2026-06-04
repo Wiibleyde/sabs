@@ -10,10 +10,10 @@ import { useEffect, useRef } from "react";
 gsap.registerPlugin(ScrollTrigger);
 
 const SERVICES = [
-	{ text: "Retransmission multicaméra", dotClass: "bg-sabs-green" },
-	{ text: "Production en direct", dotClass: "bg-sabs-purple" },
-	{ text: "Couverture événementielle", dotClass: "bg-sabs-red" },
-	{ text: "Solutions audiovisuelles", dotClass: "bg-sabs-gold" },
+	{ text: "Régie caméra", dotClass: "bg-sabs-green" },
+	{ text: "Régie lumière", dotClass: "bg-sabs-purple" },
+	{ text: "Mise en scène", dotClass: "bg-sabs-red" },
+	{ text: "Solutions sur mesure", dotClass: "bg-sabs-gold" },
 ];
 
 export function Footer() {
