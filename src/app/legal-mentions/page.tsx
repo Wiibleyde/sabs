@@ -294,7 +294,7 @@ Nom de domaine enregistré chez OVH.
 
 ## Technologies utilisées
 
-Ce site est développé avec Next.js, Tailwind CSS et Prisma.
+Ce site est développé avec Next.js, Tailwind CSS.
 
 Hébergé avec Docker, Nginx, Proxmox et Rocky Linux.
 

@@ -3,7 +3,8 @@ export type Competency =
 	| "Régie Lumière"
 	| "Mise en scène"
 	| "Caméraman"
-	| "Diffusion en direct/rediffusion";
+	| "Diffusion en direct/rediffusion"
+	| "Régie mapping écran";
 
 export type ProjectMediaType =
 	| "youtube"
@@ -21,7 +22,7 @@ export interface Project {
 	id: string;
 	title: string;
 	date: string; // ISO format: YYYY-MM-DD
-	media: ProjectMedia;
+	medias: ProjectMedia[];
 	competencies: Competency[];
 	description?: string;
 }
@@ -32,6 +33,7 @@ export const COMPETENCIES: Competency[] = [
 	"Mise en scène",
 	"Caméraman",
 	"Diffusion en direct/rediffusion",
+	"Régie mapping écran",
 ];
 
 export const COMPETENCY_COLORS: Record<Competency, string> = {
@@ -40,6 +42,7 @@ export const COMPETENCY_COLORS: Record<Competency, string> = {
 	"Mise en scène": "from-blue-500 to-indigo-600",
 	Caméraman: "from-emerald-400 to-teal-500",
 	"Diffusion en direct/rediffusion": "from-red-500 to-orange-500",
+	"Régie mapping écran": "from-pink-500 to-rose-500",
 };
 
 export const projects: Project[] = [
@@ -47,10 +50,12 @@ export const projects: Project[] = [
 		id: "course-sur-terre-tropos-2026",
 		title: "Course sur terre - Tropos",
 		date: "2026-04-21",
-		media: {
-			type: "youtube",
-			url: "https://youtu.be/C4agP4iUgOQ",
-		},
+		medias: [
+			{
+				type: "youtube",
+				url: "https://youtu.be/C4agP4iUgOQ",
+			},
+		],
 		competencies: [
 			"Caméraman",
 			"Diffusion en direct/rediffusion",
@@ -61,14 +66,34 @@ export const projects: Project[] = [
 		id: "triathlon-2026",
 		title: "Triathlon 2026",
 		date: "2026-05-15",
-		media: {
-			type: "image",
-			url: "https://mindcity-rp.fr/photo/photo_6a076ff4109045.09318455.png",
-		},
+		medias: [
+			{
+				type: "image",
+				url: "https://mindcity-rp.fr/photo/photo_6a076ff4109045.09318455.png",
+			},
+		],
 		competencies: [
 			"Caméraman",
 			"Diffusion en direct/rediffusion",
 			"Régie Vidéo",
 		],
+	},
+	{
+		id: "hayes-spc-2026",
+		title: "Hayes - Septem Peccata Capitalia",
+		date: "2026-05-26",
+		medias: [
+			{
+				type: "youtube",
+				url: "https://youtu.be/aFBW4qw1rE4",
+			},
+			{
+				type: "youtube",
+				url: "https://youtu.be/to-_Bhen280",
+			},
+		],
+		competencies: ["Régie Lumière", "Régie mapping écran", "Mise en scène"],
+		description:
+			"Régie lumière et mapping écran pour la performance de Hayes pour son concert Septem Peccata Capitalia.",
 	},
 ];
