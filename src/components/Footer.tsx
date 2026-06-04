@@ -111,12 +111,20 @@ export function Footer() {
 						<span className="font-semibold text-sabs-green">SABS</span> — San
 						Andreas Broadcast Service
 					</p>
-					<Link
-						href="/legal-mentions"
-						className="transition-colors duration-300 hover:text-white"
-					>
-						Mentions légales
-					</Link>
+					<div className="flex items-center gap-6">
+						<Link
+							href="/legal-mentions"
+							className="transition-colors duration-300 hover:text-white"
+						>
+							Mentions légales
+						</Link>
+						<Link
+							href="/dashboard"
+							className="transition-colors duration-300 hover:text-white"
+						>
+							Dashboard
+						</Link>
+					</div>
 				</div>
 			</div>
 		</footer>

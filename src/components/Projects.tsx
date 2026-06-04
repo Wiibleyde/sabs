@@ -111,11 +111,9 @@ function MediaViewer({ media }: { media: ProjectMedia }) {
 	}
 	if (media.type === "video") {
 		return (
-			<video
-				src={media.url}
-				controls
-				className="w-full h-full object-contain"
-			/>
+			<video src={media.url} controls className="w-full h-full object-contain">
+				<track kind="captions" />
+			</video>
 		);
 	}
 	if (media.type === "link") {
@@ -152,7 +150,10 @@ function MediaViewer({ media }: { media: ProjectMedia }) {
 function ProjectModal({
 	project,
 	onClose,
-}: { project: Project; onClose: () => void }) {
+}: {
+	project: Project;
+	onClose: () => void;
+}) {
 	const [current, setCurrent] = useState(0);
 	const total = project.medias.length;
 	const media = project.medias[current];
@@ -173,12 +174,17 @@ function ProjectModal({
 	}, [onClose, total]);
 
 	return (
-		<div
-			className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4"
-			onClick={onClose}
-			onKeyDown={(e) => e.key === "Escape" && onClose()}
-		>
+		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4">
+			<button
+				type="button"
+				className="absolute inset-0 w-full h-full cursor-default"
+				onClick={onClose}
+				aria-label="Fermer"
+			/>
 			<div
+				role="dialog"
+				aria-modal="true"
+				aria-label={project.title}
 				className="relative w-full max-w-4xl bg-sabs-bg-3 rounded-2xl overflow-hidden flex flex-col max-h-[90vh]"
 				onClick={(e) => e.stopPropagation()}
 				onKeyDown={(e) => e.stopPropagation()}
@@ -215,9 +221,18 @@ function ProjectModal({
 				</div>
 
 				{/* Media area */}
-				<div className="relative flex-1 min-h-0 bg-black" style={{ aspectRatio: isImage ? undefined : "16/9", minHeight: "300px" }}>
+				<div
+					className="relative flex-1 min-h-0 bg-black"
+					style={{
+						aspectRatio: isImage ? undefined : "16/9",
+						minHeight: "300px",
+					}}
+				>
 					{isImage ? (
-						<div className="relative w-full" style={{ minHeight: "300px", maxHeight: "60vh" }}>
+						<div
+							className="relative w-full"
+							style={{ minHeight: "300px", maxHeight: "60vh" }}
+						>
 							<Image
 								src={media.url}
 								alt="Média"
@@ -228,8 +243,11 @@ function ProjectModal({
 							/>
 						</div>
 					) : (
-						<div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
-							<div className="absolute inset-0">
+						<div
+							className="relative w-full"
+							style={{ paddingBottom: "56.25%" }}
+						>
+							<div className="absolute inset-0 h-full">
 								<MediaViewer media={media} />
 							</div>
 						</div>
@@ -244,7 +262,15 @@ function ProjectModal({
 								className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-black/60 border border-white/10 text-white hover:bg-black/80 transition-colors"
 								aria-label="Précédent"
 							>
-								<svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+								<svg
+									className="w-4 h-4"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+									strokeWidth="2"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+								>
 									<title>Précédent</title>
 									<path d="M15 18l-6-6 6-6" />
 								</svg>
@@ -255,7 +281,15 @@ function ProjectModal({
 								className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-black/60 border border-white/10 text-white hover:bg-black/80 transition-colors"
 								aria-label="Suivant"
 							>
-								<svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+								<svg
+									className="w-4 h-4"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+									strokeWidth="2"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+								>
 									<title>Suivant</title>
 									<path d="M9 6l6 6-6 6" />
 								</svg>
@@ -271,7 +305,7 @@ function ProjectModal({
 							const thumb = getMediaThumbnail(m);
 							return (
 								<button
-									key={`${project.id}-thumb-${i}`}
+									key={m.url}
 									type="button"
 									onClick={() => setCurrent(i)}
 									className={`relative flex-shrink-0 w-16 h-10 rounded-lg overflow-hidden border-2 transition-all ${
@@ -292,14 +326,34 @@ function ProjectModal({
 									) : (
 										<div className="w-full h-full bg-sabs-bg-4 flex items-center justify-center">
 											{m.type === "link" ? (
-												<svg className="w-4 h-4 text-sabs-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+												<svg
+													className="w-4 h-4 text-sabs-muted"
+													fill="none"
+													viewBox="0 0 24 24"
+													stroke="currentColor"
+													strokeWidth="1.5"
+												>
 													<title>Lien</title>
-													<path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+													<path
+														strokeLinecap="round"
+														strokeLinejoin="round"
+														d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+													/>
 												</svg>
 											) : (
-												<svg className="w-4 h-4 text-sabs-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+												<svg
+													className="w-4 h-4 text-sabs-muted"
+													fill="none"
+													viewBox="0 0 24 24"
+													stroke="currentColor"
+													strokeWidth="1.5"
+												>
 													<title>Vidéo</title>
-													<path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
+													<path
+														strokeLinecap="round"
+														strokeLinejoin="round"
+														d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z"
+													/>
 												</svg>
 											)}
 										</div>
@@ -320,9 +374,9 @@ function ProjectModal({
 						)}
 						{total > 1 && (
 							<div className="flex items-center gap-1.5 justify-center">
-								{Array.from({ length: total }).map((_, i) => (
+								{project.medias.map((m, i) => (
 									<button
-										key={`dot-${i}`}
+										key={m.url}
 										type="button"
 										onClick={() => setCurrent(i)}
 										className={`rounded-full transition-all ${
@@ -367,13 +421,11 @@ function ProjectCard({
 	const mediaCount = project.medias.length;
 
 	return (
-		<div
+		<button
+			type="button"
 			data-project-card
-			role="button"
-			tabIndex={0}
 			onClick={onClick}
-			onKeyDown={(e) => e.key === "Enter" && onClick()}
-			className={`group block rounded-2xl overflow-hidden bg-sabs-bg-3 border-t-2 transition-all duration-500 hover:-translate-y-1 cursor-pointer ${accent.borderClass} ${
+			className={`group text-left rounded-2xl overflow-hidden bg-sabs-bg-3 border-t-2 transition-all duration-500 hover:-translate-y-1 cursor-pointer ${accent.borderClass} ${
 				grid ? "w-full" : "flex-shrink-0 snap-start w-5/6 max-w-sm sm:w-80"
 			}`}
 			style={{ "--shadow-color": accent.shadowColor } as React.CSSProperties}
@@ -439,7 +491,13 @@ function ProjectCard({
 				{/* Media count badge */}
 				{mediaCount > 1 && (
 					<span className="absolute top-3 left-3 flex items-center gap-1 px-2 py-1 text-xs font-bold rounded-full bg-black/60 border border-white/10 text-white">
-						<svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+						<svg
+							className="w-3 h-3"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+							strokeWidth="2"
+						>
 							<title>Galerie</title>
 							<rect x="3" y="3" width="7" height="7" rx="1" />
 							<rect x="14" y="3" width="7" height="7" rx="1" />
@@ -519,7 +577,7 @@ function ProjectCard({
 					)}
 				</div>
 			</div>
-		</div>
+		</button>
 	);
 }
 

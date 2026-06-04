@@ -22,36 +22,14 @@ const FEATURES = [
 				strokeLinecap="round"
 				strokeLinejoin="round"
 			>
-				<title>Multicaméra</title>
+				<title>Régie caméra</title>
 				<path d="M15 10l4.553-2.069A1 1 0 0121 8.845V15.155a1 1 0 01-1.447.894L15 14v-4z" />
 				<rect x="3" y="8" width="12" height="8" rx="2" />
+				<circle cx="7" cy="12" r="1" fill="currentColor" stroke="none" />
 			</svg>
 		),
-		title: "Multicaméra",
-		desc: "Couverture complète avec plusieurs angles de vue pour une retransmission riche et dynamique.",
-	},
-	{
-		colorClass: "text-sabs-red",
-		borderClass: "border-t-sabs-red",
-		bgClass: "bg-sabs-red/10",
-		icon: (
-			<svg
-				width="28"
-				height="28"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				strokeWidth="1.5"
-				strokeLinecap="round"
-				strokeLinejoin="round"
-			>
-				<title>Direct</title>
-				<circle cx="12" cy="12" r="2" />
-				<path d="M16.24 7.76a6 6 0 010 8.49M7.76 16.24a6 6 0 010-8.49M19.07 4.93a10 10 0 010 14.14M4.93 19.07a10 10 0 010-14.14" />
-			</svg>
-		),
-		title: "En direct",
-		desc: "Retransmission en temps réel de vos événements, diffusée instantanément à votre audience.",
+		title: "Régie caméra",
+		desc: "Captation multicaméra professionnelle avec direction technique et mixage vidéo en temps réel.",
 	},
 	{
 		colorClass: "text-sabs-gold",
@@ -68,14 +46,37 @@ const FEATURES = [
 				strokeLinecap="round"
 				strokeLinejoin="round"
 			>
-				<title>Événement</title>
+				<title>Régie lumière</title>
+				<circle cx="12" cy="12" r="4" />
+				<path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+			</svg>
+		),
+		title: "Régie lumière",
+		desc: "Conception et pilotage d'ambiances lumineuses adaptées à chaque scène, du mapping à l'éclairage de scène.",
+	},
+	{
+		colorClass: "text-sabs-purple",
+		borderClass: "border-t-sabs-purple",
+		bgClass: "bg-sabs-purple/10",
+		icon: (
+			<svg
+				width="28"
+				height="28"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				strokeWidth="1.5"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			>
+				<title>Sur mesure</title>
 				<path d="M12 2L2 7l10 5 10-5-10-5z" />
 				<path d="M2 17l10 5 10-5" />
 				<path d="M2 12l10 5 10-5" />
 			</svg>
 		),
-		title: "Tout événement",
-		desc: "Solutions adaptables à tous types de manifestations : concerts, sports, conférences et plus.",
+		title: "Sur mesure",
+		desc: "Chaque projet est unique — nous adaptons nos compétences et notre matériel à n'importe quelle demande.",
 	},
 ];
 

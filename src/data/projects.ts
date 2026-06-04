@@ -85,15 +85,41 @@ export const projects: Project[] = [
 		medias: [
 			{
 				type: "youtube",
-				url: "https://youtu.be/aFBW4qw1rE4",
+				url: "https://youtu.be/to-_Bhen280",
 			},
 			{
 				type: "youtube",
-				url: "https://youtu.be/to-_Bhen280",
+				url: "https://youtu.be/aFBW4qw1rE4",
 			},
 		],
 		competencies: ["Régie Lumière", "Régie mapping écran", "Mise en scène"],
 		description:
 			"Régie lumière et mapping écran pour la performance de Hayes pour son concert Septem Peccata Capitalia.",
+	},
+	{
+		id: "drift-dock-2026",
+		title: "Événement de drift par TerraDrift",
+		date: "2026-06-03",
+		medias: [
+			{
+				type: "image",
+				url: "/img/events/drift-dock-2026/sasha.png",
+			},
+			{
+				type: "image",
+				url: "/img/events/drift-dock-2026/hayes.png",
+			},
+			{
+				type: "image",
+				url: "/img/events/drift-dock-2026/aki.png",
+			},
+			{
+				type: "image",
+				url: "/img/events/drift-dock-2026/matt-max.png",
+			},
+		],
+		competencies: ["Régie Lumière", "Régie mapping écran"],
+		description:
+			"Régie lumière et mapping écran pour l'événement de drift organisé par TerraDrift.",
 	},
 ];
