@@ -85,7 +85,7 @@ export function Hero() {
 	return (
 		<section
 			id="hero"
-			className="relative h-screen w-full overflow-hidden flex flex-col items-center justify-center bg-sabs-bg"
+			className="relative h-screen w-full flex flex-col items-center justify-center bg-sabs-bg overflow-x-hidden"
 		>
 			{/* ThreeJS particles */}
 			<div className="absolute inset-0 z-0">

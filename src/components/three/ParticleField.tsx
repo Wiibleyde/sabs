@@ -16,48 +16,48 @@ function Particles({ count = 280 }: { count?: number }) {
 	const velocities = useRef<Float32Array>(new Float32Array(0));
 
 	const { positions, colors } = useMemo(() => {
-		const positions = new Float32Array(count * 3);
-		const colors = new Float32Array(count * 3);
-		const vels = new Float32Array(count * 3);
+		const pos = new Float32Array(count * 3);
+		const col = new Float32Array(count * 3);
+		const vel = new Float32Array(count * 3);
 
 		for (let i = 0; i < count; i++) {
-			positions[i * 3] = (Math.random() - 0.5) * 30;
-			positions[i * 3 + 1] = (Math.random() - 0.5) * 18;
-			positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
+			pos[i * 3] = (Math.random() - 0.5) * 30;
+			pos[i * 3 + 1] = (Math.random() - 0.5) * 18;
+			pos[i * 3 + 2] = (Math.random() - 0.5) * 10;
 
-			vels[i * 3] = (Math.random() - 0.5) * 0.003;
-			vels[i * 3 + 1] = Math.random() * 0.004 + 0.001;
-			vels[i * 3 + 2] = (Math.random() - 0.5) * 0.002;
+			vel[i * 3] = (Math.random() - 0.5) * 0.2;
+			vel[i * 3 + 1] = Math.random() * 0.3 + 0.08;
+			vel[i * 3 + 2] = (Math.random() - 0.5) * 0.15;
 
 			const color =
 				BRAND_COLORS[Math.floor(Math.random() * BRAND_COLORS.length)];
-			colors[i * 3] = color.r;
-			colors[i * 3 + 1] = color.g;
-			colors[i * 3 + 2] = color.b;
+			col[i * 3] = color.r;
+			col[i * 3 + 1] = color.g;
+			col[i * 3 + 2] = color.b;
 		}
 
-		velocities.current = vels;
-		return { positions, colors };
+		velocities.current = vel;
+		return { positions: pos, colors: col };
 	}, [count]);
 
-	useFrame(() => {
+	useFrame((_state, delta) => {
 		if (!pointsRef.current) return;
 		const geo = pointsRef.current.geometry;
 		const pos = geo.attributes.position.array as Float32Array;
 		const vel = velocities.current;
 		if (!vel.length) return;
 
-		for (let i = 0; i < count; i++) {
-			pos[i * 3] += vel[i * 3];
-			pos[i * 3 + 1] += vel[i * 3 + 1];
-			pos[i * 3 + 2] += vel[i * 3 + 2];
+		const dt = Math.min(delta, 0.05);
 
-			// Wrap Y: reset particle to bottom when it goes too high
+		for (let i = 0; i < count; i++) {
+			pos[i * 3] += vel[i * 3] * dt;
+			pos[i * 3 + 1] += vel[i * 3 + 1] * dt;
+			pos[i * 3 + 2] += vel[i * 3 + 2] * dt;
+
 			if (pos[i * 3 + 1] > 9) {
 				pos[i * 3 + 1] = -9;
 				pos[i * 3] = (Math.random() - 0.5) * 30;
 			}
-			// Wrap X
 			if (pos[i * 3] > 15) pos[i * 3] = -15;
 			if (pos[i * 3] < -15) pos[i * 3] = 15;
 		}

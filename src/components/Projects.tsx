@@ -199,7 +199,7 @@ export function Projects() {
 	const headingRef = useRef<HTMLDivElement>(null);
 	const gridRef = useRef<HTMLDivElement>(null);
 	const filtersRef = useRef<HTMLDivElement>(null);
-	const [isVisible, setIsVisible] = useState(false);
+	const animatedRef = useRef(false);
 	const [activeFilter, setActiveFilter] = useState<Competency | null>(null);
 
 	const filteredProjects = activeFilter
@@ -227,8 +227,8 @@ export function Projects() {
 				trigger: sectionRef.current,
 				start: "top 70%",
 				onEnter: () => {
-					if (isVisible) return;
-					setIsVisible(true);
+					if (animatedRef.current) return;
+					animatedRef.current = true;
 					const tl = gsap.timeline();
 					tl.to(headingRef.current, {
 						opacity: 1,
@@ -257,7 +257,7 @@ export function Projects() {
 		}, sectionRef);
 
 		return () => ctx.revert();
-	}, [isVisible]);
+	}, []);
 
 	return (
 		<section
