@@ -41,13 +41,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 						text: "SABS Requests",
 						icon_url: "https://sabs.vercel.app/img/sabs/sabs-logo-small.png",
 					},
-					image: {
-						url: "https://sabs.vercel.app/img/sabs/sabs-logo.png",
-					},
 				},
 			],
 			username: "SABS Requests",
-			avatar_url: "https://nathan.bonnell.fr/img/sabs/sabs-logo-small.png",
+			avatar_url: "https://sabs.vercel.app/img/sabs/sabs-logo-small.png",
 		}),
 	});
 	if (!response.ok) {

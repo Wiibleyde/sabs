@@ -1,475 +1,797 @@
 "use client";
 
 import { gsap } from "gsap";
-import { Be_Vietnam_Pro } from "next/font/google";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import GlassSurface from "@/components/ui/GlassSurface";
 import {
 	COMPETENCIES,
-	COMPETENCY_COLORS,
 	type Competency,
 	type Project,
+	type ProjectMedia,
 	projects,
 } from "@/data/projects";
 
-const BeVietnam = Be_Vietnam_Pro({
-	subsets: ["latin"],
-	weight: ["400", "500", "600", "700"],
-});
+gsap.registerPlugin(ScrollTrigger);
+
+const CARD_ACCENTS = [
+	{
+		borderClass: "border-t-sabs-green",
+		textClass: "text-sabs-green",
+		badgeClass: "bg-sabs-green/10 border-sabs-green/30 text-sabs-green",
+		shadowColor: "rgba(64,195,149,0.18)",
+	},
+	{
+		borderClass: "border-t-sabs-purple",
+		textClass: "text-sabs-purple",
+		badgeClass: "bg-sabs-purple/10 border-sabs-purple/30 text-sabs-purple",
+		shadowColor: "rgba(97,83,136,0.18)",
+	},
+	{
+		borderClass: "border-t-sabs-red",
+		textClass: "text-sabs-red",
+		badgeClass: "bg-sabs-red/10 border-sabs-red/30 text-sabs-red",
+		shadowColor: "rgba(182,68,87,0.18)",
+	},
+	{
+		borderClass: "border-t-sabs-gold",
+		textClass: "text-sabs-gold",
+		badgeClass: "bg-sabs-gold/10 border-sabs-gold/30 text-sabs-gold",
+		shadowColor: "rgba(220,184,54,0.18)",
+	},
+];
+
+const COMPETENCY_CLASSES: Record<Competency, string> = {
+	"Régie Vidéo": "bg-sabs-purple/10 border-sabs-purple/30 text-sabs-purple",
+	"Régie Lumière": "bg-sabs-gold/10 border-sabs-gold/30 text-sabs-gold",
+	"Mise en scène": "bg-sabs-green/10 border-sabs-green/30 text-sabs-green",
+	Caméraman: "bg-sabs-red/10 border-sabs-red/30 text-sabs-red",
+	"Diffusion en direct/rediffusion":
+		"bg-sabs-green/10 border-sabs-green/30 text-sabs-green",
+	"Régie mapping écran": "bg-sabs-red/10 border-sabs-red/30 text-sabs-red",
+};
 
 function getYouTubeId(url: string): string | null {
-	const match = url.match(
+	const m = url.match(
 		/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([^&\n?#]+)/,
 	);
-	return match ? match[1] : null;
+	return m ? m[1] : null;
 }
 
-function getThumbnailUrl(project: Project): string | null {
-	if (project.media.type === "youtube") {
-		const id = getYouTubeId(project.media.url);
+function getMediaThumbnail(media: ProjectMedia): string | null {
+	if (media.type === "youtube") {
+		const id = getYouTubeId(media.url);
 		return id ? `https://img.youtube.com/vi/${id}/maxresdefault.jpg` : null;
 	}
-	if (project.media.type === "image") {
-		return project.media.url;
+	if (media.type === "image") return media.url;
+	return null;
+}
+
+function getProjectThumbnail(p: Project): string | null {
+	for (const m of p.medias) {
+		const thumb = getMediaThumbnail(m);
+		if (thumb) return thumb;
 	}
 	return null;
 }
 
-function formatDate(isoDate: string): string {
-	const [year, month, day] = isoDate.split("-").map(Number);
-	const date = new Date(year, month - 1, day);
-	return date.toLocaleDateString("fr-FR", {
+function formatDate(iso: string): string {
+	const [y, m, d] = iso.split("-").map(Number);
+	return new Date(y, m - 1, d).toLocaleDateString("fr-FR", {
 		day: "numeric",
 		month: "long",
 		year: "numeric",
 	});
 }
 
-function ProjectCard({ project }: { project: Project; index: number }) {
-	const thumbnailUrl = getThumbnailUrl(project);
-	const [showAllCompetencies, setShowAllCompetencies] = useState(false);
-	const visibleCompetencies = showAllCompetencies
-		? project.competencies
-		: project.competencies.slice(0, 2);
-	const remainingCount = project.competencies.length - 2;
+function MediaViewer({ media }: { media: ProjectMedia }) {
+	if (media.type === "youtube") {
+		const id = getYouTubeId(media.url);
+		if (!id) return null;
+		return (
+			<iframe
+				src={`https://www.youtube.com/embed/${id}?autoplay=0`}
+				title="YouTube video"
+				allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+				allowFullScreen
+				className="w-full h-full"
+			/>
+		);
+	}
+	if (media.type === "image") {
+		return (
+			<Image
+				src={media.url}
+				alt="Média"
+				fill
+				className="object-contain"
+				sizes="(max-width: 768px) 100vw, 80vw"
+			/>
+		);
+	}
+	if (media.type === "video") {
+		return (
+			<video src={media.url} controls className="w-full h-full object-contain">
+				<track kind="captions" />
+			</video>
+		);
+	}
+	if (media.type === "link") {
+		return (
+			<div className="flex flex-col items-center justify-center h-full gap-4">
+				<svg
+					className="w-16 h-16 text-sabs-muted-3"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+					strokeWidth="1.5"
+				>
+					<title>Lien externe</title>
+					<path
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+					/>
+				</svg>
+				<a
+					href={media.url}
+					target="_blank"
+					rel="noopener noreferrer"
+					className="px-6 py-3 rounded-full sabs-gradient-bg text-sabs-bg font-bold text-sm tracking-wider hover:opacity-90 transition-opacity"
+				>
+					Ouvrir le lien
+				</a>
+			</div>
+		);
+	}
+	return null;
+}
+
+function ProjectModal({
+	project,
+	onClose,
+}: {
+	project: Project;
+	onClose: () => void;
+}) {
+	const [current, setCurrent] = useState(0);
+	const total = project.medias.length;
+	const media = project.medias[current];
+	const isImage = media.type === "image";
+
+	useEffect(() => {
+		const handler = (e: KeyboardEvent) => {
+			if (e.key === "Escape") onClose();
+			if (e.key === "ArrowRight") setCurrent((c) => (c + 1) % total);
+			if (e.key === "ArrowLeft") setCurrent((c) => (c - 1 + total) % total);
+		};
+		window.addEventListener("keydown", handler);
+		document.body.style.overflow = "hidden";
+		return () => {
+			window.removeEventListener("keydown", handler);
+			document.body.style.overflow = "";
+		};
+	}, [onClose, total]);
 
 	return (
-		<Link
+		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4">
+			<button
+				type="button"
+				className="absolute inset-0 w-full h-full cursor-default"
+				onClick={onClose}
+				aria-label="Fermer"
+			/>
+			<div
+				role="dialog"
+				aria-modal="true"
+				aria-label={project.title}
+				className="relative w-full max-w-4xl bg-sabs-bg-3 rounded-2xl overflow-hidden flex flex-col max-h-[90vh]"
+				onClick={(e) => e.stopPropagation()}
+				onKeyDown={(e) => e.stopPropagation()}
+			>
+				{/* Header */}
+				<div className="flex items-center justify-between px-6 py-4 border-b border-sabs-border shrink-0">
+					<div>
+						<p className="text-xs font-semibold tracking-[0.2em] uppercase text-sabs-green mb-0.5">
+							{formatDate(project.date)}
+						</p>
+						<h3 className="text-xl font-black text-white leading-tight">
+							{project.title}
+						</h3>
+					</div>
+					<button
+						type="button"
+						onClick={onClose}
+						className="flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-full bg-sabs-bg-4 border border-sabs-border text-sabs-muted hover:text-white transition-colors ml-4"
+						aria-label="Fermer"
+					>
+						<svg
+							className="w-4 h-4"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+							strokeWidth="2"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						>
+							<title>Fermer</title>
+							<path d="M18 6L6 18M6 6l12 12" />
+						</svg>
+					</button>
+				</div>
+
+				{/* Media area */}
+				<div
+					className="relative flex-1 min-h-0 bg-black"
+					style={{
+						aspectRatio: isImage ? undefined : "16/9",
+						minHeight: "300px",
+					}}
+				>
+					{isImage ? (
+						<div
+							className="relative w-full"
+							style={{ minHeight: "300px", maxHeight: "60vh" }}
+						>
+							<Image
+								src={media.url}
+								alt="Média"
+								width={1200}
+								height={800}
+								className="w-full h-full object-contain max-h-[60vh]"
+								sizes="(max-width: 768px) 100vw, 80vw"
+							/>
+						</div>
+					) : (
+						<div
+							className="relative w-full"
+							style={{ paddingBottom: "56.25%" }}
+						>
+							<div className="absolute inset-0 h-full">
+								<MediaViewer media={media} />
+							</div>
+						</div>
+					)}
+
+					{/* Prev/Next over media */}
+					{total > 1 && (
+						<>
+							<button
+								type="button"
+								onClick={() => setCurrent((c) => (c - 1 + total) % total)}
+								className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-black/60 border border-white/10 text-white hover:bg-black/80 transition-colors"
+								aria-label="Précédent"
+							>
+								<svg
+									className="w-4 h-4"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+									strokeWidth="2"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+								>
+									<title>Précédent</title>
+									<path d="M15 18l-6-6 6-6" />
+								</svg>
+							</button>
+							<button
+								type="button"
+								onClick={() => setCurrent((c) => (c + 1) % total)}
+								className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-black/60 border border-white/10 text-white hover:bg-black/80 transition-colors"
+								aria-label="Suivant"
+							>
+								<svg
+									className="w-4 h-4"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+									strokeWidth="2"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+								>
+									<title>Suivant</title>
+									<path d="M9 6l6 6-6 6" />
+								</svg>
+							</button>
+						</>
+					)}
+				</div>
+
+				{/* Thumbnails strip (when >1 media) */}
+				{total > 1 && (
+					<div className="flex gap-2 px-6 py-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden shrink-0 border-t border-sabs-border">
+						{project.medias.map((m, i) => {
+							const thumb = getMediaThumbnail(m);
+							return (
+								<button
+									key={m.url}
+									type="button"
+									onClick={() => setCurrent(i)}
+									className={`relative flex-shrink-0 w-16 h-10 rounded-lg overflow-hidden border-2 transition-all ${
+										i === current
+											? "border-sabs-green"
+											: "border-transparent opacity-50 hover:opacity-80"
+									}`}
+									aria-label={`Média ${i + 1}`}
+								>
+									{thumb ? (
+										<Image
+											src={thumb}
+											alt={`Média ${i + 1}`}
+											fill
+											className="object-cover"
+											sizes="64px"
+										/>
+									) : (
+										<div className="w-full h-full bg-sabs-bg-4 flex items-center justify-center">
+											{m.type === "link" ? (
+												<svg
+													className="w-4 h-4 text-sabs-muted"
+													fill="none"
+													viewBox="0 0 24 24"
+													stroke="currentColor"
+													strokeWidth="1.5"
+												>
+													<title>Lien</title>
+													<path
+														strokeLinecap="round"
+														strokeLinejoin="round"
+														d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+													/>
+												</svg>
+											) : (
+												<svg
+													className="w-4 h-4 text-sabs-muted"
+													fill="none"
+													viewBox="0 0 24 24"
+													stroke="currentColor"
+													strokeWidth="1.5"
+												>
+													<title>Vidéo</title>
+													<path
+														strokeLinecap="round"
+														strokeLinejoin="round"
+														d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z"
+													/>
+												</svg>
+											)}
+										</div>
+									)}
+								</button>
+							);
+						})}
+					</div>
+				)}
+
+				{/* Footer: description + dots */}
+				{(project.description || total > 1) && (
+					<div className="px-6 py-4 border-t border-sabs-border shrink-0">
+						{project.description && (
+							<p className="text-sm text-sabs-muted leading-relaxed mb-3">
+								{project.description}
+							</p>
+						)}
+						{total > 1 && (
+							<div className="flex items-center gap-1.5 justify-center">
+								{project.medias.map((m, i) => (
+									<button
+										key={m.url}
+										type="button"
+										onClick={() => setCurrent(i)}
+										className={`rounded-full transition-all ${
+											i === current
+												? "w-4 h-1.5 bg-sabs-green"
+												: "w-1.5 h-1.5 bg-sabs-muted-3 hover:bg-sabs-muted"
+										}`}
+										aria-label={`Média ${i + 1}`}
+									/>
+								))}
+							</div>
+						)}
+					</div>
+				)}
+			</div>
+		</div>
+	);
+}
+
+function ProjectCard({
+	project,
+	index,
+	grid = false,
+	onClick,
+}: {
+	project: Project;
+	index: number;
+	grid?: boolean;
+	onClick: () => void;
+}) {
+	const thumbnailUrl = getProjectThumbnail(project);
+	const [showAll, setShowAll] = useState(false);
+	const accent = CARD_ACCENTS[index % CARD_ACCENTS.length];
+	const num = String(index + 1).padStart(2, "0");
+	const visible = showAll
+		? project.competencies
+		: project.competencies.slice(0, 3);
+	const remaining = project.competencies.length - 3;
+	const firstMedia = project.medias[0];
+	const isVideo =
+		firstMedia?.type === "youtube" || firstMedia?.type === "twitch";
+	const mediaCount = project.medias.length;
+
+	return (
+		<button
+			type="button"
 			data-project-card
-			href={project.media.url}
-			target="_blank"
-			rel="noopener noreferrer"
-			className="group flex-shrink-0 snap-start w-[83vw] max-w-[360px] sm:w-72 lg:w-80 block bg-[#0c1524] rounded-2xl border border-white/10 hover:border-sabs-primary/25 shadow-[0_8px_28px_0_rgba(0,0,0,0.40)] hover:shadow-[0_16px_40px_0_rgba(0,0,0,0.55)] transition-all duration-300 overflow-hidden"
+			onClick={onClick}
+			className={`group text-left rounded-2xl overflow-hidden bg-sabs-bg-3 border-t-2 transition-all duration-500 hover:-translate-y-1 cursor-pointer ${accent.borderClass} ${
+				grid ? "w-full" : "flex-shrink-0 snap-start w-5/6 max-w-sm sm:w-80"
+			}`}
+			style={{ "--shadow-color": accent.shadowColor } as React.CSSProperties}
+			onMouseEnter={(e) => {
+				(e.currentTarget as HTMLElement).style.boxShadow =
+					`0 24px 48px -8px ${accent.shadowColor}`;
+			}}
+			onMouseLeave={(e) => {
+				(e.currentTarget as HTMLElement).style.boxShadow = "none";
+			}}
 		>
 			{/* Thumbnail */}
-			<div className="relative w-full aspect-video bg-gray-800 overflow-hidden">
+			<div className="relative w-full aspect-video overflow-hidden bg-sabs-bg-4">
 				{thumbnailUrl ? (
 					<Image
 						src={thumbnailUrl}
 						alt={project.title}
 						fill
-						className="object-cover saturate-[1.05] contrast-110 group-hover:scale-[1.03] transition-transform duration-700"
-						sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+						className="object-cover transition-transform duration-700 group-hover:scale-[1.06]"
+						sizes={
+							grid
+								? "(max-width: 640px) 100vw, 50vw"
+								: "(max-width: 640px) 83vw, 320px"
+						}
 					/>
 				) : (
 					<div className="w-full h-full flex items-center justify-center">
 						<svg
-							className="w-12 h-12 text-gray-600"
-							fill="currentColor"
+							className="w-12 h-12 text-sabs-muted-3"
+							fill="none"
 							viewBox="0 0 24 24"
+							stroke="currentColor"
+							strokeWidth="1"
 						>
-							<title>Projet</title>
-							<path d="M8 5v14l11-7z" />
+							<title>Média</title>
+							<rect x="2" y="7" width="15" height="10" rx="2" />
+							<path d="M17 10l4-2v8l-4-2" />
 						</svg>
 					</div>
 				)}
 
-				<div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-black/5" />
+				{/* Dark gradient overlay */}
+				<div className="absolute inset-0 bg-gradient-to-t from-sabs-bg/80 via-sabs-bg/10 to-transparent pointer-events-none" />
 
-				{/* Play indicator – GlassSurface */}
-				{(project.media.type === "youtube" ||
-					project.media.type === "twitch") && (
-					<div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-						<GlassSurface
-							width={52}
-							height={52}
-							borderRadius={26}
-							blur={14}
-							backgroundOpacity={0.18}
-							brightness={65}
-							opacity={0.95}
+				{/* Big number watermark */}
+				<div
+					className="absolute bottom-2 right-4 font-black leading-none select-none pointer-events-none text-white"
+					style={{ fontSize: grid ? "7rem" : "5rem", opacity: 0.07 }}
+					aria-hidden="true"
+				>
+					{num}
+				</div>
+
+				{/* Platform badge */}
+				{(firstMedia?.type === "youtube" || firstMedia?.type === "twitch") && (
+					<span
+						className={`absolute top-3 right-3 px-2.5 py-1 text-xs font-bold tracking-widest uppercase rounded-full border ${accent.badgeClass}`}
+					>
+						{firstMedia.type}
+					</span>
+				)}
+
+				{/* Media count badge */}
+				{mediaCount > 1 && (
+					<span className="absolute top-3 left-3 flex items-center gap-1 px-2 py-1 text-xs font-bold rounded-full bg-black/60 border border-white/10 text-white">
+						<svg
+							className="w-3 h-3"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+							strokeWidth="2"
 						>
+							<title>Galerie</title>
+							<rect x="3" y="3" width="7" height="7" rx="1" />
+							<rect x="14" y="3" width="7" height="7" rx="1" />
+							<rect x="3" y="14" width="7" height="7" rx="1" />
+							<rect x="14" y="14" width="7" height="7" rx="1" />
+						</svg>
+						{mediaCount}
+					</span>
+				)}
+
+				{/* Play button */}
+				{isVideo && (
+					<div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+						<div className="w-14 h-14 rounded-full flex items-center justify-center sabs-gradient-bg shadow-2xl">
 							<svg
-								className="w-4 h-4 text-white translate-x-[1px]"
+								className="w-5 h-5 translate-x-px text-sabs-bg"
 								fill="currentColor"
 								viewBox="0 0 24 24"
 							>
 								<title>Lire</title>
-								<path d="M8 6.8v10.4a1 1 0 0 0 1.52.85l8.1-5.2a1 1 0 0 0 0-1.7l-8.1-5.2A1 1 0 0 0 8 6.8z" />
+								<path d="M8 5v14l11-7z" />
 							</svg>
-						</GlassSurface>
+						</div>
 					</div>
 				)}
-
-				{/* Platform badge */}
-				<div className="absolute top-2 right-2">
-					{project.media.type === "youtube" && (
-						<span className="px-2 py-1 bg-black/60 text-white text-[11px] font-semibold rounded-md backdrop-blur-sm border border-white/25">
-							YouTube
-						</span>
-					)}
-					{project.media.type === "twitch" && (
-						<span className="px-2 py-1 bg-black/60 text-white text-[11px] font-semibold rounded-md backdrop-blur-sm border border-white/25">
-							Twitch
-						</span>
-					)}
-				</div>
 			</div>
 
-			{/* Card body */}
-			<div className="p-4 md:p-5 border-t border-white/10">
-				<p className="text-gray-400/85 text-[11px] font-medium mb-2 tracking-[0.12em] uppercase">
-					{formatDate(project.date)}
-				</p>
-				<h3 className="text-white font-semibold text-xl md:text-2xl mb-3 leading-tight">
+			{/* Info */}
+			<div className={`${grid ? "p-7" : "p-5"}`}>
+				<div className="flex items-start justify-between gap-3 mb-2">
+					<p
+						className={`text-xs font-semibold tracking-[0.2em] uppercase ${accent.textClass}`}
+					>
+						{formatDate(project.date)}
+					</p>
+					<span
+						className="text-xs font-black text-white/10 leading-none shrink-0"
+						aria-hidden="true"
+					>
+						{num}
+					</span>
+				</div>
+
+				<h3
+					className={`font-black text-white leading-tight mb-4 ${grid ? "text-2xl md:text-3xl" : "text-xl"}`}
+				>
 					{project.title}
 				</h3>
+
 				{project.description && (
-					<p className="text-gray-300/90 text-sm mb-3 leading-relaxed line-clamp-2">
+					<p className="text-sm leading-relaxed mb-4 line-clamp-2 text-sabs-muted">
 						{project.description}
 					</p>
 				)}
 
-				{/* Competency badges */}
-				<div className="flex flex-wrap gap-2 items-center">
-					{visibleCompetencies.map((comp) => (
+				<div className="flex flex-wrap gap-1.5 items-center">
+					{visible.map((comp) => (
 						<span
 							key={comp}
-							className={`px-2.5 py-1 text-[11px] font-medium rounded-full text-white bg-gradient-to-r ${COMPETENCY_COLORS[comp]}`}
+							className={`px-2.5 py-1 text-xs font-medium rounded-full border ${COMPETENCY_CLASSES[comp]}`}
 						>
 							{comp}
 						</span>
 					))}
-					{!showAllCompetencies && remainingCount > 0 && (
+					{!showAll && remaining > 0 && (
 						<button
 							type="button"
 							onClick={(e) => {
 								e.preventDefault();
 								e.stopPropagation();
-								setShowAllCompetencies(true);
+								setShowAll(true);
 							}}
-							className="px-2.5 py-1 text-[11px] font-medium rounded-full text-gray-200 bg-white/10 border border-white/15 hover:bg-white/20 hover:border-white/30 transition-all duration-200 cursor-pointer"
+							className="px-2.5 py-1 text-xs font-medium rounded-full bg-sabs-bg-hover border border-sabs-border-2 text-sabs-muted hover:text-white transition-colors"
 						>
-							+{remainingCount}
+							+{remaining}
 						</button>
 					)}
 				</div>
 			</div>
-		</Link>
+		</button>
 	);
 }
 
 export function Projects() {
-	const containerRef = useRef<HTMLDivElement>(null);
-	const titleRef = useRef<HTMLHeadingElement>(null);
-	const dividerRef = useRef<HTMLDivElement>(null);
-	const subtitleRef = useRef<HTMLParagraphElement>(null);
-	const filtersRef = useRef<HTMLDivElement>(null);
+	const sectionRef = useRef<HTMLElement>(null);
+	const headingRef = useRef<HTMLDivElement>(null);
 	const gridRef = useRef<HTMLDivElement>(null);
-	const [isVisible, setIsVisible] = useState(false);
+	const filtersRef = useRef<HTMLDivElement>(null);
+	const animatedRef = useRef(false);
 	const [activeFilter, setActiveFilter] = useState<Competency | null>(null);
+	const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
 	const filteredProjects = activeFilter
 		? projects.filter((p) => p.competencies.includes(activeFilter))
 		: projects;
 
-	const handleScroll = (direction: "left" | "right") => {
-		if (!gridRef.current) {
-			return;
-		}
+	const useGrid = filteredProjects.length <= 4;
 
+	const handleScroll = (dir: "left" | "right") => {
+		if (!gridRef.current) return;
 		const card = gridRef.current.querySelector("[data-project-card]");
-		const cardWidth = card ? (card as HTMLDivElement).offsetWidth : 360;
-		const gap = window.innerWidth >= 768 ? 24 : 16;
-		const offset = cardWidth + gap;
-
+		const cardWidth = card ? (card as HTMLElement).offsetWidth : 320;
+		const gap = window.innerWidth >= 768 ? 20 : 16;
 		gridRef.current.scrollBy({
-			left: direction === "right" ? offset : -offset,
+			left: dir === "right" ? cardWidth + gap : -(cardWidth + gap),
 			behavior: "smooth",
 		});
 	};
 
+	// Reset animation guard when filter changes so new items can animate in
+	// biome-ignore lint/correctness/useExhaustiveDependencies: animatedRef is a ref, not state
 	useEffect(() => {
-		const observer = new IntersectionObserver(
-			(entries) => {
-				entries.forEach((entry) => {
-					if (entry.isIntersecting && !isVisible) {
-						setIsVisible(true);
-
-						const tl = gsap.timeline({ delay: 0.2 });
-
-						tl.to(titleRef.current, {
-							opacity: 1,
-							y: 0,
-							duration: 0.8,
-							ease: "power2.out",
-						})
-							.to(
-								dividerRef.current,
-								{
-									opacity: 1,
-									scaleX: 1,
-									duration: 0.6,
-									ease: "power2.out",
-								},
-								"-=0.4",
-							)
-							.to(
-								subtitleRef.current,
-								{
-									opacity: 1,
-									y: 0,
-									duration: 0.6,
-									ease: "power2.out",
-								},
-								"-=0.2",
-							)
-							.to(
-								filtersRef.current?.children || [],
-								{
-									opacity: 1,
-									y: 0,
-									duration: 0.5,
-									ease: "power2.out",
-									stagger: 0.07,
-								},
-								"-=0.1",
-							)
-							.to(
-								gridRef.current?.children || [],
-								{
-									opacity: 1,
-									y: 0,
-									duration: 0.6,
-									ease: "back.out(1.2)",
-									stagger: 0.15,
-								},
-								"-=0.1",
-							);
-					}
-				});
-			},
-			{ threshold: 0.15, rootMargin: "0px 0px -80px 0px" },
-		);
-
-		if (containerRef.current) {
-			observer.observe(containerRef.current);
-		}
-
-		return () => observer.disconnect();
-	}, [isVisible]);
+		animatedRef.current = false;
+	}, [activeFilter]);
 
 	useEffect(() => {
-		gsap.set([titleRef.current, subtitleRef.current], {
-			opacity: 0,
-			y: 50,
-		});
+		const ctx = gsap.context(() => {
+			gsap.set([headingRef.current, filtersRef.current], { opacity: 0, y: 40 });
+			if (gridRef.current)
+				gsap.set(Array.from(gridRef.current.children), { opacity: 0, y: 50 });
 
-		gsap.set(dividerRef.current, {
-			opacity: 1,
-			scaleX: 0,
-			transformOrigin: "center",
-		});
+			ScrollTrigger.create({
+				trigger: sectionRef.current,
+				start: "top 65%",
+				onEnter: () => {
+					if (animatedRef.current) return;
+					animatedRef.current = true;
+					const tl = gsap.timeline();
+					tl.to(headingRef.current, {
+						opacity: 1,
+						y: 0,
+						duration: 0.9,
+						ease: "power3.out",
+					})
+						.to(
+							filtersRef.current,
+							{ opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
+							"-=0.5",
+						)
+						.to(
+							gridRef.current ? Array.from(gridRef.current.children) : [],
+							{
+								opacity: 1,
+								y: 0,
+								duration: 0.8,
+								ease: "power3.out",
+								stagger: 0.15,
+							},
+							"-=0.3",
+						);
+				},
+			});
+		}, sectionRef);
 
-		gsap.set(filtersRef.current?.children || [], {
-			opacity: 0,
-			y: 20,
-		});
-
-		gsap.set(gridRef.current?.children || [], {
-			opacity: 0,
-			y: 30,
-		});
+		return () => ctx.revert();
 	}, []);
 
 	return (
-		<div
-			className="snap-start min-h-screen relative bg-gradient-to-br from-gray-900 via-slate-900 to-gray-950 py-12 md:py-16"
-			style={{ fontFamily: BeVietnam.style.fontFamily }}
+		<section
+			ref={sectionRef}
 			id="projects"
+			className="relative min-h-screen flex flex-col justify-center py-20 md:py-28 bg-sabs-bg"
 		>
-			{/* Background glow */}
-			<div className="absolute inset-0 opacity-[0.04]">
-				<div
-					className="absolute inset-0"
-					style={{
-						backgroundImage: `radial-gradient(circle at 20% 30%, #3bd1ab 0%, transparent 60%), 
-                                     radial-gradient(circle at 80% 70%, #61437f 0%, transparent 60%)`,
-					}}
-				/>
-			</div>
+			<div className="absolute right-0 top-0 bottom-0 w-1 sabs-gradient-bg" />
 
-			{/* Floating particles */}
-			<div className="absolute top-1/4 left-1/4 w-1.5 h-1.5 bg-gradient-to-r from-sabs-primary to-sabs-gradient-1 rounded-full animate-pulse [animation-duration:3s] shadow-lg shadow-sabs-primary/30" />
-			<div className="absolute top-3/4 right-1/4 w-1 h-1 bg-gradient-to-r from-sabs-gradient-2 to-sabs-gradient-3 rounded-full animate-pulse [animation-delay:1s] [animation-duration:4s] shadow-lg shadow-sabs-gradient-2/30" />
-			<div className="absolute top-1/2 left-2/3 w-2 h-2 bg-gradient-to-r from-sabs-gradient-1 to-sabs-primary rounded-full animate-pulse [animation-delay:2s] [animation-duration:5s] shadow-lg shadow-sabs-gradient-1/30" />
+			<div className="container mx-auto px-6 sm:px-10 md:px-16 max-w-6xl">
+				{/* Heading */}
+				<div ref={headingRef} className="mb-10 md:mb-12">
+					<p className="text-xs font-semibold tracking-[0.4em] uppercase mb-4 text-sabs-green">
+						Portfolio
+					</p>
+					<h2 className="text-[clamp(2.5rem,7vw,5rem)] font-black leading-none tracking-tighter text-white mb-4">
+						Nos <span className="sabs-gradient-text">Réalisations</span>
+					</h2>
+					<p className="text-base font-light text-sabs-muted">
+						Découvrez nos projets récents et les compétences mises en œuvre.
+					</p>
+				</div>
 
-			<div
-				ref={containerRef}
-				className="relative z-10 container mx-auto px-4 sm:px-6 md:px-8"
-			>
-				<div className="max-w-6xl mx-auto">
-					{/* Header */}
-					<div className="text-center mb-8 md:mb-10">
-						<h2
-							ref={titleRef}
-							className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-thin text-white mb-4 tracking-[-0.02em] px-4"
-						>
-							Nos{" "}
-							<span className="text-sabs-primary font-medium">
-								Réalisations
-							</span>
-						</h2>
-						<div
-							ref={dividerRef}
-							className="w-16 md:w-24 h-[2px] bg-gradient-to-r from-sabs-gradient-1 via-sabs-gradient-2 to-sabs-primary mx-auto mb-4 md:mb-6 rounded-full"
-						/>
-						<p
-							ref={subtitleRef}
-							className="text-base md:text-lg text-gray-400 max-w-2xl mx-auto font-light leading-relaxed px-4"
-						>
-							Découvrez nos projets récents et les compétences mises en œuvre.
-						</p>
-					</div>
-
-					{/* Filter buttons */}
-					<div
-						ref={filtersRef}
-						className="flex flex-wrap justify-center gap-2 md:gap-3 mb-8 md:mb-10 px-4"
+				{/* Filters */}
+				<div ref={filtersRef} className="flex flex-wrap gap-2 mb-10">
+					<button
+						type="button"
+						onClick={() => setActiveFilter(null)}
+						className={`px-4 py-2 rounded-full text-xs font-semibold tracking-wider uppercase transition-all duration-300 ${
+							activeFilter === null
+								? "sabs-gradient-bg text-sabs-bg"
+								: "bg-sabs-bg-3 text-sabs-muted border border-sabs-border hover:text-white"
+						}`}
 					>
+						Tous
+					</button>
+					{COMPETENCIES.map((comp) => (
 						<button
+							key={comp}
 							type="button"
-							onClick={() => setActiveFilter(null)}
-							className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 border ${
-								activeFilter === null
-									? "bg-sabs-primary text-gray-900 border-sabs-primary shadow-lg shadow-sabs-primary/30"
-									: "bg-white/10 text-gray-300 border-white/20 hover:bg-white/20 hover:text-white"
+							onClick={() =>
+								setActiveFilter(comp === activeFilter ? null : comp)
+							}
+							className={`px-4 py-2 rounded-full text-xs font-semibold tracking-wider uppercase transition-all duration-300 ${
+								activeFilter === comp
+									? "sabs-gradient-bg text-sabs-bg"
+									: "bg-sabs-bg-3 text-sabs-muted border border-sabs-border hover:text-white"
 							}`}
 						>
-							Tous
+							{comp}
 						</button>
-						{COMPETENCIES.map((competency) => (
-							<button
-								key={competency}
-								type="button"
-								onClick={() =>
-									setActiveFilter(
-										competency === activeFilter ? null : competency,
-									)
-								}
-								className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 border ${
-									activeFilter === competency
-										? "bg-sabs-primary text-gray-900 border-sabs-primary shadow-lg shadow-sabs-primary/30"
-										: "bg-white/10 text-gray-300 border-white/20 hover:bg-white/20 hover:text-white"
-								}`}
-							>
-								{competency}
-							</button>
+					))}
+				</div>
+
+				{/* Grid (≤4) or horizontal scroll (5+) */}
+				{useGrid ? (
+					<div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+						{filteredProjects.map((project, index) => (
+							<ProjectCard
+								key={project.id}
+								project={project}
+								index={index}
+								grid
+								onClick={() => setSelectedProject(project)}
+							/>
 						))}
 					</div>
-
-					{/* Projects horizontal scroller */}
-					{/* Rail wrapper: negative margin mobile only so cards bleed to edges; arrows flank on md+ */}
-					<div className="flex items-center gap-0 md:gap-4 -mx-4 sm:-mx-6 md:mx-0">
-						{/* Left arrow – desktop only */}
+				) : (
+					<div className="flex items-center gap-3 -mx-4 sm:-mx-6 md:mx-0">
 						<button
 							type="button"
 							onClick={() => handleScroll("left")}
-							className="hidden md:flex flex-shrink-0 items-center justify-center text-white hover:text-sabs-primary transition-colors duration-300"
-							aria-label="Voir les projets précédents"
+							className="hidden md:flex flex-shrink-0 w-10 h-10 items-center justify-center rounded-full bg-sabs-bg-3 border border-sabs-border text-sabs-muted hover:text-sabs-green transition-colors"
+							aria-label="Précédent"
 						>
-							<GlassSurface
-								width={36}
-								height={36}
-								borderRadius={18}
-								blur={14}
-								backgroundOpacity={0.12}
-								brightness={62}
-								opacity={0.96}
+							<svg
+								className="w-4 h-4"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+								strokeWidth="2"
+								strokeLinecap="round"
+								strokeLinejoin="round"
 							>
-								<svg className="w-4 h-4" fill="none" viewBox="0 0 24 24">
-									<title>Précédent</title>
-									<path
-										d="M15 18l-6-6 6-6"
-										stroke="currentColor"
-										strokeWidth="2"
-										strokeLinecap="round"
-										strokeLinejoin="round"
-									/>
-								</svg>
-							</GlassSurface>
+								<title>Précédent</title>
+								<path d="M15 18l-6-6 6-6" />
+							</svg>
 						</button>
 
-						{/* Scroll rail */}
 						<div
 							ref={gridRef}
 							className="flex-1 flex gap-4 md:gap-5 overflow-x-auto snap-x snap-mandatory pb-4 px-4 sm:px-6 md:px-0 min-w-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
 						>
 							{filteredProjects.map((project, index) => (
 								<ProjectCard
-									key={`${project.id}-${project.date}-${project.title}-${index}`}
+									key={project.id}
 									project={project}
 									index={index}
+									onClick={() => setSelectedProject(project)}
 								/>
 							))}
 						</div>
 
-						{/* Right arrow – desktop only */}
 						<button
 							type="button"
 							onClick={() => handleScroll("right")}
-							className="hidden md:flex flex-shrink-0 items-center justify-center text-white hover:text-sabs-primary transition-colors duration-300"
-							aria-label="Voir les projets suivants"
+							className="hidden md:flex flex-shrink-0 w-10 h-10 items-center justify-center rounded-full bg-sabs-bg-3 border border-sabs-border text-sabs-muted hover:text-sabs-green transition-colors"
+							aria-label="Suivant"
 						>
-							<GlassSurface
-								width={36}
-								height={36}
-								borderRadius={18}
-								blur={14}
-								backgroundOpacity={0.12}
-								brightness={62}
-								opacity={0.96}
+							<svg
+								className="w-4 h-4"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+								strokeWidth="2"
+								strokeLinecap="round"
+								strokeLinejoin="round"
 							>
-								<svg className="w-4 h-4" fill="none" viewBox="0 0 24 24">
-									<title>Suivant</title>
-									<path
-										d="M9 6l6 6-6 6"
-										stroke="currentColor"
-										strokeWidth="2"
-										strokeLinecap="round"
-										strokeLinejoin="round"
-									/>
-								</svg>
-							</GlassSurface>
+								<title>Suivant</title>
+								<path d="M9 6l6 6-6 6" />
+							</svg>
 						</button>
 					</div>
+				)}
 
-					{filteredProjects.length > 1 && (
-						<p className="text-center text-gray-500 text-xs mt-4 font-light tracking-wide md:hidden">
-							← Faites défiler →
-						</p>
-					)}
-					{filteredProjects.length === 0 && (
-						<div className="text-center py-16">
-							<p className="text-gray-500 text-lg font-light">
-								Aucun projet pour cette compétence.
-							</p>
-						</div>
-					)}
-				</div>
+				{filteredProjects.length === 0 && (
+					<p className="text-center py-20 text-lg font-light text-sabs-muted-3">
+						Aucun projet pour cette compétence.
+					</p>
+				)}
 			</div>
-		</div>
+
+			{selectedProject && (
+				<ProjectModal
+					project={selectedProject}
+					onClose={() => setSelectedProject(null)}
+				/>
+			)}
+		</section>
 	);
 }

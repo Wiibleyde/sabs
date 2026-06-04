@@ -28,7 +28,7 @@ export function DashboardCard({
 						{title}
 					</h3>
 					<div
-						className={`w-12 h-[1px] bg-gradient-to-r ${gradientFrom} ${gradientTo} rounded-full mt-2`}
+						className={`w-12 h-px bg-gradient-to-r ${gradientFrom} ${gradientTo} rounded-full mt-2`}
 					></div>
 				</div>
 			</div>
