@@ -1,271 +1,195 @@
 "use client";
-import { gsap } from "gsap";
-import { Be_Vietnam_Pro } from "next/font/google";
-import { useEffect, useRef, useState } from "react";
-import GlassSurface from "@/components/ui/GlassSurface";
 
-const BeVietnam = Be_Vietnam_Pro({
-	subsets: ["latin"],
-	weight: ["400", "500", "600", "700"],
-});
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useEffect, useRef } from "react";
+
+gsap.registerPlugin(ScrollTrigger);
+
+const FEATURES = [
+	{
+		colorClass: "text-sabs-green",
+		borderClass: "border-t-sabs-green",
+		bgClass: "bg-sabs-green/10",
+		icon: (
+			<svg
+				width="28"
+				height="28"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				strokeWidth="1.5"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			>
+				<title>Multicaméra</title>
+				<path d="M15 10l4.553-2.069A1 1 0 0121 8.845V15.155a1 1 0 01-1.447.894L15 14v-4z" />
+				<rect x="3" y="8" width="12" height="8" rx="2" />
+			</svg>
+		),
+		title: "Multicaméra",
+		desc: "Couverture complète avec plusieurs angles de vue pour une retransmission riche et dynamique.",
+	},
+	{
+		colorClass: "text-sabs-red",
+		borderClass: "border-t-sabs-red",
+		bgClass: "bg-sabs-red/10",
+		icon: (
+			<svg
+				width="28"
+				height="28"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				strokeWidth="1.5"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			>
+				<title>Direct</title>
+				<circle cx="12" cy="12" r="2" />
+				<path d="M16.24 7.76a6 6 0 010 8.49M7.76 16.24a6 6 0 010-8.49M19.07 4.93a10 10 0 010 14.14M4.93 19.07a10 10 0 010-14.14" />
+			</svg>
+		),
+		title: "En direct",
+		desc: "Retransmission en temps réel de vos événements, diffusée instantanément à votre audience.",
+	},
+	{
+		colorClass: "text-sabs-gold",
+		borderClass: "border-t-sabs-gold",
+		bgClass: "bg-sabs-gold/10",
+		icon: (
+			<svg
+				width="28"
+				height="28"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				strokeWidth="1.5"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			>
+				<title>Événement</title>
+				<path d="M12 2L2 7l10 5 10-5-10-5z" />
+				<path d="M2 17l10 5 10-5" />
+				<path d="M2 12l10 5 10-5" />
+			</svg>
+		),
+		title: "Tout événement",
+		desc: "Solutions adaptables à tous types de manifestations : concerts, sports, conférences et plus.",
+	},
+];
 
 export function Presentation() {
-	const containerRef = useRef<HTMLDivElement>(null);
-	const titleRef = useRef<HTMLHeadingElement>(null);
-	const dividerRef = useRef<HTMLDivElement>(null);
-	const firstParagraphRef = useRef<HTMLParagraphElement>(null);
-	const secondParagraphRef = useRef<HTMLParagraphElement>(null);
+	const sectionRef = useRef<HTMLElement>(null);
+	const headingRef = useRef<HTMLDivElement>(null);
+	const textRef = useRef<HTMLDivElement>(null);
 	const cardsRef = useRef<HTMLDivElement>(null);
-	const [isVisible, setIsVisible] = useState(false);
 
 	useEffect(() => {
-		const observer = new IntersectionObserver(
-			(entries) => {
-				entries.forEach((entry) => {
-					if (entry.isIntersecting && !isVisible) {
-						setIsVisible(true);
+		const ctx = gsap.context(() => {
+			gsap.set([headingRef.current, textRef.current], { opacity: 0, y: 50 });
+			if (cardsRef.current) {
+				gsap.set(Array.from(cardsRef.current.children), { opacity: 0, y: 40 });
+			}
 
-						// Main timeline
-						const tl = gsap.timeline({ delay: 0.2 });
+			ScrollTrigger.create({
+				trigger: sectionRef.current,
+				start: "top 70%",
+				onEnter: () => {
+					const tl = gsap.timeline();
+					tl.to(headingRef.current, {
+						opacity: 1,
+						y: 0,
+						duration: 0.9,
+						ease: "power3.out",
+					})
+						.to(
+							textRef.current,
+							{ opacity: 1, y: 0, duration: 0.8, ease: "power2.out" },
+							"-=0.5",
+						)
+						.to(
+							cardsRef.current ? Array.from(cardsRef.current.children) : [],
+							{
+								opacity: 1,
+								y: 0,
+								duration: 0.7,
+								ease: "power2.out",
+								stagger: 0.12,
+							},
+							"-=0.4",
+						);
+				},
+			});
+		}, sectionRef);
 
-						tl.to(titleRef.current, {
-							opacity: 1,
-							y: 0,
-							duration: 0.8,
-							ease: "power2.out",
-						})
-							.to(
-								dividerRef.current,
-								{
-									opacity: 1,
-									scaleX: 1,
-									duration: 0.6,
-									ease: "power2.out",
-								},
-								"-=0.4",
-							)
-							.to(
-								firstParagraphRef.current,
-								{
-									opacity: 1,
-									y: 0,
-									duration: 0.6,
-									ease: "power2.out",
-								},
-								"-=0.2",
-							)
-							.to(
-								secondParagraphRef.current,
-								{
-									opacity: 1,
-									y: 0,
-									duration: 0.6,
-									ease: "power2.out",
-								},
-								"-=0.3",
-							)
-							.to(
-								cardsRef.current?.children || [],
-								{
-									opacity: 1,
-									y: 0,
-									duration: 0.6,
-									ease: "back.out(1.2)",
-									stagger: 0.1,
-								},
-								"-=0.2",
-							);
-					}
-				});
-			},
-			{ threshold: 0.3, rootMargin: "0px 0px -100px 0px" },
-		);
-
-		if (containerRef.current) {
-			observer.observe(containerRef.current);
-		}
-
-		return () => {
-			observer.disconnect();
-		};
-	}, [isVisible]);
-
-	// Set initial state
-	useEffect(() => {
-		gsap.set(
-			[titleRef.current, firstParagraphRef.current, secondParagraphRef.current],
-			{
-				opacity: 0,
-				y: 50,
-			},
-		);
-
-		gsap.set(dividerRef.current, {
-			opacity: 1,
-			scaleX: 0,
-			transformOrigin: "center",
-		});
-
-		gsap.set(cardsRef.current?.children || [], {
-			opacity: 0,
-			y: 30,
-		});
+		return () => ctx.revert();
 	}, []);
 
 	return (
-		<div
-			className="snap-start min-h-screen max-h-screen relative bg-gradient-to-br from-slate-50 via-gray-100 to-slate-200 py-8 md:py-12"
-			style={{ fontFamily: BeVietnam.style.fontFamily }}
+		<section
+			ref={sectionRef}
 			id="presentation"
+			className="relative min-h-screen flex items-center py-20 md:py-28 bg-sabs-bg-2"
 		>
-			{/* Subtle background pattern */}
-			<div className="absolute inset-0 opacity-[0.02]">
+			{/* Left accent bar */}
+			<div className="absolute left-0 top-0 bottom-0 w-1 sabs-gradient-bg" />
+
+			<div className="container mx-auto px-6 sm:px-10 md:px-16 max-w-6xl">
+				{/* Heading */}
+				<div ref={headingRef} className="mb-12 md:mb-16">
+					<p className="text-xs font-semibold tracking-[0.4em] uppercase mb-4 text-sabs-green">
+						À propos
+					</p>
+					<h2 className="text-[clamp(2.5rem,7vw,5rem)] font-black leading-none tracking-tighter text-white mb-6">
+						Qu&apos;est-ce que <span className="sabs-gradient-text">SABS</span>{" "}
+						?
+					</h2>
+					<div className="sabs-gradient-bg rounded-full w-16 h-0.5" />
+				</div>
+
+				{/* Description */}
+				<div ref={textRef} className="mb-16 md:mb-20 max-w-3xl">
+					<p className="text-[clamp(1rem,2.5vw,1.25rem)] font-light leading-relaxed mb-6 text-sabs-muted">
+						<span className="font-semibold text-white">SABS</span> est une micro
+						entreprise spécialisée dans la gestion de{" "}
+						<span className="font-medium text-sabs-green">
+							rediffusions en direct multicaméra
+						</span>{" "}
+						pour tout type d&apos;événement.
+					</p>
+					<p className="text-[clamp(0.9rem,2vw,1.1rem)] font-light leading-relaxed text-sabs-muted">
+						Nous nous engageons à offrir une couverture professionnelle et
+						immersive, transformant chaque moment en une expérience
+						audiovisuelle de qualité.
+					</p>
+				</div>
+
+				{/* Feature cards */}
 				<div
-					className="absolute inset-0"
-					style={{
-						backgroundImage: `radial-gradient(circle at 25% 25%, #3bd1ab 0%, transparent 70%), 
-                                     radial-gradient(circle at 75% 75%, #61437f 0%, transparent 70%)`,
-					}}
-				></div>
-			</div>
-
-			<div
-				ref={containerRef}
-				className="relative z-10 container mx-auto px-4 sm:px-6 md:px-8 min-h-screen flex items-center"
-			>
-				<div className="max-w-6xl mx-auto text-center w-full">
-					<div className="mb-6 md:mb-8">
-						<h2
-							ref={titleRef}
-							className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-thin text-gray-900 mb-4 tracking-[-0.02em] px-4"
-						>
-							Qu&apos;est-ce que{" "}
-							<span className="text-sabs-primary font-medium">SABS</span> ?
-						</h2>
+					ref={cardsRef}
+					className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6"
+				>
+					{FEATURES.map((feature) => (
 						<div
-							ref={dividerRef}
-							className="w-16 md:w-24 h-[2px] bg-gradient-to-r from-sabs-gradient-1 via-sabs-gradient-2 to-sabs-primary mx-auto mb-4 md:mb-6 rounded-full"
-						></div>
-					</div>
-
-					<div className="text-base sm:text-lg md:text-xl text-gray-700 leading-relaxed space-y-4 md:space-y-6 font-light px-4">
-						<p ref={firstParagraphRef} className="max-w-4xl mx-auto">
-							<span className="text-sabs-primary font-medium">SABS</span> est
-							une micro entreprise spécialisée dans la gestion de
-							<span className="text-sabs-primary font-medium">
-								{" "}
-								rediffusions en direct multicaméra
-							</span>{" "}
-							pour tout type d&apos;événement.
-						</p>
-
-						<p ref={secondParagraphRef} className="max-w-4xl mx-auto">
-							Nous nous engageons à offrir une couverture professionnelle et
-							immersive, transformant chaque moment en une expérience
-							audiovisuelle de qualité.
-						</p>
-
-						<div
-							ref={cardsRef}
-							className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-8 md:mt-12 max-w-5xl mx-auto"
+							key={feature.title}
+							className={`relative p-7 rounded-2xl transition-colors duration-300 bg-sabs-bg-3 hover:bg-sabs-bg-hover border-t-2 ${feature.borderClass}`}
 						>
-							<div className="group relative p-4 md:p-6 rounded-2xl md:rounded-[1.5rem] shadow-[0_8px_32px_0_rgba(31,38,135,0.1)] hover:shadow-[0_20px_40px_0_rgba(31,38,135,0.15)] transition-all duration-500 hover:scale-[1.02] will-change-transform overflow-hidden">
-								<GlassSurface
-									width="100%"
-									height="100%"
-									borderRadius={24}
-									blur={14}
-									backgroundOpacity={0.45}
-									brightness={88}
-									opacity={0.95}
-									style={{ position: "absolute", inset: 0 }}
-									className="pointer-events-none"
-								/>
-								<div className="relative z-10">
-									<div className="w-10 md:w-12 h-10 md:h-12 bg-gradient-to-br from-sabs-gradient-1 to-sabs-gradient-2 rounded-lg md:rounded-xl flex items-center justify-center mb-3 md:mb-4 group-hover:scale-110 transition-transform duration-500">
-										<svg
-											className="w-5 md:w-6 h-5 md:h-6 text-white"
-											fill="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<title>Multicaméra</title>
-											<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-										</svg>
-									</div>
-									<h3 className="text-sabs-primary font-semibold text-lg md:text-xl mb-2 md:mb-3 tracking-tight">
-										Multicaméra
-									</h3>
-									<p className="text-gray-600 text-sm md:text-base leading-relaxed">
-										Couverture complète avec plusieurs angles de vue
-									</p>
-								</div>
+							<div
+								className={`mb-5 inline-flex items-center justify-center w-12 h-12 rounded-xl ${feature.bgClass} ${feature.colorClass}`}
+							>
+								{feature.icon}
 							</div>
-							<div className="group relative p-4 md:p-6 rounded-2xl md:rounded-[1.5rem] shadow-[0_8px_32px_0_rgba(31,38,135,0.1)] hover:shadow-[0_20px_40px_0_rgba(31,38,135,0.15)] transition-all duration-500 hover:scale-[1.02] will-change-transform overflow-hidden">
-								<GlassSurface
-									width="100%"
-									height="100%"
-									borderRadius={24}
-									blur={14}
-									backgroundOpacity={0.45}
-									brightness={88}
-									opacity={0.95}
-									style={{ position: "absolute", inset: 0 }}
-									className="pointer-events-none"
-								/>
-								<div className="relative z-10">
-									<div className="w-10 md:w-12 h-10 md:h-12 bg-gradient-to-br from-sabs-gradient-2 to-sabs-gradient-3 rounded-lg md:rounded-xl flex items-center justify-center mb-3 md:mb-4 group-hover:scale-110 transition-transform duration-500">
-										<svg
-											className="w-5 md:w-6 h-5 md:h-6 text-white"
-											fill="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<title>Direct</title>
-											<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-										</svg>
-									</div>
-									<h3 className="text-sabs-primary font-semibold text-lg md:text-xl mb-2 md:mb-3 tracking-tight">
-										Direct
-									</h3>
-									<p className="text-gray-600 text-sm md:text-base leading-relaxed">
-										Retransmission en temps réel de vos événements
-									</p>
-								</div>
-							</div>
-							<div className="group relative p-4 md:p-6 rounded-2xl md:rounded-[1.5rem] shadow-[0_8px_32px_0_rgba(31,38,135,0.1)] hover:shadow-[0_20px_40px_0_rgba(31,38,135,0.15)] transition-all duration-500 hover:scale-[1.02] will-change-transform overflow-hidden">
-								<GlassSurface
-									width="100%"
-									height="100%"
-									borderRadius={24}
-									blur={14}
-									backgroundOpacity={0.45}
-									brightness={88}
-									opacity={0.95}
-									style={{ position: "absolute", inset: 0 }}
-									className="pointer-events-none"
-								/>
-								<div className="relative z-10">
-									<div className="w-10 md:w-12 h-10 md:h-12 bg-gradient-to-br from-sabs-gradient-3 to-sabs-primary rounded-lg md:rounded-xl flex items-center justify-center mb-3 md:mb-4 group-hover:scale-110 transition-transform duration-500">
-										<svg
-											className="w-5 md:w-6 h-5 md:h-6 text-white"
-											fill="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<title>Tout événement</title>
-											<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
-										</svg>
-									</div>
-									<h3 className="text-sabs-primary font-semibold text-lg md:text-xl mb-2 md:mb-3 tracking-tight">
-										Tout événement
-									</h3>
-									<p className="text-gray-600 text-sm md:text-base leading-relaxed">
-										Solutions adaptables à tous types de manifestations
-									</p>
-								</div>
-							</div>
+							<h3 className="text-lg font-bold mb-3 text-white">
+								{feature.title}
+							</h3>
+							<p className="text-sm font-light leading-relaxed text-sabs-muted">
+								{feature.desc}
+							</p>
 						</div>
-					</div>
+					))}
 				</div>
 			</div>
-		</div>
+		</section>
 	);
 }

@@ -1,12 +1,10 @@
 "use client";
+
 import { gsap } from "gsap";
-import { Be_Vietnam_Pro } from "next/font/google";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef, useState } from "react";
 
-const BeVietnam = Be_Vietnam_Pro({
-	subsets: ["latin"],
-	weight: ["400", "500", "600", "700"],
-});
+gsap.registerPlugin(ScrollTrigger);
 
 interface FormData {
 	nom: string;
@@ -18,439 +16,338 @@ interface FormData {
 	message: string;
 }
 
+const EVENT_TYPES = [
+	"Concert",
+	"Podcast",
+	"Émission",
+	"Événement sportif",
+	"Conférence",
+	"Événement corporate",
+	"Festival",
+	"Autre",
+];
+
+const INITIAL_FORM: FormData = {
+	nom: "",
+	prenom: "",
+	email: "",
+	phone: "",
+	typeEvent: "",
+	objet: "",
+	message: "",
+};
+
+const INPUT_CLASS =
+	"w-full px-4 py-3 rounded-lg text-sm font-light text-white placeholder-sabs-muted bg-sabs-bg-4 border border-sabs-border outline-none transition-all duration-300 min-h-11 focus:border-sabs-green focus:ring-2 focus:ring-sabs-green/10";
+
+function InputField({
+	id,
+	label,
+	children,
+}: {
+	id: string;
+	label: string;
+	children: React.ReactNode;
+}) {
+	return (
+		<div>
+			<label
+				htmlFor={id}
+				className="block text-xs font-semibold tracking-[0.15em] uppercase mb-2 text-sabs-muted"
+			>
+				{label} <span className="text-sabs-green">*</span>
+			</label>
+			{children}
+		</div>
+	);
+}
+
 export function Contact() {
-	const containerRef = useRef<HTMLDivElement>(null);
-	const titleRef = useRef<HTMLHeadingElement>(null);
-	const dividerRef = useRef<HTMLDivElement>(null);
+	const sectionRef = useRef<HTMLElement>(null);
+	const headingRef = useRef<HTMLDivElement>(null);
 	const formRef = useRef<HTMLFormElement>(null);
-	const [isVisible, setIsVisible] = useState(false);
+	const [formData, setFormData] = useState<FormData>(INITIAL_FORM);
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [submitStatus, setSubmitStatus] = useState<
-		"idle" | "success" | "error"
-	>("idle");
-
-	const [formData, setFormData] = useState<FormData>({
-		nom: "",
-		prenom: "",
-		email: "",
-		phone: "",
-		typeEvent: "",
-		objet: "",
-		message: "",
-	});
-
-	const eventTypes = [
-		"Concert",
-		"Podcast",
-		"Émission",
-		"Événement sportif",
-		"Conférence",
-		// 'Mariage',
-		"Événement corporate",
-		"Festival",
-		// 'Théâtre',
-		"Autre",
-	];
+	const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
 
 	useEffect(() => {
-		const observer = new IntersectionObserver(
-			(entries) => {
-				entries.forEach((entry) => {
-					if (entry.isIntersecting && !isVisible) {
-						setIsVisible(true);
+		const ctx = gsap.context(() => {
+			gsap.set([headingRef.current, formRef.current], { opacity: 0, y: 50 });
 
-						const tl = gsap.timeline({ delay: 0.2 });
+			ScrollTrigger.create({
+				trigger: sectionRef.current,
+				start: "top 70%",
+				onEnter: () => {
+					gsap.to(headingRef.current, {
+						opacity: 1,
+						y: 0,
+						duration: 0.9,
+						ease: "power3.out",
+					});
+					gsap.to(formRef.current, {
+						opacity: 1,
+						y: 0,
+						duration: 0.8,
+						ease: "power2.out",
+						delay: 0.25,
+					});
+				},
+			});
+		}, sectionRef);
 
-						tl.to(titleRef.current, {
-							opacity: 1,
-							y: 0,
-							duration: 0.8,
-							ease: "power2.out",
-						})
-							.to(
-								dividerRef.current,
-								{
-									opacity: 1,
-									scaleX: 1,
-									duration: 0.6,
-									ease: "power2.out",
-								},
-								"-=0.4",
-							)
-							.to(
-								formRef.current,
-								{
-									opacity: 1,
-									y: 0,
-									duration: 0.8,
-									ease: "power2.out",
-								},
-								"-=0.2",
-							);
-					}
-				});
-			},
-			{ threshold: 0.3, rootMargin: "0px 0px -100px 0px" },
-		);
-
-		if (containerRef.current) {
-			observer.observe(containerRef.current);
-		}
-
-		return () => observer.disconnect();
-	}, [isVisible]);
-
-	useEffect(() => {
-		gsap.set([titleRef.current, formRef.current], {
-			opacity: 0,
-			y: 50,
-		});
-
-		gsap.set(dividerRef.current, {
-			opacity: 1,
-			scaleX: 0,
-			transformOrigin: "center",
-		});
+		return () => ctx.revert();
 	}, []);
 
-	const handleInputChange = (
+	const handleChange = (
 		e: React.ChangeEvent<
 			HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
 		>,
 	) => {
 		const { name, value } = e.target;
-
 		if (name === "phone") {
-			// Only allow digits and limit to 4 characters for the XXXX part
-			const digits = value.replace(/\D/g, "");
-			const limitedDigits = digits.slice(0, 4);
-
+			const digits = value.replace(/\D/g, "").slice(0, 4);
 			setFormData((prev) => ({
 				...prev,
-				[name]: limitedDigits ? `555-${limitedDigits}` : "",
+				phone: digits ? `555-${digits}` : "",
 			}));
 		} else {
-			setFormData((prev) => ({
-				...prev,
-				[name]: value,
-			}));
+			setFormData((prev) => ({ ...prev, [name]: value }));
 		}
 	};
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setIsSubmitting(true);
-		setSubmitStatus("idle");
+		setStatus("idle");
 
-		// Construct full email with @discord.gg and ensure phone format
-		const fullEmail = `${formData.email}@discord.gg`;
 		const submitData = {
 			...formData,
-			email: fullEmail,
+			email: `${formData.email}@discord.gg`,
 			phone: formData.phone || "555-",
 		};
 
 		try {
-			const response = await fetch("/api/v1/sabs/contact", {
+			const res = await fetch("/api/v1/sabs/contact", {
 				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
+				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify(submitData),
 			});
-
-			if (response.ok) {
-				setSubmitStatus("success");
-				setFormData({
-					nom: "",
-					prenom: "",
-					email: "",
-					phone: "",
-					typeEvent: "",
-					objet: "",
-					message: "",
-				});
+			if (res.ok) {
+				setStatus("success");
+				setFormData(INITIAL_FORM);
 			} else {
-				setSubmitStatus("error");
+				setStatus("error");
 			}
 		} catch {
-			setSubmitStatus("error");
+			setStatus("error");
 		} finally {
 			setIsSubmitting(false);
 		}
 	};
 
 	return (
-		<div
-			className="snap-start relative bg-gradient-to-br from-gray-50 via-white to-gray-100 py-8 md:py-16 min-h-screen"
-			style={{ fontFamily: BeVietnam.style.fontFamily }}
+		<section
+			ref={sectionRef}
+			id="contact"
+			className="relative min-h-screen flex items-center py-20 md:py-28 bg-sabs-bg-2"
 		>
-			{/* Subtle background pattern */}
-			<div className="absolute inset-0 opacity-[0.02]">
-				<div
-					className="absolute inset-0"
-					style={{
-						backgroundImage: `radial-gradient(circle at 25% 25%, #3bd1ab 0%, transparent 70%), 
-                                     radial-gradient(circle at 75% 75%, #61437f 0%, transparent 70%)`,
-					}}
-				></div>
-			</div>
+			{/* Bottom accent bar */}
+			<div className="absolute left-0 bottom-0 right-0 h-1 sabs-gradient-bg" />
 
-			<div
-				ref={containerRef}
-				className="relative z-10 container mx-auto px-4 sm:px-6 md:px-8"
-			>
-				<div className="max-w-4xl mx-auto w-full">
-					<div className="text-center mb-8 md:mb-12">
-						<h2
-							ref={titleRef}
-							className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-thin text-gray-900 mb-4 tracking-[-0.02em] px-4"
-						>
-							Contactez{" "}
-							<span className="text-sabs-primary font-medium">SABS</span>
-						</h2>
-						<div
-							ref={dividerRef}
-							className="w-16 md:w-24 h-[2px] bg-gradient-to-r from-sabs-gradient-1 via-sabs-gradient-2 to-sabs-primary mx-auto mb-4 md:mb-6 rounded-full"
-						></div>
-						<p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto font-light leading-relaxed px-4">
-							Prêt à transformer votre événement ? Contactez-nous pour discuter
-							de votre projet.
-						</p>
+			<div className="container mx-auto px-6 sm:px-10 md:px-16 max-w-4xl">
+				{/* Heading */}
+				<div ref={headingRef} className="mb-12">
+					<p className="text-xs font-semibold tracking-[0.4em] uppercase mb-4 text-sabs-green">
+						Contact
+					</p>
+					<h2 className="text-[clamp(2.5rem,7vw,5rem)] font-black leading-none tracking-tighter text-white mb-4">
+						Parlons de <span className="sabs-gradient-text">votre projet</span>
+					</h2>
+					<p className="text-base font-light text-sabs-muted">
+						Prêt à transformer votre événement ? Contactez-nous.
+					</p>
+				</div>
+
+				<form ref={formRef} onSubmit={handleSubmit} className="space-y-5">
+					{/* Prénom / Nom */}
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+						<InputField id="prenom" label="Prénom">
+							<input
+								type="text"
+								id="prenom"
+								name="prenom"
+								value={formData.prenom}
+								onChange={handleChange}
+								required
+								placeholder="Votre prénom"
+								className={INPUT_CLASS}
+							/>
+						</InputField>
+						<InputField id="nom" label="Nom">
+							<input
+								type="text"
+								id="nom"
+								name="nom"
+								value={formData.nom}
+								onChange={handleChange}
+								required
+								placeholder="Votre nom"
+								className={INPUT_CLASS}
+							/>
+						</InputField>
 					</div>
 
-					<form
-						ref={formRef}
-						onSubmit={handleSubmit}
-						className="bg-white/80 backdrop-blur-2xl rounded-2xl md:rounded-[1.5rem] p-4 sm:p-6 md:p-8 border border-gray-200/50 shadow-[0_20px_40px_0_rgba(31,38,135,0.1)] max-w-3xl mx-auto"
-					>
-						{/* Nom et Prénom */}
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-5">
-							<div>
-								<label
-									htmlFor="prenom"
-									className="block text-gray-700 font-medium mb-2 text-sm tracking-wide"
-								>
-									Prénom *
-								</label>
+					{/* Email Discord / Téléphone */}
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+						<InputField id="email" label="Email Discord">
+							<div className="flex items-center rounded-lg overflow-hidden min-h-11 bg-sabs-bg-4 border border-sabs-border focus-within:border-sabs-green focus-within:ring-2 focus-within:ring-sabs-green/10 transition-all duration-300">
 								<input
 									type="text"
-									id="prenom"
-									name="prenom"
-									value={formData.prenom}
-									onChange={handleInputChange}
+									id="email"
+									name="email"
+									value={formData.email}
+									onChange={handleChange}
 									required
-									className="w-full px-3 md:px-4 py-3 md:py-3 bg-gray-50/80 border border-gray-200 rounded-lg md:rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sabs-primary/30 focus:border-sabs-primary/50 transition-all duration-300 text-sm font-light min-h-[44px]"
-									placeholder="Votre prénom"
+									placeholder="username"
+									pattern="^[a-zA-Z0-9._-]+$"
+									className="flex-1 px-4 py-3 text-sm font-light text-white placeholder-sabs-muted bg-transparent outline-none"
 								/>
+								<span className="px-3 text-xs font-semibold border-l border-sabs-border shrink-0 text-sabs-green">
+									@discord.gg
+								</span>
 							</div>
-							<div>
-								<label
-									htmlFor="nom"
-									className="block text-gray-700 font-medium mb-2 text-sm tracking-wide"
-								>
-									Nom *
-								</label>
+							<p className="text-xs mt-1 italic text-sabs-muted-3">
+								Nom d&apos;utilisateur Discord (roleplay)
+							</p>
+						</InputField>
+
+						<InputField id="phone" label="Téléphone">
+							<div className="flex items-center rounded-lg overflow-hidden min-h-11 bg-sabs-bg-4 border border-sabs-border focus-within:border-sabs-green focus-within:ring-2 focus-within:ring-sabs-green/10 transition-all duration-300">
+								<span className="px-3 text-xs font-semibold border-r border-sabs-border shrink-0 text-sabs-green">
+									555-
+								</span>
 								<input
 									type="text"
-									id="nom"
-									name="nom"
-									value={formData.nom}
-									onChange={handleInputChange}
+									id="phone"
+									name="phone"
+									value={formData.phone.replace("555-", "")}
+									onChange={handleChange}
 									required
-									className="w-full px-3 md:px-4 py-3 md:py-3 bg-gray-50/80 border border-gray-200 rounded-lg md:rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sabs-primary/30 focus:border-sabs-primary/50 transition-all duration-300 text-sm font-light min-h-[44px]"
-									placeholder="Votre nom"
+									placeholder="1234"
+									maxLength={4}
+									inputMode="numeric"
+									className="flex-1 px-4 py-3 text-sm font-light text-white placeholder-sabs-muted bg-transparent outline-none"
 								/>
 							</div>
-						</div>
+							<p className="text-xs mt-1 italic text-sabs-muted-3">
+								Format 555-XXXX (roleplay)
+							</p>
+						</InputField>
+					</div>
 
-						{/* Email et Téléphone */}
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-5">
-							<div>
-								<label
-									htmlFor="email"
-									className="block text-gray-700 font-medium mb-2 text-sm tracking-wide"
-								>
-									Email Discord *
-								</label>
-								<div className="relative flex items-stretch bg-gray-50/80 border border-gray-200 rounded-lg md:rounded-xl focus-within:ring-2 focus-within:ring-sabs-primary/30 focus-within:border-sabs-primary/50 transition-all duration-300 overflow-hidden min-h-[44px]">
-									<input
-										type="text"
-										id="email"
-										name="email"
-										value={formData.email}
-										onChange={handleInputChange}
-										required
-										className="flex-1 px-3 md:px-4 py-3 bg-transparent text-gray-900 placeholder-gray-400 focus:outline-none text-sm font-light min-w-0"
-										placeholder="username"
-										pattern="^[a-zA-Z0-9._-]+$"
-										title="Seuls les lettres, chiffres, points, tirets et underscores sont autorisés"
-									/>
-									<div className="px-2 md:px-3 py-3 bg-gradient-to-r from-sabs-primary/10 to-sabs-gradient-2/10 text-sabs-primary font-medium text-xs md:text-sm border-l border-sabs-primary/20 flex-shrink-0 flex items-center">
-										@discord.gg
-									</div>
-								</div>
-								<p className="text-xs text-gray-400 mt-1 italic">
-									Nom d&apos;utilisateur Discord fictif (roleplay)
-								</p>
-							</div>
-							<div>
-								<label
-									htmlFor="phone"
-									className="block text-gray-700 font-medium mb-2 text-sm tracking-wide"
-								>
-									Téléphone *
-								</label>
-								<div className="relative flex items-stretch bg-gray-50/80 border border-gray-200 rounded-lg md:rounded-xl focus-within:ring-2 focus-within:ring-sabs-primary/30 focus-within:border-sabs-primary/50 transition-all duration-300 overflow-hidden min-h-[44px]">
-									<div className="px-2 md:px-3 py-3 bg-gradient-to-r from-sabs-primary/10 to-sabs-gradient-2/10 text-sabs-primary font-medium text-xs md:text-sm border-r border-sabs-primary/20 flex-shrink-0 flex items-center">
-										555-
-									</div>
-									<input
-										type="text"
-										id="phone"
-										name="phone"
-										value={formData.phone.replace("555-", "")}
-										onChange={handleInputChange}
-										required
-										className="flex-1 px-3 md:px-4 py-3 bg-transparent text-gray-900 placeholder-gray-400 focus:outline-none text-sm font-light min-w-0"
-										placeholder="1234"
-										maxLength={4}
-										inputMode="numeric"
-										title="4 chiffres pour compléter le format 555-XXXX"
-									/>
-								</div>
-								<p className="text-xs text-gray-400 mt-1 italic">
-									Numéro fictif au format 555-XXXX (roleplay)
-								</p>
-							</div>
-						</div>
-
-						{/* Type d'événement et Objet */}
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-5">
-							<div>
-								<label
-									htmlFor="typeEvent"
-									className="block text-gray-700 font-medium mb-2 text-sm tracking-wide"
-								>
-									Type d&apos;événement *
-								</label>
-								<select
-									id="typeEvent"
-									name="typeEvent"
-									value={formData.typeEvent}
-									onChange={handleInputChange}
-									required
-									className="w-full px-3 md:px-4 py-3 bg-gray-50/80 border border-gray-200 rounded-lg md:rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-sabs-primary/30 focus:border-sabs-primary/50 transition-all duration-300 text-sm font-light appearance-none cursor-pointer min-h-[44px]"
-								>
-									<option value="" className="bg-white">
-										Sélectionnez un type
-									</option>
-									{eventTypes.map((type) => (
-										<option key={type} value={type} className="bg-white">
-											{type}
-										</option>
-									))}
-								</select>
-							</div>
-							<div>
-								<label
-									htmlFor="objet"
-									className="block text-gray-700 font-medium mb-2 text-sm tracking-wide"
-								>
-									Objet *
-								</label>
-								<input
-									type="text"
-									id="objet"
-									name="objet"
-									value={formData.objet}
-									onChange={handleInputChange}
-									required
-									className="w-full px-3 md:px-4 py-3 bg-gray-50/80 border border-gray-200 rounded-lg md:rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sabs-primary/30 focus:border-sabs-primary/50 transition-all duration-300 text-sm font-light min-h-[44px]"
-									placeholder="Objet de votre demande"
-								/>
-							</div>
-						</div>
-
-						{/* Message */}
-						<div className="mb-4 md:mb-5">
-							<label
-								htmlFor="message"
-								className="block text-gray-700 font-medium mb-2 text-sm tracking-wide"
-							>
-								Message *
-							</label>
-							<textarea
-								id="message"
-								name="message"
-								value={formData.message}
-								onChange={handleInputChange}
+					{/* Type événement / Objet */}
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+						<InputField id="typeEvent" label="Type d'événement">
+							<select
+								id="typeEvent"
+								name="typeEvent"
+								value={formData.typeEvent}
+								onChange={handleChange}
 								required
-								rows={3}
-								className="w-full px-3 md:px-4 py-3 bg-gray-50/80 border border-gray-200 rounded-lg md:rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sabs-primary/30 focus:border-sabs-primary/50 transition-all duration-300 resize-none text-sm font-light leading-relaxed min-h-[80px]"
-								placeholder="Décrivez votre projet en détail..."
+								className={`${INPUT_CLASS} appearance-none cursor-pointer`}
+							>
+								<option value="" className="bg-sabs-bg-4">
+									Sélectionnez
+								</option>
+								{EVENT_TYPES.map((t) => (
+									<option key={t} value={t} className="bg-sabs-bg-4">
+										{t}
+									</option>
+								))}
+							</select>
+						</InputField>
+
+						<InputField id="objet" label="Objet">
+							<input
+								type="text"
+								id="objet"
+								name="objet"
+								value={formData.objet}
+								onChange={handleChange}
+								required
+								placeholder="Objet de votre demande"
+								className={INPUT_CLASS}
 							/>
+						</InputField>
+					</div>
+
+					{/* Message */}
+					<InputField id="message" label="Message">
+						<textarea
+							id="message"
+							name="message"
+							value={formData.message}
+							onChange={handleChange}
+							required
+							rows={4}
+							placeholder="Décrivez votre projet..."
+							className={`${INPUT_CLASS} resize-none`}
+						/>
+					</InputField>
+
+					{/* Feedback */}
+					{status === "success" && (
+						<div className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm bg-sabs-green/10 border border-sabs-green/30 text-sabs-green">
+							<svg
+								className="w-4 h-4 shrink-0"
+								fill="currentColor"
+								viewBox="0 0 20 20"
+							>
+								<title>Succès</title>
+								<path
+									fillRule="evenodd"
+									d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+									clipRule="evenodd"
+								/>
+							</svg>
+							Message envoyé. Nous vous recontacterons bientôt.
 						</div>
+					)}
+					{status === "error" && (
+						<div className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm bg-sabs-red/10 border border-sabs-red/30 text-sabs-red">
+							<svg
+								className="w-4 h-4 shrink-0"
+								fill="currentColor"
+								viewBox="0 0 20 20"
+							>
+								<title>Erreur</title>
+								<path
+									fillRule="evenodd"
+									d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+									clipRule="evenodd"
+								/>
+							</svg>
+							Une erreur s&apos;est produite. Veuillez réessayer.
+						</div>
+					)}
 
-						{submitStatus === "success" && (
-							<div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg md:rounded-xl text-green-700 text-sm flex items-start gap-2">
-								<div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-									<svg
-										className="w-3 h-3 text-white"
-										fill="currentColor"
-										viewBox="0 0 20 20"
-									>
-										<title>Succès</title>
-										<path
-											fillRule="evenodd"
-											d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-											clipRule="evenodd"
-										/>
-									</svg>
-								</div>
-								<span>
-									Message envoyé avec succès ! Nous vous recontacterons bientôt.
-								</span>
-							</div>
+					{/* Submit */}
+					<button
+						type="submit"
+						disabled={isSubmitting}
+						className="w-full py-4 px-8 rounded-lg font-bold text-sm tracking-[0.2em] uppercase sabs-gradient-bg text-sabs-bg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed min-h-14 flex items-center justify-center hover:opacity-90"
+					>
+						{isSubmitting ? (
+							<span className="flex items-center gap-2">
+								<div className="w-4 h-4 border-2 border-sabs-bg/30 border-t-sabs-bg rounded-full animate-spin" />
+								Envoi en cours...
+							</span>
+						) : (
+							"Envoyer le message"
 						)}
-
-						{submitStatus === "error" && (
-							<div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg md:rounded-xl text-red-700 text-sm flex items-start gap-2">
-								<div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-									<svg
-										className="w-3 h-3 text-white"
-										fill="currentColor"
-										viewBox="0 0 20 20"
-									>
-										<title>Erreur</title>
-										<path
-											fillRule="evenodd"
-											d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-											clipRule="evenodd"
-										/>
-									</svg>
-								</div>
-								<span>Une erreur s&apos;est produite. Veuillez réessayer.</span>
-							</div>
-						)}
-
-						<button
-							type="submit"
-							disabled={isSubmitting}
-							className="w-full bg-gradient-to-r from-sabs-gradient-1 via-sabs-gradient-2 to-sabs-primary hover:shadow-[0_10px_30px_0_rgba(59,209,171,0.3)] text-white font-medium py-4 px-6 rounded-lg md:rounded-xl transition-all duration-500 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none active:scale-[0.98] will-change-transform text-base tracking-wide min-h-[56px] flex items-center justify-center"
-						>
-							{isSubmitting ? (
-								<span className="flex items-center justify-center gap-2">
-									<div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-									Envoi en cours...
-								</span>
-							) : (
-								"Envoyer le message"
-							)}
-						</button>
-					</form>
-				</div>
+					</button>
+				</form>
 			</div>
-		</div>
+		</section>
 	);
 }

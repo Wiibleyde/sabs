@@ -1,13 +1,9 @@
 "use client";
 
-import { Be_Vietnam_Pro } from "next/font/google";
+import SmallLogo from "@public/img/sabs/small-logo-white.png";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-
-const BeVietnam = Be_Vietnam_Pro({
-	subsets: ["latin"],
-	weight: ["400", "500", "600", "700"],
-});
 
 interface PinAuthProps {
 	onAuthenticated: () => void;
@@ -15,175 +11,136 @@ interface PinAuthProps {
 
 export function PinAuth({ onAuthenticated }: PinAuthProps) {
 	const [pin, setPin] = useState("");
-	const [showPinDots, setShowPinDots] = useState(false);
+	const [showPin, setShowPin] = useState(false);
 	const { login, isLoading, error, isAuthenticated } = useAuth();
 
-	// Si déjà authentifié, appeler le callback immédiatement
 	useEffect(() => {
-		if (isAuthenticated) {
-			// Délai pour permettre une transition fluide
-			setTimeout(() => {
-				onAuthenticated();
-			}, 100);
-		}
+		if (isAuthenticated) setTimeout(onAuthenticated, 100);
 	}, [isAuthenticated, onAuthenticated]);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-
-		console.log("Submitting PIN:", pin); // Debug
-
 		const result = await login(pin);
-		console.log("Login result:", result); // Debug
-
-		if (result.success) {
-			console.log("Login successful, calling onAuthenticated"); // Debug
-			onAuthenticated();
-		} else {
-			setPin(""); // Réinitialiser le PIN en cas d'erreur
-		}
+		if (result.success) onAuthenticated();
+		else setPin("");
 	};
 
 	const handlePinChange = (value: string) => {
-		if (value.length <= 4 && /^\d*$/.test(value)) {
-			setPin(value);
-		}
-	};
-
-	const handleKeyPress = (e: React.KeyboardEvent) => {
-		if (e.key === "Enter") {
-			e.preventDefault();
-			handleSubmit(e as React.FormEvent);
-		}
+		if (value.length <= 4 && /^\d*$/.test(value)) setPin(value);
 	};
 
 	return (
-		<div
-			className={`min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 fade-in ${BeVietnam.className}`}
-		>
-			{/* Particules de fond */}
-			<div className="absolute inset-0 overflow-hidden pointer-events-none">
-				<div className="absolute top-1/4 left-1/4 w-3 h-3 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-bounce [animation-delay:0s] [animation-duration:3s]"></div>
-				<div className="absolute top-3/4 right-1/4 w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full animate-bounce [animation-delay:1s] [animation-duration:4s]"></div>
-				<div className="absolute top-1/2 left-1/3 w-2.5 h-2.5 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full animate-bounce [animation-delay:2s] [animation-duration:5s]"></div>
-			</div>
+		<div className="min-h-screen flex items-center justify-center fade-in bg-sabs-bg">
+			{/* Top gradient bar */}
+			<div className="fixed top-0 left-0 right-0 h-1 sabs-gradient-bg" />
 
-			<div className="relative z-10 w-full max-w-md mx-4">
-				<div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/20 transform transition-all duration-500 hover:scale-105">
-					{/* Logo/Titre */}
-					<div className="text-center mb-8">
-						<h1 className="text-3xl font-bold text-white mb-2">
-							<span className="text-transparent bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text">
-								SABS
-							</span>{" "}
-							Dashboard
-						</h1>
-						<p className="text-white/70 text-sm">
-							Entrez votre code PIN pour accéder
-						</p>
+			<div className="w-full max-w-sm mx-4">
+				{/* Logo + title */}
+				<div className="text-center mb-10">
+					<div className="inline-flex items-center gap-3 mb-6">
+						<Image
+							src={SmallLogo}
+							alt="SABS"
+							width={32}
+							height={32}
+							className="opacity-90"
+						/>
+						<span className="text-xl font-black tracking-wider text-white">
+							SABS
+						</span>
 					</div>
-
-					<form onSubmit={handleSubmit} className="space-y-6">
-						{/* Champ PIN */}
-						<div className="relative">
-							<label
-								htmlFor="pin"
-								className="block text-white/80 text-sm font-medium mb-3 text-center"
-							>
-								Code PIN (4 chiffres)
-							</label>
-
-							<div className="relative">
-								<input
-									id="pin"
-									type={showPinDots ? "password" : "text"}
-									value={pin}
-									onChange={(e) => handlePinChange(e.target.value)}
-									onKeyPress={handleKeyPress}
-									className="w-full px-4 py-4 bg-white/5 border border-white/20 rounded-xl text-white text-center text-2xl tracking-[0.5em] font-mono focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 placeholder-white/40"
-									placeholder="••••"
-									maxLength={4}
-									autoComplete="off"
-									disabled={isLoading}
-								/>
-
-								{/* Bouton pour basculer la visibilité */}
-								<button
-									type="button"
-									onClick={() => setShowPinDots(!showPinDots)}
-									className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white/80 transition-colors"
-									disabled={isLoading}
-								>
-									{showPinDots ? (
-										<svg
-											className="w-5 h-5"
-											fill="none"
-											stroke="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<title>Cacher le code PIN</title>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												strokeWidth={2}
-												d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-											/>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												strokeWidth={2}
-												d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-											/>
-										</svg>
-									) : (
-										<svg
-											className="w-5 h-5"
-											fill="none"
-											stroke="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<title>Afficher le code PIN</title>
-											<path
-												strokeLinecap="round"
-												strokeLinejoin="round"
-												strokeWidth={2}
-												d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
-											/>
-										</svg>
-									)}
-								</button>
-							</div>
-						</div>
-
-						{/* Message d'erreur */}
-						{error && (
-							<div className="bg-red-500/20 border border-red-500/30 rounded-lg p-3 text-red-200 text-sm text-center">
-								{error}
-							</div>
-						)}
-
-						{/* Bouton de connexion */}
-						<button
-							type="submit"
-							disabled={pin.length !== 4 || isLoading}
-							className="w-full py-4 px-6 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl transition-all duration-300 hover:from-purple-600 hover:to-pink-600 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-transparent"
-						>
-							{isLoading ? (
-								<div className="flex items-center justify-center space-x-2">
-									<div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-									<span>Vérification...</span>
-								</div>
-							) : (
-								"Accéder au Dashboard"
-							)}
-						</button>
-					</form>
-
-					{/* Info de sécurité */}
-					<div className="mt-6 text-center text-white/50 text-xs">
-						<p>🔒 Accès sécurisé au tableau de bord</p>
-					</div>
+					<h1 className="sabs-gradient-text text-3xl font-black tracking-tighter mb-2">
+						Dashboard
+					</h1>
+					<p className="text-sm font-light text-sabs-muted">
+						Entrez votre code PIN pour accéder
+					</p>
 				</div>
+
+				<form onSubmit={handleSubmit} className="space-y-5">
+					<div>
+						<label
+							htmlFor="pin"
+							className="block text-center text-xs font-bold tracking-[0.3em] uppercase mb-3 text-sabs-muted"
+						>
+							Code PIN
+						</label>
+						<div className="relative flex items-center rounded-xl overflow-hidden bg-sabs-bg-4 border border-sabs-border focus-within:border-sabs-green focus-within:ring-2 focus-within:ring-sabs-green/10 transition-all duration-300">
+							<input
+								id="pin"
+								type={showPin ? "text" : "password"}
+								value={pin}
+								onChange={(e) => handlePinChange(e.target.value)}
+								className="flex-1 px-5 py-4 bg-transparent text-white text-center text-2xl tracking-[0.6em] font-mono focus:outline-none placeholder-sabs-muted-3"
+								placeholder="••••"
+								maxLength={4}
+								autoComplete="off"
+								disabled={isLoading}
+								inputMode="numeric"
+							/>
+							<button
+								type="button"
+								onClick={() => setShowPin(!showPin)}
+								className="px-4 text-sabs-muted hover:text-white transition-colors"
+								disabled={isLoading}
+							>
+								{showPin ? (
+									<svg
+										className="w-5 h-5"
+										fill="none"
+										stroke="currentColor"
+										viewBox="0 0 24 24"
+										strokeWidth="1.5"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+									>
+										<title>Masquer</title>
+										<path d="M3 3l18 18M10.584 10.587a2 2 0 002.828 2.83M9.363 5.365A9.466 9.466 0 0112 5c4.418 0 8.418 2.467 10.5 6.5a9.476 9.476 0 01-1.904 2.592M6.726 6.726A9.466 9.466 0 001.5 11.5C3.582 15.533 7.582 18 12 18a9.472 9.472 0 005.274-1.726" />
+									</svg>
+								) : (
+									<svg
+										className="w-5 h-5"
+										fill="none"
+										stroke="currentColor"
+										viewBox="0 0 24 24"
+										strokeWidth="1.5"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+									>
+										<title>Afficher</title>
+										<path d="M1.5 11.5C3.582 7.467 7.582 5 12 5s8.418 2.467 10.5 6.5C20.418 15.533 16.418 18 12 18S3.582 15.533 1.5 11.5z" />
+										<circle cx="12" cy="11.5" r="2.5" />
+									</svg>
+								)}
+							</button>
+						</div>
+					</div>
+
+					{error && (
+						<div className="px-4 py-3 rounded-lg text-sm text-center bg-sabs-red/10 border border-sabs-red/30 text-sabs-red">
+							{error}
+						</div>
+					)}
+
+					<button
+						type="submit"
+						disabled={pin.length !== 4 || isLoading}
+						className="w-full py-4 rounded-xl font-bold text-sm tracking-[0.2em] uppercase sabs-gradient-bg text-sabs-bg transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90"
+					>
+						{isLoading ? (
+							<span className="flex items-center justify-center gap-2">
+								<div className="w-4 h-4 border-2 border-sabs-bg/30 border-t-sabs-bg rounded-full animate-spin" />
+								Vérification...
+							</span>
+						) : (
+							"Accéder au Dashboard"
+						)}
+					</button>
+				</form>
+
+				<p className="text-center text-xs mt-8 text-sabs-muted-3">
+					Accès sécurisé — SABS
+				</p>
 			</div>
 		</div>
 	);
