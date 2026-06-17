@@ -63,6 +63,35 @@ html {
 	);
 }
 
+/* Flowing variant — colors loop endlessly along the bar. Gradient ends on the
+   start color and is twice the element width, so scrolling the position by a
+   full tile loops seamlessly. */
+.sabs-gradient-flow {
+	background: linear-gradient(
+		90deg,
+		var(--color-sabs-green) 0%,
+		var(--color-sabs-purple) 25%,
+		var(--color-sabs-red) 50%,
+		var(--color-sabs-gold) 75%,
+		var(--color-sabs-green) 100%
+	);
+	background-size: 200% 100%;
+	animation: sabs-gradient-flow 5s linear infinite;
+}
+@keyframes sabs-gradient-flow {
+	from {
+		background-position: 0% 50%;
+	}
+	to {
+		background-position: 200% 50%;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.sabs-gradient-flow {
+		animation: none;
+	}
+}
+
 /* Broadcast-signal glitch — keeps gradient fill, flashes offset slices */
 .sabs-glitch {
 	position: relative;
