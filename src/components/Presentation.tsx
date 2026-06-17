@@ -2,7 +2,14 @@
 
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import dynamic from "next/dynamic";
 import { useEffect, useRef } from "react";
+import { ScrollReveal } from "./reactbits/ScrollReveal";
+
+const LetterGlitch = dynamic(
+	() => import("./reactbits/LetterGlitch").then((m) => m.LetterGlitch),
+	{ ssr: false },
+);
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -133,19 +140,37 @@ export function Presentation() {
 			id="presentation"
 			className="relative min-h-screen flex items-center py-20 md:py-28 bg-sabs-bg-2"
 		>
+			{/* Broadcast static backdrop — fades out toward the center for legibility */}
+			<div
+				className="absolute inset-0 z-0 overflow-hidden pointer-events-none"
+				style={{
+					opacity: 0.18,
+					maskImage:
+						"radial-gradient(ellipse 70% 60% at 50% 45%, transparent 38%, black 100%)",
+					WebkitMaskImage:
+						"radial-gradient(ellipse 70% 60% at 50% 45%, transparent 38%, black 100%)",
+				}}
+			>
+				<LetterGlitch />
+			</div>
+
 			{/* Left accent bar */}
 			<div className="absolute left-0 top-0 bottom-0 w-1 sabs-gradient-bg-vertical" />
 
-			<div className="container mx-auto px-6 sm:px-10 md:px-16 max-w-6xl">
+			<div className="relative z-10 container mx-auto px-6 sm:px-10 md:px-16 max-w-6xl">
 				{/* Heading */}
 				<div ref={headingRef} className="mb-12 md:mb-16">
 					<p className="text-xs font-semibold tracking-[0.4em] uppercase mb-4 text-sabs-green">
 						À propos
 					</p>
-					<h2 className="text-[clamp(2.5rem,7vw,5rem)] font-black leading-none tracking-tighter text-white mb-6">
-						Qu&apos;est-ce que <span className="sabs-gradient-text">SABS</span>{" "}
-						?
-					</h2>
+					<ScrollReveal
+						as="h2"
+						highlight="SABS"
+						start="top 70%"
+						className="text-[clamp(2.5rem,7vw,5rem)] font-black leading-none tracking-tighter text-white mb-6"
+					>
+						Qu&apos;est-ce que SABS ?
+					</ScrollReveal>
 					<div className="sabs-gradient-bg rounded-full w-16 h-0.5" />
 				</div>
 
@@ -154,9 +179,9 @@ export function Presentation() {
 					<p className="text-[clamp(1rem,2.5vw,1.25rem)] font-light leading-relaxed mb-6 text-sabs-muted">
 						<span className="font-semibold text-white">SABS</span> est une micro
 						entreprise spécialisée dans la gestion de{" "}
-						<span className="font-medium text-sabs-green">
-							rediffusions en direct multicaméra
-						</span>{" "}
+						<span className="font-medium text-sabs-green">régie caméra</span>
+						{" et "}
+						<span className="font-medium text-sabs-gold">régie lumière</span>{" "}
 						pour tout type d&apos;événement.
 					</p>
 					<p className="text-[clamp(0.9rem,2vw,1.1rem)] font-light leading-relaxed text-sabs-muted">

@@ -3,6 +3,7 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef, useState } from "react";
+import { ScrollReveal } from "./reactbits/ScrollReveal";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -160,9 +161,14 @@ export function Contact() {
 					<p className="text-xs font-semibold tracking-[0.4em] uppercase mb-4 text-sabs-green">
 						Contact
 					</p>
-					<h2 className="text-[clamp(2.5rem,7vw,5rem)] font-black leading-none tracking-tighter text-white mb-4">
-						Parlons de <span className="sabs-gradient-text">votre projet</span>
-					</h2>
+					<ScrollReveal
+						as="h2"
+						highlight="votre projet"
+						start="top 70%"
+						className="text-[clamp(2.5rem,7vw,5rem)] font-black leading-none tracking-tighter text-white mb-4"
+					>
+						Parlons de votre projet
+					</ScrollReveal>
 					<p className="text-base font-light text-sabs-muted">
 						Prêt à transformer votre événement ? Contactez-nous.
 					</p>

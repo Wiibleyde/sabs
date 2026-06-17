@@ -11,6 +11,7 @@ import {
 	type ProjectMedia,
 	projects,
 } from "@/data/projects";
+import { ScrollReveal } from "./reactbits/ScrollReveal";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -20,24 +21,28 @@ const CARD_ACCENTS = [
 		textClass: "text-sabs-green",
 		badgeClass: "bg-sabs-green/10 border-sabs-green/30 text-sabs-green",
 		shadowColor: "rgba(64,195,149,0.18)",
+		spotColor: "rgba(64,195,149,0.22)",
 	},
 	{
 		borderClass: "border-t-sabs-purple",
 		textClass: "text-sabs-purple",
 		badgeClass: "bg-sabs-purple/10 border-sabs-purple/30 text-sabs-purple",
 		shadowColor: "rgba(97,83,136,0.18)",
+		spotColor: "rgba(97,83,136,0.26)",
 	},
 	{
 		borderClass: "border-t-sabs-red",
 		textClass: "text-sabs-red",
 		badgeClass: "bg-sabs-red/10 border-sabs-red/30 text-sabs-red",
 		shadowColor: "rgba(182,68,87,0.18)",
+		spotColor: "rgba(182,68,87,0.24)",
 	},
 	{
 		borderClass: "border-t-sabs-gold",
 		textClass: "text-sabs-gold",
 		badgeClass: "bg-sabs-gold/10 border-sabs-gold/30 text-sabs-gold",
 		shadowColor: "rgba(220,184,54,0.18)",
+		spotColor: "rgba(220,184,54,0.24)",
 	},
 ];
 
@@ -425,7 +430,7 @@ function ProjectCard({
 			type="button"
 			data-project-card
 			onClick={onClick}
-			className={`group text-left rounded-2xl overflow-hidden bg-sabs-bg-3 border-t-2 transition-all duration-500 hover:-translate-y-1 cursor-pointer ${accent.borderClass} ${
+			className={`group relative text-left rounded-2xl overflow-hidden bg-sabs-bg-3 border-t-2 transition-all duration-500 hover:-translate-y-1 cursor-pointer ${accent.borderClass} ${
 				grid ? "w-full" : "flex-shrink-0 snap-start w-5/6 max-w-sm sm:w-80"
 			}`}
 			style={{ "--shadow-color": accent.shadowColor } as React.CSSProperties}
@@ -436,7 +441,25 @@ function ProjectCard({
 			onMouseLeave={(e) => {
 				(e.currentTarget as HTMLElement).style.boxShadow = "none";
 			}}
+			onMouseMove={(e) => {
+				const rect = e.currentTarget.getBoundingClientRect();
+				e.currentTarget.style.setProperty(
+					"--spot-x",
+					`${((e.clientX - rect.left) / rect.width) * 100}%`,
+				);
+				e.currentTarget.style.setProperty(
+					"--spot-y",
+					`${((e.clientY - rect.top) / rect.height) * 100}%`,
+				);
+			}}
 		>
+			{/* Cursor-following spotlight */}
+			<div
+				className="absolute inset-0 z-10 opacity-0 transition-opacity duration-300 group-hover:opacity-100 pointer-events-none"
+				style={{
+					background: `radial-gradient(240px circle at var(--spot-x, 50%) var(--spot-y, 50%), ${accent.spotColor}, transparent 70%)`,
+				}}
+			/>
 			{/* Thumbnail */}
 			<div className="relative w-full aspect-video overflow-hidden bg-sabs-bg-4">
 				{thumbnailUrl ? (
@@ -669,9 +692,14 @@ export function Projects() {
 					<p className="text-xs font-semibold tracking-[0.4em] uppercase mb-4 text-sabs-green">
 						Portfolio
 					</p>
-					<h2 className="text-[clamp(2.5rem,7vw,5rem)] font-black leading-none tracking-tighter text-white mb-4">
-						Nos <span className="sabs-gradient-text">Réalisations</span>
-					</h2>
+					<ScrollReveal
+						as="h2"
+						highlight="Réalisations"
+						start="top 65%"
+						className="text-[clamp(2.5rem,7vw,5rem)] font-black leading-none tracking-tighter text-white mb-4"
+					>
+						Nos Réalisations
+					</ScrollReveal>
 					<p className="text-base font-light text-sabs-muted">
 						Découvrez nos projets récents et les compétences mises en œuvre.
 					</p>

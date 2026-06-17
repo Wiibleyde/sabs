@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useEffect, useRef } from "react";
+import { GlitchText } from "./reactbits/GlitchText";
 
 const ParticleField = dynamic(
 	() => import("./three/ParticleField").then((m) => m.ParticleField),
@@ -116,9 +117,9 @@ export function Hero() {
 
 				<h1
 					ref={titleRef}
-					className="sabs-gradient-text text-[clamp(5rem,18vw,14rem)] font-black leading-none tracking-tighter mb-3 select-none"
+					className="text-[clamp(5rem,18vw,14rem)] font-black leading-none tracking-tighter mb-3 select-none"
 				>
-					SABS
+					<GlitchText>SABS</GlitchText>
 				</h1>
 
 				<p
