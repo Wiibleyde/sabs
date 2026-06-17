@@ -52,6 +52,17 @@ html {
 	);
 }
 
+/* Vertical variant — for tall side accent bars */
+.sabs-gradient-bg-vertical {
+	background: linear-gradient(
+		180deg,
+		var(--color-sabs-green) 0%,
+		var(--color-sabs-purple) 31%,
+		var(--color-sabs-red) 71%,
+		var(--color-sabs-gold) 100%
+	);
+}
+
 .sabs-gradient-text {
 	background: linear-gradient(
 		90deg,

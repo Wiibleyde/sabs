@@ -134,7 +134,7 @@ export function Presentation() {
 			className="relative min-h-screen flex items-center py-20 md:py-28 bg-sabs-bg-2"
 		>
 			{/* Left accent bar */}
-			<div className="absolute left-0 top-0 bottom-0 w-1 sabs-gradient-bg" />
+			<div className="absolute left-0 top-0 bottom-0 w-1 sabs-gradient-bg-vertical" />
 
 			<div className="container mx-auto px-6 sm:px-10 md:px-16 max-w-6xl">
 				{/* Heading */}
