@@ -25,6 +25,7 @@ uniform float uAmplitude;
 uniform vec3 uColorStops[3];
 uniform vec2 uResolution;
 uniform float uBlend;
+uniform float uMirror;
 
 out vec4 fragColor;
 
@@ -104,8 +105,14 @@ void main() {
 
   float height = snoise(vec2(uv.x * 2.0 + uTime * 0.1, uTime * 0.25)) * 0.5 * uAmplitude;
   height = exp(height);
-  height = (uv.y * 2.0 - height + 0.2);
-  float intensity = 0.6 * height;
+  float intensity = 0.6 * (uv.y * 2.0 - height + 0.2);
+
+  // Mirror the curtain to the opposite edge so the glow frames top + bottom
+  // in a single pass (cheaper than two stacked instances).
+  if (uMirror > 0.5) {
+    float mirrored = 0.6 * ((1.0 - uv.y) * 2.0 - height + 0.2);
+    intensity = max(intensity, mirrored);
+  }
 
   float midPoint = 0.20;
   float auroraAlpha = smoothstep(midPoint - uBlend * 0.5, midPoint + uBlend * 0.5, intensity);
@@ -122,6 +129,8 @@ interface AuroraProps {
 	blend?: number;
 	time?: number;
 	speed?: number;
+	/** Mirror the curtain to both top and bottom edges in a single pass. */
+	mirror?: boolean;
 }
 
 export function Aurora(props: AuroraProps) {
@@ -129,6 +138,7 @@ export function Aurora(props: AuroraProps) {
 		colorStops = ["#5227FF", "#7cff67", "#5227FF"],
 		amplitude = 1.0,
 		blend = 0.5,
+		mirror = false,
 	} = props;
 	const propsRef = useRef<AuroraProps>(props);
 	propsRef.current = props;
@@ -183,6 +193,7 @@ export function Aurora(props: AuroraProps) {
 				uColorStops: { value: colorStopsArray },
 				uResolution: { value: [ctn.offsetWidth, ctn.offsetHeight] },
 				uBlend: { value: blend },
+				uMirror: { value: mirror ? 1 : 0 },
 			},
 		});
 
@@ -197,6 +208,7 @@ export function Aurora(props: AuroraProps) {
 				program.uniforms.uTime.value = time * speed * 0.1;
 				program.uniforms.uAmplitude.value = propsRef.current.amplitude ?? 1.0;
 				program.uniforms.uBlend.value = propsRef.current.blend ?? blend;
+				program.uniforms.uMirror.value = propsRef.current.mirror ? 1 : 0;
 				const stops = propsRef.current.colorStops ?? colorStops;
 				program.uniforms.uColorStops.value = stops.map((hex: string) => {
 					const c = new Color(hex);

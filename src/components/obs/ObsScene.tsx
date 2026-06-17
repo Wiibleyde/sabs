@@ -54,28 +54,19 @@ export function ObsScene({ config }: { config: ObsSceneConfig }) {
 
 	return (
 		<main className="fixed inset-0 flex flex-col items-center justify-center overflow-hidden bg-sabs-bg select-none">
-			{/* Aurora background (WebGL). Rendered twice — once upright at the
-			    bottom, once flipped at the top — so the glow frames the screen
-			    instead of sitting in a faint band. */}
+			{/* Aurora background (WebGL). One mirrored instance frames the glow
+			    top + bottom in a single pass — half the GPU of two stacked
+			    canvases. */}
 			{config.bg === "aurora" && (
-				<>
-					<div className="absolute inset-0">
-						<Aurora
-							colorStops={AURORA_STOPS[config.accent]}
-							amplitude={1.6}
-							blend={0.4}
-							speed={0.8}
-						/>
-					</div>
-					<div className="absolute inset-0 rotate-180 opacity-60">
-						<Aurora
-							colorStops={AURORA_STOPS[config.accent]}
-							amplitude={1.4}
-							blend={0.4}
-							speed={0.6}
-						/>
-					</div>
-				</>
+				<div className="absolute inset-0">
+					<Aurora
+						colorStops={AURORA_STOPS[config.accent]}
+						amplitude={1.6}
+						blend={0.4}
+						speed={0.8}
+						mirror
+					/>
+				</div>
 			)}
 
 			{/* Radial vignette — gentle, just enough to keep text readable */}
