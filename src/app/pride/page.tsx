@@ -16,7 +16,7 @@ const STRIPES = [
 
 export default function PridePage() {
 	return (
-		<main className="fixed inset-0 flex flex-col">
+		<main className="fixed inset-0 flex flex-row">
 			{STRIPES.map((color) => (
 				<div key={color} className="flex-1" style={{ backgroundColor: color }} />
 			))}
