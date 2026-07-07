@@ -15,36 +15,39 @@ import { ScrollReveal } from "./reactbits/ScrollReveal";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const CARD_ACCENTS = [
-	{
-		borderClass: "border-t-sabs-green",
-		textClass: "text-sabs-green",
-		badgeClass: "bg-sabs-green/10 border-sabs-green/30 text-sabs-green",
-		shadowColor: "rgba(64,195,149,0.18)",
-		spotColor: "rgba(64,195,149,0.22)",
-	},
-	{
-		borderClass: "border-t-sabs-purple",
-		textClass: "text-sabs-purple",
-		badgeClass: "bg-sabs-purple/10 border-sabs-purple/30 text-sabs-purple",
-		shadowColor: "rgba(97,83,136,0.18)",
-		spotColor: "rgba(97,83,136,0.26)",
-	},
-	{
-		borderClass: "border-t-sabs-red",
-		textClass: "text-sabs-red",
-		badgeClass: "bg-sabs-red/10 border-sabs-red/30 text-sabs-red",
-		shadowColor: "rgba(182,68,87,0.18)",
-		spotColor: "rgba(182,68,87,0.24)",
-	},
-	{
-		borderClass: "border-t-sabs-gold",
-		textClass: "text-sabs-gold",
-		badgeClass: "bg-sabs-gold/10 border-sabs-gold/30 text-sabs-gold",
-		shadowColor: "rgba(220,184,54,0.18)",
-		spotColor: "rgba(220,184,54,0.24)",
-	},
+const RAINBOW_GRADIENT =
+	"linear-gradient(90deg,#e40303,#ff8c00,#ffed00,#008026,#004dff,#750787)";
+
+// Brand color rotation (r,g,b) used for accent line, date text and hover glow.
+const ACCENTS = [
+	{ rgb: "64,195,149", text: "text-sabs-green" },
+	{ rgb: "97,83,136", text: "text-sabs-purple" },
+	{ rgb: "182,68,87", text: "text-sabs-red" },
+	{ rgb: "220,184,54", text: "text-sabs-gold" },
 ];
+
+interface Accent {
+	text: string;
+	line: string;
+	glow: string;
+}
+
+function getAccent(project: Project, index: number): Accent {
+	if (project.accent === "rainbow") {
+		return {
+			// full literal so Tailwind JIT picks it up; `image:` hint forces bg-image
+			text: "text-transparent bg-clip-text bg-[image:linear-gradient(90deg,#e40303,#ff8c00,#ffed00,#008026,#004dff,#750787)]",
+			line: RAINBOW_GRADIENT,
+			glow: "rgba(228,3,3,0.35)",
+		};
+	}
+	const a = ACCENTS[index % ACCENTS.length];
+	return {
+		text: a.text,
+		line: `rgb(${a.rgb})`,
+		glow: `rgba(${a.rgb},0.35)`,
+	};
+}
 
 const COMPETENCY_CLASSES: Record<Competency, string> = {
 	"Régie Vidéo": "bg-sabs-purple/10 border-sabs-purple/30 text-sabs-purple",
@@ -54,6 +57,7 @@ const COMPETENCY_CLASSES: Record<Competency, string> = {
 	"Diffusion en direct/rediffusion":
 		"bg-sabs-green/10 border-sabs-green/30 text-sabs-green",
 	"Régie mapping écran": "bg-sabs-red/10 border-sabs-red/30 text-sabs-red",
+	Pyrotechnie: "bg-sabs-gold/10 border-sabs-gold/30 text-sabs-gold",
 };
 
 function getYouTubeId(url: string): string | null {
@@ -87,6 +91,94 @@ function formatDate(iso: string): string {
 		month: "long",
 		year: "numeric",
 	});
+}
+
+function isVideoMedia(media?: ProjectMedia): boolean {
+	return media?.type === "youtube" || media?.type === "twitch";
+}
+
+function CompetencyPills({
+	competencies,
+	max = 3,
+}: {
+	competencies: Competency[];
+	max?: number;
+}) {
+	const visible = competencies.slice(0, max);
+	const remaining = competencies.length - max;
+	return (
+		<div className="flex flex-wrap gap-1.5 items-center">
+			{visible.map((comp) => (
+				<span
+					key={comp}
+					className={`px-2.5 py-1 text-[11px] font-medium rounded-full border ${COMPETENCY_CLASSES[comp]}`}
+				>
+					{comp}
+				</span>
+			))}
+			{remaining > 0 && (
+				<span className="px-2.5 py-1 text-[11px] font-medium rounded-full bg-sabs-bg-hover border border-sabs-border-2 text-sabs-muted">
+					+{remaining}
+				</span>
+			)}
+		</div>
+	);
+}
+
+function PlayOverlay() {
+	return (
+		<div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+			<div className="w-14 h-14 rounded-full flex items-center justify-center sabs-gradient-bg shadow-2xl">
+				<svg
+					className="w-5 h-5 translate-x-px text-sabs-bg"
+					fill="currentColor"
+					viewBox="0 0 24 24"
+				>
+					<title>Lire</title>
+					<path d="M8 5v14l11-7z" />
+				</svg>
+			</div>
+		</div>
+	);
+}
+
+function GalleryBadge({ count }: { count: number }) {
+	return (
+		<span className="absolute top-3 left-3 flex items-center gap-1 px-2 py-1 text-xs font-bold rounded-full bg-black/60 border border-white/10 text-white backdrop-blur-sm">
+			<svg
+				className="w-3 h-3"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
+				strokeWidth="2"
+			>
+				<title>Galerie</title>
+				<rect x="3" y="3" width="7" height="7" rx="1" />
+				<rect x="14" y="3" width="7" height="7" rx="1" />
+				<rect x="3" y="14" width="7" height="7" rx="1" />
+				<rect x="14" y="14" width="7" height="7" rx="1" />
+			</svg>
+			{count}
+		</span>
+	);
+}
+
+function ThumbnailFallback() {
+	return (
+		<div className="w-full h-full flex items-center justify-center bg-sabs-bg-4">
+			<svg
+				className="w-12 h-12 text-sabs-muted-3"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
+				strokeWidth="1"
+			>
+				<title>Média</title>
+				<rect x="2" y="7" width="15" height="10" rx="2" />
+				<path d="M17 10l4-2v8l-4-2" />
+			</svg>
+		</div>
+	);
 }
 
 function MediaViewer({ media }: { media: ProjectMedia }) {
@@ -207,7 +299,7 @@ function ProjectModal({
 					<button
 						type="button"
 						onClick={onClose}
-						className="flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-full bg-sabs-bg-4 border border-sabs-border text-sabs-muted hover:text-white transition-colors ml-4"
+						className="shrink-0 w-9 h-9 flex items-center justify-center rounded-full bg-sabs-bg-4 border border-sabs-border text-sabs-muted hover:text-white transition-colors ml-4"
 						aria-label="Fermer"
 					>
 						<svg
@@ -305,7 +397,7 @@ function ProjectModal({
 
 				{/* Thumbnails strip (when >1 media) */}
 				{total > 1 && (
-					<div className="flex gap-2 px-6 py-3 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden shrink-0 border-t border-sabs-border">
+					<div className="flex gap-2 px-6 py-3 overflow-x-auto scrollbar-none shrink-0 border-t border-sabs-border">
 						{project.medias.map((m, i) => {
 							const thumb = getMediaThumbnail(m);
 							return (
@@ -313,7 +405,7 @@ function ProjectModal({
 									key={m.url}
 									type="button"
 									onClick={() => setCurrent(i)}
-									className={`relative flex-shrink-0 w-16 h-10 rounded-lg overflow-hidden border-2 transition-all ${
+									className={`relative shrink-0 w-16 h-10 rounded-lg overflow-hidden border-2 transition-all ${
 										i === current
 											? "border-sabs-green"
 											: "border-transparent opacity-50 hover:opacity-80"
@@ -401,172 +493,168 @@ function ProjectModal({
 	);
 }
 
-function ProjectCard({
+/** Large hero card for the most recent project. */
+function FeaturedCard({
 	project,
 	index,
-	grid = false,
 	onClick,
 }: {
 	project: Project;
 	index: number;
-	grid?: boolean;
 	onClick: () => void;
 }) {
 	const thumbnailUrl = getProjectThumbnail(project);
-	const [showAll, setShowAll] = useState(false);
-	const accent = CARD_ACCENTS[index % CARD_ACCENTS.length];
-	const num = String(index + 1).padStart(2, "0");
-	const visible = showAll
-		? project.competencies
-		: project.competencies.slice(0, 3);
-	const remaining = project.competencies.length - 3;
-	const firstMedia = project.medias[0];
-	const isVideo =
-		firstMedia?.type === "youtube" || firstMedia?.type === "twitch";
+	const accent = getAccent(project, index);
+	const isVideo = isVideoMedia(project.medias[0]);
 	const mediaCount = project.medias.length;
 
 	return (
 		<button
 			type="button"
-			data-project-card
+			data-reveal
 			onClick={onClick}
-			className={`group relative text-left rounded-2xl overflow-hidden bg-sabs-bg-3 border-t-2 transition-all duration-500 hover:-translate-y-1 cursor-pointer ${accent.borderClass} ${
-				grid ? "w-full" : "flex-shrink-0 snap-start w-5/6 max-w-sm sm:w-80"
-			}`}
-			style={{ "--shadow-color": accent.shadowColor } as React.CSSProperties}
-			onMouseEnter={(e) => {
-				(e.currentTarget as HTMLElement).style.boxShadow =
-					`0 24px 48px -8px ${accent.shadowColor}`;
-			}}
-			onMouseLeave={(e) => {
-				(e.currentTarget as HTMLElement).style.boxShadow = "none";
-			}}
-			onMouseMove={(e) => {
-				const rect = e.currentTarget.getBoundingClientRect();
-				e.currentTarget.style.setProperty(
-					"--spot-x",
-					`${((e.clientX - rect.left) / rect.width) * 100}%`,
-				);
-				e.currentTarget.style.setProperty(
-					"--spot-y",
-					`${((e.clientY - rect.top) / rect.height) * 100}%`,
-				);
-			}}
+			style={{ "--glow": accent.glow } as React.CSSProperties}
+			className="group relative w-full text-left rounded-3xl overflow-hidden bg-sabs-bg-3 border border-sabs-border transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_30px_70px_-20px_var(--glow)]"
 		>
-			{/* Cursor-following spotlight */}
+			{/* accent top line */}
 			<div
-				className="absolute inset-0 z-10 opacity-0 transition-opacity duration-300 group-hover:opacity-100 pointer-events-none"
-				style={{
-					background: `radial-gradient(240px circle at var(--spot-x, 50%) var(--spot-y, 50%), ${accent.spotColor}, transparent 70%)`,
-				}}
+				className="absolute top-0 inset-x-0 h-1 z-20"
+				style={{ background: accent.line }}
 			/>
+
+			<div className="grid md:grid-cols-2">
+				{/* Media */}
+				<div className="relative aspect-video md:aspect-auto md:min-h-85 overflow-hidden">
+					{thumbnailUrl ? (
+						<Image
+							src={thumbnailUrl}
+							alt={project.title}
+							fill
+							className="object-cover transition-transform duration-700 group-hover:scale-105"
+							sizes="(max-width: 768px) 100vw, 50vw"
+						/>
+					) : (
+						<ThumbnailFallback />
+					)}
+					{/* seam gradient blending media into content */}
+					<div className="absolute inset-0 bg-linear-to-t from-sabs-bg-3/80 via-transparent to-transparent md:bg-linear-to-r md:from-transparent md:to-sabs-bg-3" />
+					{mediaCount > 1 && <GalleryBadge count={mediaCount} />}
+					{isVideo && <PlayOverlay />}
+				</div>
+
+				{/* Content */}
+				<div className="relative flex flex-col justify-center p-7 md:p-10">
+					<div className="flex items-center gap-3 mb-4">
+						<span className="text-[11px] font-black tracking-[0.3em] uppercase px-3 py-1 rounded-full border border-sabs-border-2 text-sabs-muted">
+							À la une
+						</span>
+						<span
+							className={`text-xs font-bold tracking-[0.2em] uppercase ${accent.text}`}
+						>
+							{formatDate(project.date)}
+						</span>
+					</div>
+
+					<h3 className="font-black text-white leading-[1.05] tracking-tight text-3xl md:text-4xl lg:text-5xl mb-4">
+						{project.title}
+					</h3>
+
+					{project.description && (
+						<p className="text-sm md:text-base leading-relaxed text-sabs-muted mb-6 max-w-prose line-clamp-3">
+							{project.description}
+						</p>
+					)}
+
+					<div className="mb-6">
+						<CompetencyPills competencies={project.competencies} max={5} />
+					</div>
+
+					<span className="inline-flex items-center gap-2 text-sm font-bold text-white group-hover:gap-3 transition-all">
+						Voir le projet
+						<svg
+							className="w-4 h-4"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+							strokeWidth="2.5"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						>
+							<title>Ouvrir</title>
+							<path d="M5 12h14M13 6l6 6-6 6" />
+						</svg>
+					</span>
+				</div>
+			</div>
+		</button>
+	);
+}
+
+/** Compact card used in the grid below the feature. */
+function ProjectCard({
+	project,
+	index,
+	onClick,
+}: {
+	project: Project;
+	index: number;
+	onClick: () => void;
+}) {
+	const thumbnailUrl = getProjectThumbnail(project);
+	const accent = getAccent(project, index);
+	const firstMedia = project.medias[0];
+	const isVideo = isVideoMedia(firstMedia);
+	const mediaCount = project.medias.length;
+
+	return (
+		<button
+			type="button"
+			data-reveal
+			onClick={onClick}
+			style={{ "--glow": accent.glow } as React.CSSProperties}
+			className="group relative flex flex-col text-left rounded-2xl overflow-hidden bg-sabs-bg-3 border border-sabs-border transition-all duration-500 hover:-translate-y-1 hover:border-sabs-border-2 hover:shadow-[0_24px_50px_-16px_var(--glow)]"
+		>
+			{/* accent top line */}
+			<div
+				className="absolute top-0 inset-x-0 h-0.5 z-20"
+				style={{ background: accent.line }}
+			/>
+
 			{/* Thumbnail */}
-			<div className="relative w-full aspect-video overflow-hidden bg-sabs-bg-4">
+			<div className="relative w-full aspect-video overflow-hidden">
 				{thumbnailUrl ? (
 					<Image
 						src={thumbnailUrl}
 						alt={project.title}
 						fill
-						className="object-cover transition-transform duration-700 group-hover:scale-[1.06]"
-						sizes={
-							grid
-								? "(max-width: 640px) 100vw, 50vw"
-								: "(max-width: 640px) 83vw, 320px"
-						}
+						className="object-cover transition-transform duration-700 group-hover:scale-105"
+						sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
 					/>
 				) : (
-					<div className="w-full h-full flex items-center justify-center">
-						<svg
-							className="w-12 h-12 text-sabs-muted-3"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-							strokeWidth="1"
-						>
-							<title>Média</title>
-							<rect x="2" y="7" width="15" height="10" rx="2" />
-							<path d="M17 10l4-2v8l-4-2" />
-						</svg>
-					</div>
+					<ThumbnailFallback />
 				)}
+				<div className="absolute inset-0 bg-linear-to-t from-sabs-bg-3/90 via-sabs-bg/10 to-transparent pointer-events-none" />
 
-				{/* Dark gradient overlay */}
-				<div className="absolute inset-0 bg-gradient-to-t from-sabs-bg/80 via-sabs-bg/10 to-transparent pointer-events-none" />
-
-				{/* Big number watermark */}
-				<div
-					className="absolute bottom-2 right-4 font-black leading-none select-none pointer-events-none text-white"
-					style={{ fontSize: grid ? "7rem" : "5rem", opacity: 0.07 }}
-					aria-hidden="true"
-				>
-					{num}
-				</div>
-
-				{/* Platform badge */}
-				{(firstMedia?.type === "youtube" || firstMedia?.type === "twitch") && (
+				{isVideo && (
 					<span
-						className={`absolute top-3 right-3 px-2.5 py-1 text-xs font-bold tracking-widest uppercase rounded-full border ${accent.badgeClass}`}
+						className={`absolute top-3 right-3 px-2.5 py-1 text-[10px] font-bold tracking-widest uppercase rounded-full bg-black/60 border border-white/10 text-white backdrop-blur-sm`}
 					>
 						{firstMedia.type}
 					</span>
 				)}
-
-				{/* Media count badge */}
-				{mediaCount > 1 && (
-					<span className="absolute top-3 left-3 flex items-center gap-1 px-2 py-1 text-xs font-bold rounded-full bg-black/60 border border-white/10 text-white">
-						<svg
-							className="w-3 h-3"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-							strokeWidth="2"
-						>
-							<title>Galerie</title>
-							<rect x="3" y="3" width="7" height="7" rx="1" />
-							<rect x="14" y="3" width="7" height="7" rx="1" />
-							<rect x="3" y="14" width="7" height="7" rx="1" />
-							<rect x="14" y="14" width="7" height="7" rx="1" />
-						</svg>
-						{mediaCount}
-					</span>
-				)}
-
-				{/* Play button */}
-				{isVideo && (
-					<div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-						<div className="w-14 h-14 rounded-full flex items-center justify-center sabs-gradient-bg shadow-2xl">
-							<svg
-								className="w-5 h-5 translate-x-px text-sabs-bg"
-								fill="currentColor"
-								viewBox="0 0 24 24"
-							>
-								<title>Lire</title>
-								<path d="M8 5v14l11-7z" />
-							</svg>
-						</div>
-					</div>
-				)}
+				{mediaCount > 1 && <GalleryBadge count={mediaCount} />}
+				{isVideo && <PlayOverlay />}
 			</div>
 
 			{/* Info */}
-			<div className={`${grid ? "p-7" : "p-5"}`}>
-				<div className="flex items-start justify-between gap-3 mb-2">
-					<p
-						className={`text-xs font-semibold tracking-[0.2em] uppercase ${accent.textClass}`}
-					>
-						{formatDate(project.date)}
-					</p>
-					<span
-						className="text-xs font-black text-white/10 leading-none shrink-0"
-						aria-hidden="true"
-					>
-						{num}
-					</span>
-				</div>
-
-				<h3
-					className={`font-black text-white leading-tight mb-4 ${grid ? "text-2xl md:text-3xl" : "text-xl"}`}
+			<div className="flex flex-col flex-1 p-5">
+				<p
+					className={`text-xs font-semibold tracking-[0.18em] uppercase mb-2 ${accent.text}`}
 				>
+					{formatDate(project.date)}
+				</p>
+
+				<h3 className="font-black text-white leading-tight text-lg mb-3">
 					{project.title}
 				</h3>
 
@@ -576,28 +664,8 @@ function ProjectCard({
 					</p>
 				)}
 
-				<div className="flex flex-wrap gap-1.5 items-center">
-					{visible.map((comp) => (
-						<span
-							key={comp}
-							className={`px-2.5 py-1 text-xs font-medium rounded-full border ${COMPETENCY_CLASSES[comp]}`}
-						>
-							{comp}
-						</span>
-					))}
-					{!showAll && remaining > 0 && (
-						<button
-							type="button"
-							onClick={(e) => {
-								e.preventDefault();
-								e.stopPropagation();
-								setShowAll(true);
-							}}
-							className="px-2.5 py-1 text-xs font-medium rounded-full bg-sabs-bg-hover border border-sabs-border-2 text-sabs-muted hover:text-white transition-colors"
-						>
-							+{remaining}
-						</button>
-					)}
+				<div className="mt-auto">
+					<CompetencyPills competencies={project.competencies} max={3} />
 				</div>
 			</div>
 		</button>
@@ -607,8 +675,8 @@ function ProjectCard({
 export function Projects() {
 	const sectionRef = useRef<HTMLElement>(null);
 	const headingRef = useRef<HTMLDivElement>(null);
-	const gridRef = useRef<HTMLDivElement>(null);
 	const filtersRef = useRef<HTMLDivElement>(null);
+	const contentRef = useRef<HTMLDivElement>(null);
 	const animatedRef = useRef(false);
 	const [activeFilter, setActiveFilter] = useState<Competency | null>(null);
 	const [selectedProject, setSelectedProject] = useState<Project | null>(null);
@@ -617,18 +685,11 @@ export function Projects() {
 		? projects.filter((p) => p.competencies.includes(activeFilter))
 		: projects;
 
-	const useGrid = filteredProjects.length <= 4;
-
-	const handleScroll = (dir: "left" | "right") => {
-		if (!gridRef.current) return;
-		const card = gridRef.current.querySelector("[data-project-card]");
-		const cardWidth = card ? (card as HTMLElement).offsetWidth : 320;
-		const gap = window.innerWidth >= 768 ? 20 : 16;
-		gridRef.current.scrollBy({
-			left: dir === "right" ? cardWidth + gap : -(cardWidth + gap),
-			behavior: "smooth",
-		});
-	};
+	// Most recent project is featured; the rest fill the grid.
+	const sorted = [...filteredProjects].sort((a, b) =>
+		b.date.localeCompare(a.date),
+	);
+	const [featured, ...rest] = sorted;
 
 	// Reset animation guard when filter changes so new items can animate in
 	// biome-ignore lint/correctness/useExhaustiveDependencies: animatedRef is a ref, not state
@@ -638,9 +699,11 @@ export function Projects() {
 
 	useEffect(() => {
 		const ctx = gsap.context(() => {
+			const reveals = contentRef.current
+				? Array.from(contentRef.current.querySelectorAll("[data-reveal]"))
+				: [];
 			gsap.set([headingRef.current, filtersRef.current], { opacity: 0, y: 40 });
-			if (gridRef.current)
-				gsap.set(Array.from(gridRef.current.children), { opacity: 0, y: 50 });
+			gsap.set(reveals, { opacity: 0, y: 50 });
 
 			ScrollTrigger.create({
 				trigger: sectionRef.current,
@@ -648,26 +711,27 @@ export function Projects() {
 				onEnter: () => {
 					if (animatedRef.current) return;
 					animatedRef.current = true;
-					const tl = gsap.timeline();
-					tl.to(headingRef.current, {
-						opacity: 1,
-						y: 0,
-						duration: 0.9,
-						ease: "power3.out",
-					})
+					gsap
+						.timeline()
+						.to(headingRef.current, {
+							opacity: 1,
+							y: 0,
+							duration: 0.9,
+							ease: "power3.out",
+						})
 						.to(
 							filtersRef.current,
 							{ opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
 							"-=0.5",
 						)
 						.to(
-							gridRef.current ? Array.from(gridRef.current.children) : [],
+							reveals,
 							{
 								opacity: 1,
 								y: 0,
 								duration: 0.8,
 								ease: "power3.out",
-								stagger: 0.15,
+								stagger: 0.12,
 							},
 							"-=0.3",
 						);
@@ -713,7 +777,7 @@ export function Projects() {
 						className={`px-4 py-2 rounded-full text-xs font-semibold tracking-wider uppercase transition-all duration-300 ${
 							activeFilter === null
 								? "sabs-gradient-bg text-sabs-bg"
-								: "bg-sabs-bg-3 text-sabs-muted border border-sabs-border hover:text-white"
+								: "bg-sabs-bg-3 text-sabs-muted border border-sabs-border hover:text-white hover:border-sabs-border-2"
 						}`}
 					>
 						Tous
@@ -728,7 +792,7 @@ export function Projects() {
 							className={`px-4 py-2 rounded-full text-xs font-semibold tracking-wider uppercase transition-all duration-300 ${
 								activeFilter === comp
 									? "sabs-gradient-bg text-sabs-bg"
-									: "bg-sabs-bg-3 text-sabs-muted border border-sabs-border hover:text-white"
+									: "bg-sabs-bg-3 text-sabs-muted border border-sabs-border hover:text-white hover:border-sabs-border-2"
 							}`}
 						>
 							{comp}
@@ -736,76 +800,29 @@ export function Projects() {
 					))}
 				</div>
 
-				{/* Grid (≤4) or horizontal scroll (5+) */}
-				{useGrid ? (
-					<div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-						{filteredProjects.map((project, index) => (
-							<ProjectCard
-								key={project.id}
-								project={project}
-								index={index}
-								grid
-								onClick={() => setSelectedProject(project)}
-							/>
-						))}
-					</div>
-				) : (
-					<div className="flex items-center gap-3 -mx-4 sm:-mx-6 md:mx-0">
-						<button
-							type="button"
-							onClick={() => handleScroll("left")}
-							className="hidden md:flex flex-shrink-0 w-10 h-10 items-center justify-center rounded-full bg-sabs-bg-3 border border-sabs-border text-sabs-muted hover:text-sabs-green transition-colors"
-							aria-label="Précédent"
-						>
-							<svg
-								className="w-4 h-4"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								strokeWidth="2"
-								strokeLinecap="round"
-								strokeLinejoin="round"
-							>
-								<title>Précédent</title>
-								<path d="M15 18l-6-6 6-6" />
-							</svg>
-						</button>
+				{/* Featured + grid */}
+				<div ref={contentRef} className="flex flex-col gap-6">
+					{featured && (
+						<FeaturedCard
+							project={featured}
+							index={0}
+							onClick={() => setSelectedProject(featured)}
+						/>
+					)}
 
-						<div
-							ref={gridRef}
-							className="flex-1 flex gap-4 md:gap-5 overflow-x-auto snap-x snap-mandatory pb-4 px-4 sm:px-6 md:px-0 min-w-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-						>
-							{filteredProjects.map((project, index) => (
+					{rest.length > 0 && (
+						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+							{rest.map((project, i) => (
 								<ProjectCard
 									key={project.id}
 									project={project}
-									index={index}
+									index={i + 1}
 									onClick={() => setSelectedProject(project)}
 								/>
 							))}
 						</div>
-
-						<button
-							type="button"
-							onClick={() => handleScroll("right")}
-							className="hidden md:flex flex-shrink-0 w-10 h-10 items-center justify-center rounded-full bg-sabs-bg-3 border border-sabs-border text-sabs-muted hover:text-sabs-green transition-colors"
-							aria-label="Suivant"
-						>
-							<svg
-								className="w-4 h-4"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								strokeWidth="2"
-								strokeLinecap="round"
-								strokeLinejoin="round"
-							>
-								<title>Suivant</title>
-								<path d="M9 6l6 6-6 6" />
-							</svg>
-						</button>
-					</div>
-				)}
+					)}
+				</div>
 
 				{filteredProjects.length === 0 && (
 					<p className="text-center py-20 text-lg font-light text-sabs-muted-3">

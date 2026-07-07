@@ -4,7 +4,8 @@ export type Competency =
 	| "Mise en scène"
 	| "Caméraman"
 	| "Diffusion en direct/rediffusion"
-	| "Régie mapping écran";
+	| "Régie mapping écran"
+	| "Pyrotechnie";
 
 export type ProjectMediaType =
 	| "youtube"
@@ -25,6 +26,7 @@ export interface Project {
 	medias: ProjectMedia[];
 	competencies: Competency[];
 	description?: string;
+	accent?: "rainbow"; // overrides the index-based card accent
 }
 
 export const COMPETENCIES: Competency[] = [
@@ -34,6 +36,7 @@ export const COMPETENCIES: Competency[] = [
 	"Caméraman",
 	"Diffusion en direct/rediffusion",
 	"Régie mapping écran",
+	"Pyrotechnie",
 ];
 
 export const COMPETENCY_COLORS: Record<Competency, string> = {
@@ -43,12 +46,15 @@ export const COMPETENCY_COLORS: Record<Competency, string> = {
 	Caméraman: "from-emerald-400 to-teal-500",
 	"Diffusion en direct/rediffusion": "from-red-500 to-orange-500",
 	"Régie mapping écran": "from-pink-500 to-rose-500",
+	Pyrotechnie: "from-orange-400 to-amber-500",
 };
 
 export const projects: Project[] = [
 	{
 		id: "course-sur-terre-tropos-2026",
 		title: "Course sur terre - Tropos",
+		description:
+			"Régie vidéo et diffusion en direct pour la course organisée par A.R.C.",
 		date: "2026-04-21",
 		medias: [
 			{
@@ -65,6 +71,8 @@ export const projects: Project[] = [
 	{
 		id: "triathlon-2026",
 		title: "Triathlon 2026",
+		description:
+			"Régie vidéo et diffusion en direct pour le triathlon organisé par le LSMS.",
 		date: "2026-05-15",
 		medias: [
 			{
@@ -121,5 +129,20 @@ export const projects: Project[] = [
 		competencies: ["Régie Lumière", "Régie mapping écran"],
 		description:
 			"Régie lumière et mapping écran pour l'événement de drift organisé par TerraDrift.",
+	},
+	{
+		id: "pride-2026",
+		title: "Pride 2026",
+		date: "2026-06-28",
+		medias: [
+			{
+				type: "youtube",
+				url: "https://youtu.be/awmGw73R4gk",
+			},
+		],
+		competencies: ["Pyrotechnie", "Régie Lumière", "Régie mapping écran"],
+		description:
+			"Feu d'artifice avec projection lumineuse et pyrotechnie pour la Pride 2026.",
+		accent: "rainbow",
 	},
 ];
