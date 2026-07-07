@@ -3,25 +3,27 @@ import "./globals.css";
 import Logo from "@public/img/sabs/sabs-logo-small.png";
 import { Montserrat } from "next/font/google";
 
+const SITE_TITLE = "SABS - Page d'accueil";
+const SITE_DESCRIPTION =
+	"Page d'accueil du site SABS, le site de la micro entreprise SABS.";
+
 export const metadata: Metadata = {
-	title: "SABS - Page d'accueil",
-	description:
-		"Page d'accueil du site SABS, le site de la micro entreprise SABS.",
+	title: SITE_TITLE,
+	description: SITE_DESCRIPTION,
 	icons: {
 		icon: Logo.src,
 	},
 	openGraph: {
 		type: "website",
 		url: "https://sabs.vercel.app/sabs",
-		title: "SABS - Page d'accueil",
-		description:
-			"Page d'accueil du site SABS, le site de la micro entreprise SABS.",
+		title: SITE_TITLE,
+		description: SITE_DESCRIPTION,
 		images: [
 			{
 				url: "https://sabs.vercel.app/img/sabs/sabs-logo-small.png",
 				width: 320,
 				height: 320,
-				alt: "SABS - Page d'accueil",
+				alt: SITE_TITLE,
 			},
 		],
 	},

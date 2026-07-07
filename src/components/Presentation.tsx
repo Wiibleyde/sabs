@@ -3,7 +3,8 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import dynamic from "next/dynamic";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
+import { useGsapContext } from "@/hooks/useGsapContext";
 import { ScrollReveal } from "./reactbits/ScrollReveal";
 
 const LetterGlitch = dynamic(
@@ -11,7 +12,8 @@ const LetterGlitch = dynamic(
 	{ ssr: false },
 );
 
-gsap.registerPlugin(ScrollTrigger);
+const MASK_GRADIENT =
+	"radial-gradient(ellipse 70% 60% at 50% 45%, transparent 38%, black 100%)";
 
 const FEATURES = [
 	{
@@ -93,46 +95,42 @@ export function Presentation() {
 	const textRef = useRef<HTMLDivElement>(null);
 	const cardsRef = useRef<HTMLDivElement>(null);
 
-	useEffect(() => {
-		const ctx = gsap.context(() => {
-			gsap.set([headingRef.current, textRef.current], { opacity: 0, y: 50 });
-			if (cardsRef.current) {
-				gsap.set(Array.from(cardsRef.current.children), { opacity: 0, y: 40 });
-			}
+	useGsapContext(sectionRef, () => {
+		gsap.set([headingRef.current, textRef.current], { opacity: 0, y: 50 });
+		if (cardsRef.current) {
+			gsap.set(Array.from(cardsRef.current.children), { opacity: 0, y: 40 });
+		}
 
-			ScrollTrigger.create({
-				trigger: sectionRef.current,
-				start: "top 70%",
-				onEnter: () => {
-					const tl = gsap.timeline();
-					tl.to(headingRef.current, {
-						opacity: 1,
-						y: 0,
-						duration: 0.9,
-						ease: "power3.out",
-					})
-						.to(
-							textRef.current,
-							{ opacity: 1, y: 0, duration: 0.8, ease: "power2.out" },
-							"-=0.5",
-						)
-						.to(
-							cardsRef.current ? Array.from(cardsRef.current.children) : [],
-							{
-								opacity: 1,
-								y: 0,
-								duration: 0.7,
-								ease: "power2.out",
-								stagger: 0.12,
-							},
-							"-=0.4",
-						);
-				},
-			});
-		}, sectionRef);
-
-		return () => ctx.revert();
-	}, []);
+		ScrollTrigger.create({
+			trigger: sectionRef.current,
+			start: "top 70%",
+			onEnter: () => {
+				const tl = gsap.timeline();
+				tl.to(headingRef.current, {
+					opacity: 1,
+					y: 0,
+					duration: 0.9,
+					ease: "power3.out",
+				})
+					.to(
+						textRef.current,
+						{ opacity: 1, y: 0, duration: 0.8, ease: "power2.out" },
+						"-=0.5",
+					)
+					.to(
+						cardsRef.current ? Array.from(cardsRef.current.children) : [],
+						{
+							opacity: 1,
+							y: 0,
+							duration: 0.7,
+							ease: "power2.out",
+							stagger: 0.12,
+						},
+						"-=0.4",
+					);
+			},
+		});
+	});
 
 	return (
 		<section
@@ -145,20 +143,16 @@ export function Presentation() {
 				className="absolute inset-0 z-0 overflow-hidden pointer-events-none"
 				style={{
 					opacity: 0.18,
-					maskImage:
-						"radial-gradient(ellipse 70% 60% at 50% 45%, transparent 38%, black 100%)",
-					WebkitMaskImage:
-						"radial-gradient(ellipse 70% 60% at 50% 45%, transparent 38%, black 100%)",
+					maskImage: MASK_GRADIENT,
+					WebkitMaskImage: MASK_GRADIENT,
 				}}
 			>
 				<LetterGlitch />
 			</div>
 
-			{/* Left accent bar */}
 			<div className="absolute left-0 top-0 bottom-0 w-1 sabs-gradient-bg-vertical" />
 
 			<div className="relative z-10 container mx-auto px-6 sm:px-10 md:px-16 max-w-6xl">
-				{/* Heading */}
 				<div ref={headingRef} className="mb-12 md:mb-16">
 					<p className="text-xs font-semibold tracking-[0.4em] uppercase mb-4 text-sabs-green">
 						À propos
@@ -174,7 +168,6 @@ export function Presentation() {
 					<div className="sabs-gradient-bg rounded-full w-16 h-0.5" />
 				</div>
 
-				{/* Description */}
 				<div ref={textRef} className="mb-16 md:mb-20 max-w-3xl">
 					<p className="text-[clamp(1rem,2.5vw,1.25rem)] font-light leading-relaxed mb-6 text-sabs-muted">
 						<span className="font-semibold text-white">SABS</span> est une micro
@@ -191,7 +184,6 @@ export function Presentation() {
 					</p>
 				</div>
 
-				{/* Feature cards */}
 				<div
 					ref={cardsRef}
 					className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6"

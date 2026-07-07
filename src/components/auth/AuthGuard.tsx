@@ -1,12 +1,9 @@
 "use client";
 
-import { Be_Vietnam_Pro } from "next/font/google";
 import { useState } from "react";
+import { beVietnam } from "@/lib/fonts";
 
-const BeVietnam = Be_Vietnam_Pro({
-	subsets: ["latin"],
-	weight: ["400", "500", "600", "700"],
-});
+const PIN_LENGTH = 4;
 
 interface AuthGuardProps {
 	onLogin: (pin: string) => Promise<{ success: boolean; error?: string }>;
@@ -14,7 +11,6 @@ interface AuthGuardProps {
 	title?: string;
 	subtitle?: string;
 	className?: string;
-	children?: React.ReactNode;
 }
 
 export function AuthGuard({
@@ -49,54 +45,44 @@ export function AuthGuard({
 	};
 
 	const handlePinChange = (value: string) => {
-		const numericValue = value.replace(/\D/g, "").slice(0, 4);
-		setPin(numericValue);
+		setPin(value.replace(/\D/g, "").slice(0, PIN_LENGTH));
 		setError("");
 	};
 
-	const handleKeyPress = (e: React.KeyboardEvent) => {
-		if (e.key === "Enter") {
-			e.preventDefault();
-			handleSubmit(e as React.FormEvent);
-		}
-	};
-
 	const loading = isLoading || externalLoading;
+	const [firstWord, ...restWords] = title.split(" ");
+	const restTitle = restWords.join(" ");
 
 	return (
 		<div
-			className={`min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 ${BeVietnam.className} ${className}`}
+			className={`min-h-screen flex items-center justify-center bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 ${beVietnam.className} ${className}`}
 		>
-			{/* Particules de fond */}
 			<div className="absolute inset-0 overflow-hidden pointer-events-none">
-				<div className="absolute top-1/4 left-1/4 w-3 h-3 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-bounce [animation-delay:0s] [animation-duration:3s]"></div>
-				<div className="absolute top-3/4 right-1/4 w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full animate-bounce [animation-delay:1s] [animation-duration:4s]"></div>
-				<div className="absolute top-1/2 left-1/3 w-2.5 h-2.5 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full animate-bounce [animation-delay:2s] [animation-duration:5s]"></div>
-				<div className="absolute top-1/3 right-1/3 w-1.5 h-1.5 bg-gradient-to-r from-purple-300 to-pink-300 rounded-full animate-bounce [animation-delay:0.5s] [animation-duration:3.5s]"></div>
+				<div className="absolute top-1/4 left-1/4 w-3 h-3 bg-linear-to-r from-purple-400 to-pink-400 rounded-full animate-bounce [animation-delay:0s] [animation-duration:3s]"></div>
+				<div className="absolute top-3/4 right-1/4 w-2 h-2 bg-linear-to-r from-blue-400 to-purple-400 rounded-full animate-bounce [animation-delay:1s] [animation-duration:4s]"></div>
+				<div className="absolute top-1/2 left-1/3 w-2.5 h-2.5 bg-linear-to-r from-pink-400 to-purple-400 rounded-full animate-bounce [animation-delay:2s] [animation-duration:5s]"></div>
+				<div className="absolute top-1/3 right-1/3 w-1.5 h-1.5 bg-linear-to-r from-purple-300 to-pink-300 rounded-full animate-bounce [animation-delay:0.5s] [animation-duration:3.5s]"></div>
 			</div>
 
 			<div className="relative z-10 w-full max-w-md mx-4">
 				<div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/20 transform transition-all duration-500 hover:scale-105">
-					{/* Logo/Titre */}
 					<div className="text-center mb-8">
 						<h1 className="text-3xl font-bold text-white mb-2">
-							<span className="text-transparent bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text">
-								{title.split(" ")[0]}
+							<span className="text-transparent bg-linear-to-r from-purple-400 to-pink-400 bg-clip-text">
+								{firstWord}
 							</span>
-							{title.split(" ").slice(1).join(" ") &&
-								` ${title.split(" ").slice(1).join(" ")}`}
+							{restTitle && ` ${restTitle}`}
 						</h1>
 						<p className="text-white/70 text-sm">{subtitle}</p>
 					</div>
 
 					<form onSubmit={handleSubmit} className="space-y-6">
-						{/* Champ PIN */}
 						<div className="relative">
 							<label
 								htmlFor="pin"
 								className="block text-white/80 text-sm font-medium mb-3 text-center"
 							>
-								Code PIN (4 chiffres)
+								Code PIN ({PIN_LENGTH} chiffres)
 							</label>
 
 							<div className="relative">
@@ -105,15 +91,13 @@ export function AuthGuard({
 									type={showPinDots ? "password" : "text"}
 									value={pin}
 									onChange={(e) => handlePinChange(e.target.value)}
-									onKeyPress={handleKeyPress}
 									className="w-full px-4 py-4 bg-white/5 border border-white/20 rounded-xl text-white text-center text-2xl tracking-[0.5em] font-mono focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent transition-all duration-300 placeholder-white/40"
 									placeholder="••••"
-									maxLength={4}
+									maxLength={PIN_LENGTH}
 									autoComplete="off"
 									disabled={loading}
 								/>
 
-								{/* Bouton pour basculer la visibilité */}
 								<button
 									type="button"
 									onClick={() => setShowPinDots(!showPinDots)}
@@ -161,18 +145,16 @@ export function AuthGuard({
 							</div>
 						</div>
 
-						{/* Message d'erreur */}
 						{error && (
 							<div className="bg-red-500/20 border border-red-500/30 rounded-lg p-3 text-red-200 text-sm text-center animate-pulse">
 								{error}
 							</div>
 						)}
 
-						{/* Bouton de connexion */}
 						<button
 							type="submit"
-							disabled={pin.length !== 4 || loading}
-							className="w-full py-4 px-6 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl transition-all duration-300 hover:from-purple-600 hover:to-pink-600 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-transparent"
+							disabled={pin.length !== PIN_LENGTH || loading}
+							className="w-full py-4 px-6 bg-linear-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl transition-all duration-300 hover:from-purple-600 hover:to-pink-600 hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-transparent"
 						>
 							{loading ? (
 								<div className="flex items-center justify-center space-x-2">
@@ -185,7 +167,6 @@ export function AuthGuard({
 						</button>
 					</form>
 
-					{/* Info de sécurité */}
 					<div className="mt-6 text-center text-white/50 text-xs">
 						<p>🔒 Accès sécurisé au tableau de bord</p>
 					</div>

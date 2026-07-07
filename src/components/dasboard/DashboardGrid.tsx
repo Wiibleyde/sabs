@@ -2,25 +2,29 @@ const COMING_SOON_CARDS = [
 	{
 		title: "SRT",
 		desc: "Connexions SRT en temps réel",
-		accent: "border-t-sabs-green text-sabs-green",
+		borderClass: "border-t-sabs-green",
+		textClass: "text-sabs-green",
 		dot: "bg-sabs-green",
 	},
 	{
 		title: "RTMP",
 		desc: "Flux RTMP actifs",
-		accent: "border-t-sabs-purple text-sabs-purple",
+		borderClass: "border-t-sabs-purple",
+		textClass: "text-sabs-purple",
 		dot: "bg-sabs-purple",
 	},
 	{
 		title: "Statistiques",
 		desc: "Métriques système",
-		accent: "border-t-sabs-red text-sabs-red",
+		borderClass: "border-t-sabs-red",
+		textClass: "text-sabs-red",
 		dot: "bg-sabs-red",
 	},
 	{
 		title: "Événements",
 		desc: "Journal des activités",
-		accent: "border-t-sabs-gold text-sabs-gold",
+		borderClass: "border-t-sabs-gold",
+		textClass: "text-sabs-gold",
 		dot: "bg-sabs-gold",
 	},
 ];
@@ -28,7 +32,6 @@ const COMING_SOON_CARDS = [
 export function DashboardGrid() {
 	return (
 		<div>
-			{/* Coming soon banner */}
 			<div className="flex flex-col items-center justify-center py-16 mb-10 rounded-2xl text-center bg-sabs-bg-2 border border-sabs-border">
 				<div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 sabs-gradient-bg">
 					<svg
@@ -52,12 +55,11 @@ export function DashboardGrid() {
 				</p>
 			</div>
 
-			{/* Module placeholders */}
 			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 				{COMING_SOON_CARDS.map((card) => (
 					<div
 						key={card.title}
-						className={`p-6 rounded-xl bg-sabs-bg-2 border border-sabs-border border-t-2 ${card.accent.split(" ")[0]}`}
+						className={`p-6 rounded-xl bg-sabs-bg-2 border border-sabs-border border-t-2 ${card.borderClass}`}
 					>
 						<div className="inline-flex w-8 h-8 rounded-lg items-center justify-center mb-4 bg-sabs-bg-3">
 							<div className={`w-2 h-2 rounded-full ${card.dot}`} />
@@ -67,7 +69,7 @@ export function DashboardGrid() {
 						</h3>
 						<p className="text-xs font-light text-sabs-muted">{card.desc}</p>
 						<p
-							className={`text-xs font-bold tracking-wider uppercase mt-4 ${card.accent.split(" ")[1]} opacity-60`}
+							className={`text-xs font-bold tracking-wider uppercase mt-4 ${card.textClass} opacity-60`}
 						>
 							Bientôt disponible
 						</p>

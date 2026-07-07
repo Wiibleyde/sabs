@@ -1,25 +1,35 @@
 "use client";
 
-import { createContext, type ReactNode, useContext } from "react";
+import { createContext, type ReactNode, useContext, useMemo } from "react";
 import { useAuthSimple } from "@/hooks/useAuthSimple";
 
-interface AuthContextType {
-	isAuthenticated: boolean;
-	isLoading: boolean;
-	error: string | null;
-	login: (pin: string) => Promise<{ success: boolean; error?: string }>;
-	logout: () => Promise<void>;
-	checkAuthentication: () => Promise<boolean>;
-}
+type AuthContextType = ReturnType<typeof useAuthSimple>;
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-	const authData = useAuthSimple();
+	const {
+		isAuthenticated,
+		isLoading,
+		error,
+		login,
+		logout,
+		checkAuthentication,
+	} = useAuthSimple();
 
-	return (
-		<AuthContext.Provider value={authData}>{children}</AuthContext.Provider>
+	const value = useMemo<AuthContextType>(
+		() => ({
+			isAuthenticated,
+			isLoading,
+			error,
+			login,
+			logout,
+			checkAuthentication,
+		}),
+		[isAuthenticated, isLoading, error, login, logout, checkAuthentication],
 	);
+
+	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {

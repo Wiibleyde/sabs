@@ -78,7 +78,7 @@ const DEFAULTS: Record<ObsVariant, VariantDefaults> = {
 	},
 };
 
-type RawParams = Record<string, string | string[] | undefined>;
+export type ObsSearchParams = Record<string, string | string[] | undefined>;
 
 function first(value: string | string[] | undefined): string | undefined {
 	return Array.isArray(value) ? value[0] : value;
@@ -96,7 +96,7 @@ function flag(
 /** Merge URL search params over per-screen defaults into a typed scene config. */
 export function resolveObsConfig(
 	variant: ObsVariant,
-	raw: RawParams,
+	raw: ObsSearchParams,
 ): ObsSceneConfig {
 	const defaults = DEFAULTS[variant];
 	const accentRaw = first(raw.accent) as ObsAccent | undefined;

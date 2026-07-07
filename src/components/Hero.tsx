@@ -4,7 +4,8 @@ import WhiteLogo from "@public/img/sabs/logo-white.png";
 import { gsap } from "gsap";
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
+import { useGsapContext } from "@/hooks/useGsapContext";
 import { GlitchText } from "./reactbits/GlitchText";
 
 const ParticleField = dynamic(
@@ -13,6 +14,7 @@ const ParticleField = dynamic(
 );
 
 export function Hero() {
+	const sectionRef = useRef<HTMLElement>(null);
 	const logoRef = useRef<HTMLDivElement>(null);
 	const titleRef = useRef<HTMLHeadingElement>(null);
 	const subtitleRef = useRef<HTMLParagraphElement>(null);
@@ -20,7 +22,7 @@ export function Hero() {
 	const ctaRef = useRef<HTMLButtonElement>(null);
 	const scrollRef = useRef<HTMLButtonElement>(null);
 
-	useEffect(() => {
+	useGsapContext(sectionRef, () => {
 		const tl = gsap.timeline({ delay: 0.3 });
 
 		gsap.set(
@@ -75,7 +77,7 @@ export function Hero() {
 			repeat: -1,
 			delay: 1.5,
 		});
-	}, []);
+	});
 
 	const scrollDown = () => {
 		document
@@ -85,15 +87,14 @@ export function Hero() {
 
 	return (
 		<section
+			ref={sectionRef}
 			id="hero"
 			className="relative h-screen w-full flex flex-col items-center justify-center bg-sabs-bg overflow-x-hidden"
 		>
-			{/* ThreeJS particles */}
 			<div className="absolute inset-0 z-0">
 				<ParticleField />
 			</div>
 
-			{/* Radial vignette */}
 			<div
 				className="absolute inset-0 z-0 pointer-events-none"
 				style={{
@@ -102,7 +103,6 @@ export function Hero() {
 				}}
 			/>
 
-			{/* Content */}
 			<div className="relative z-10 flex flex-col items-center px-4 text-center">
 				<div ref={logoRef} className="mb-10">
 					<Image
@@ -144,7 +144,6 @@ export function Hero() {
 				</button>
 			</div>
 
-			{/* Scroll indicator */}
 			<button
 				ref={scrollRef}
 				type="button"

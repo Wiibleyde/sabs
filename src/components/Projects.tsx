@@ -3,7 +3,7 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
 	COMPETENCIES,
 	type Competency,
@@ -11,12 +11,14 @@ import {
 	type ProjectMedia,
 	projects,
 } from "@/data/projects";
+import { useGsapContext } from "@/hooks/useGsapContext";
 import { ScrollReveal } from "./reactbits/ScrollReveal";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const RAINBOW_GRADIENT =
 	"linear-gradient(90deg,#e40303,#ff8c00,#ffed00,#008026,#004dff,#750787)";
+// Full literal so Tailwind JIT emits it; `image:` hint forces a background-image.
+const RAINBOW_TEXT_CLASS =
+	"text-transparent bg-clip-text bg-[image:linear-gradient(90deg,#e40303,#ff8c00,#ffed00,#008026,#004dff,#750787)]";
 
 // Brand color rotation (r,g,b) used for accent line, date text and hover glow.
 const ACCENTS = [
@@ -35,8 +37,7 @@ interface Accent {
 function getAccent(project: Project, index: number): Accent {
 	if (project.accent === "rainbow") {
 		return {
-			// full literal so Tailwind JIT picks it up; `image:` hint forces bg-image
-			text: "text-transparent bg-clip-text bg-[image:linear-gradient(90deg,#e40303,#ff8c00,#ffed00,#008026,#004dff,#750787)]",
+			text: RAINBOW_TEXT_CLASS,
 			line: RAINBOW_GRADIENT,
 			glow: "rgba(228,3,3,0.35)",
 		};
@@ -47,6 +48,10 @@ function getAccent(project: Project, index: number): Accent {
 		line: `rgb(${a.rgb})`,
 		glow: `rgba(${a.rgb},0.35)`,
 	};
+}
+
+function glowStyle(accent: Accent): React.CSSProperties {
+	return { "--glow": accent.glow } as React.CSSProperties;
 }
 
 const COMPETENCY_CLASSES: Record<Competency, string> = {
@@ -244,6 +249,38 @@ function MediaViewer({ media }: { media: ProjectMedia }) {
 	return null;
 }
 
+function NavButton({
+	direction,
+	onClick,
+}: {
+	direction: "prev" | "next";
+	onClick: () => void;
+}) {
+	const isPrev = direction === "prev";
+	const label = isPrev ? "Précédent" : "Suivant";
+	return (
+		<button
+			type="button"
+			onClick={onClick}
+			className={`absolute ${isPrev ? "left-3" : "right-3"} top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-black/60 border border-white/10 text-white hover:bg-black/80 transition-colors`}
+			aria-label={label}
+		>
+			<svg
+				className="w-4 h-4"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
+				strokeWidth="2"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			>
+				<title>{label}</title>
+				<path d={isPrev ? "M15 18l-6-6 6-6" : "M9 6l6 6-6 6"} />
+			</svg>
+		</button>
+	);
+}
+
 function ProjectModal({
 	project,
 	onClose,
@@ -286,7 +323,6 @@ function ProjectModal({
 				onClick={(e) => e.stopPropagation()}
 				onKeyDown={(e) => e.stopPropagation()}
 			>
-				{/* Header */}
 				<div className="flex items-center justify-between px-6 py-4 border-b border-sabs-border shrink-0">
 					<div>
 						<p className="text-xs font-semibold tracking-[0.2em] uppercase text-sabs-green mb-0.5">
@@ -317,7 +353,6 @@ function ProjectModal({
 					</button>
 				</div>
 
-				{/* Media area */}
 				<div
 					className="relative flex-1 min-h-0 bg-black"
 					style={{
@@ -350,52 +385,20 @@ function ProjectModal({
 						</div>
 					)}
 
-					{/* Prev/Next over media */}
 					{total > 1 && (
 						<>
-							<button
-								type="button"
+							<NavButton
+								direction="prev"
 								onClick={() => setCurrent((c) => (c - 1 + total) % total)}
-								className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-black/60 border border-white/10 text-white hover:bg-black/80 transition-colors"
-								aria-label="Précédent"
-							>
-								<svg
-									className="w-4 h-4"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								>
-									<title>Précédent</title>
-									<path d="M15 18l-6-6 6-6" />
-								</svg>
-							</button>
-							<button
-								type="button"
+							/>
+							<NavButton
+								direction="next"
 								onClick={() => setCurrent((c) => (c + 1) % total)}
-								className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-black/60 border border-white/10 text-white hover:bg-black/80 transition-colors"
-								aria-label="Suivant"
-							>
-								<svg
-									className="w-4 h-4"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								>
-									<title>Suivant</title>
-									<path d="M9 6l6 6-6 6" />
-								</svg>
-							</button>
+							/>
 						</>
 					)}
 				</div>
 
-				{/* Thumbnails strip (when >1 media) */}
 				{total > 1 && (
 					<div className="flex gap-2 px-6 py-3 overflow-x-auto scrollbar-none shrink-0 border-t border-sabs-border">
 						{project.medias.map((m, i) => {
@@ -461,7 +464,6 @@ function ProjectModal({
 					</div>
 				)}
 
-				{/* Footer: description + dots */}
 				{(project.description || total > 1) && (
 					<div className="px-6 py-4 border-t border-sabs-border shrink-0">
 						{project.description && (
@@ -513,17 +515,15 @@ function FeaturedCard({
 			type="button"
 			data-reveal
 			onClick={onClick}
-			style={{ "--glow": accent.glow } as React.CSSProperties}
+			style={glowStyle(accent)}
 			className="group relative w-full text-left rounded-3xl overflow-hidden bg-sabs-bg-3 border border-sabs-border transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_30px_70px_-20px_var(--glow)]"
 		>
-			{/* accent top line */}
 			<div
 				className="absolute top-0 inset-x-0 h-1 z-20"
 				style={{ background: accent.line }}
 			/>
 
 			<div className="grid md:grid-cols-2">
-				{/* Media */}
 				<div className="relative aspect-video md:aspect-auto md:min-h-85 overflow-hidden">
 					{thumbnailUrl ? (
 						<Image
@@ -542,7 +542,6 @@ function FeaturedCard({
 					{isVideo && <PlayOverlay />}
 				</div>
 
-				{/* Content */}
 				<div className="relative flex flex-col justify-center p-7 md:p-10">
 					<div className="flex items-center gap-3 mb-4">
 						<span className="text-[11px] font-black tracking-[0.3em] uppercase px-3 py-1 rounded-full border border-sabs-border-2 text-sabs-muted">
@@ -611,16 +610,14 @@ function ProjectCard({
 			type="button"
 			data-reveal
 			onClick={onClick}
-			style={{ "--glow": accent.glow } as React.CSSProperties}
+			style={glowStyle(accent)}
 			className="group relative flex flex-col text-left rounded-2xl overflow-hidden bg-sabs-bg-3 border border-sabs-border transition-all duration-500 hover:-translate-y-1 hover:border-sabs-border-2 hover:shadow-[0_24px_50px_-16px_var(--glow)]"
 		>
-			{/* accent top line */}
 			<div
 				className="absolute top-0 inset-x-0 h-0.5 z-20"
 				style={{ background: accent.line }}
 			/>
 
-			{/* Thumbnail */}
 			<div className="relative w-full aspect-video overflow-hidden">
 				{thumbnailUrl ? (
 					<Image
@@ -646,7 +643,6 @@ function ProjectCard({
 				{isVideo && <PlayOverlay />}
 			</div>
 
-			{/* Info */}
 			<div className="flex flex-col flex-1 p-5">
 				<p
 					className={`text-xs font-semibold tracking-[0.18em] uppercase mb-2 ${accent.text}`}
@@ -672,6 +668,30 @@ function ProjectCard({
 	);
 }
 
+function FilterPill({
+	active,
+	label,
+	onClick,
+}: {
+	active: boolean;
+	label: string;
+	onClick: () => void;
+}) {
+	return (
+		<button
+			type="button"
+			onClick={onClick}
+			className={`px-4 py-2 rounded-full text-xs font-semibold tracking-wider uppercase transition-all duration-300 ${
+				active
+					? "sabs-gradient-bg text-sabs-bg"
+					: "bg-sabs-bg-3 text-sabs-muted border border-sabs-border hover:text-white hover:border-sabs-border-2"
+			}`}
+		>
+			{label}
+		</button>
+	);
+}
+
 export function Projects() {
 	const sectionRef = useRef<HTMLElement>(null);
 	const headingRef = useRef<HTMLDivElement>(null);
@@ -681,66 +701,56 @@ export function Projects() {
 	const [activeFilter, setActiveFilter] = useState<Competency | null>(null);
 	const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
-	const filteredProjects = activeFilter
-		? projects.filter((p) => p.competencies.includes(activeFilter))
-		: projects;
+	const closeModal = useCallback(() => setSelectedProject(null), []);
 
 	// Most recent project is featured; the rest fill the grid.
-	const sorted = [...filteredProjects].sort((a, b) =>
-		b.date.localeCompare(a.date),
-	);
-	const [featured, ...rest] = sorted;
-
-	// Reset animation guard when filter changes so new items can animate in
-	// biome-ignore lint/correctness/useExhaustiveDependencies: animatedRef is a ref, not state
-	useEffect(() => {
-		animatedRef.current = false;
+	const [featured, ...rest] = useMemo(() => {
+		const filtered = activeFilter
+			? projects.filter((p) => p.competencies.includes(activeFilter))
+			: projects;
+		return [...filtered].sort((a, b) => b.date.localeCompare(a.date));
 	}, [activeFilter]);
 
-	useEffect(() => {
-		const ctx = gsap.context(() => {
-			const reveals = contentRef.current
-				? Array.from(contentRef.current.querySelectorAll("[data-reveal]"))
-				: [];
-			gsap.set([headingRef.current, filtersRef.current], { opacity: 0, y: 40 });
-			gsap.set(reveals, { opacity: 0, y: 50 });
+	useGsapContext(sectionRef, () => {
+		const reveals = contentRef.current
+			? Array.from(contentRef.current.querySelectorAll("[data-reveal]"))
+			: [];
+		gsap.set([headingRef.current, filtersRef.current], { opacity: 0, y: 40 });
+		gsap.set(reveals, { opacity: 0, y: 50 });
 
-			ScrollTrigger.create({
-				trigger: sectionRef.current,
-				start: "top 65%",
-				onEnter: () => {
-					if (animatedRef.current) return;
-					animatedRef.current = true;
-					gsap
-						.timeline()
-						.to(headingRef.current, {
+		ScrollTrigger.create({
+			trigger: sectionRef.current,
+			start: "top 65%",
+			onEnter: () => {
+				if (animatedRef.current) return;
+				animatedRef.current = true;
+				gsap
+					.timeline()
+					.to(headingRef.current, {
+						opacity: 1,
+						y: 0,
+						duration: 0.9,
+						ease: "power3.out",
+					})
+					.to(
+						filtersRef.current,
+						{ opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
+						"-=0.5",
+					)
+					.to(
+						reveals,
+						{
 							opacity: 1,
 							y: 0,
-							duration: 0.9,
+							duration: 0.8,
 							ease: "power3.out",
-						})
-						.to(
-							filtersRef.current,
-							{ opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
-							"-=0.5",
-						)
-						.to(
-							reveals,
-							{
-								opacity: 1,
-								y: 0,
-								duration: 0.8,
-								ease: "power3.out",
-								stagger: 0.12,
-							},
-							"-=0.3",
-						);
-				},
-			});
-		}, sectionRef);
-
-		return () => ctx.revert();
-	}, []);
+							stagger: 0.12,
+						},
+						"-=0.3",
+					);
+			},
+		});
+	});
 
 	return (
 		<section
@@ -751,7 +761,6 @@ export function Projects() {
 			<div className="absolute right-0 top-0 bottom-0 w-1 sabs-gradient-bg-vertical" />
 
 			<div className="container mx-auto px-6 sm:px-10 md:px-16 max-w-6xl">
-				{/* Heading */}
 				<div ref={headingRef} className="mb-10 md:mb-12">
 					<p className="text-xs font-semibold tracking-[0.4em] uppercase mb-4 text-sabs-green">
 						Portfolio
@@ -769,38 +778,24 @@ export function Projects() {
 					</p>
 				</div>
 
-				{/* Filters */}
 				<div ref={filtersRef} className="flex flex-wrap gap-2 mb-10">
-					<button
-						type="button"
+					<FilterPill
+						active={activeFilter === null}
+						label="Tous"
 						onClick={() => setActiveFilter(null)}
-						className={`px-4 py-2 rounded-full text-xs font-semibold tracking-wider uppercase transition-all duration-300 ${
-							activeFilter === null
-								? "sabs-gradient-bg text-sabs-bg"
-								: "bg-sabs-bg-3 text-sabs-muted border border-sabs-border hover:text-white hover:border-sabs-border-2"
-						}`}
-					>
-						Tous
-					</button>
+					/>
 					{COMPETENCIES.map((comp) => (
-						<button
+						<FilterPill
 							key={comp}
-							type="button"
+							active={activeFilter === comp}
+							label={comp}
 							onClick={() =>
 								setActiveFilter(comp === activeFilter ? null : comp)
 							}
-							className={`px-4 py-2 rounded-full text-xs font-semibold tracking-wider uppercase transition-all duration-300 ${
-								activeFilter === comp
-									? "sabs-gradient-bg text-sabs-bg"
-									: "bg-sabs-bg-3 text-sabs-muted border border-sabs-border hover:text-white hover:border-sabs-border-2"
-							}`}
-						>
-							{comp}
-						</button>
+						/>
 					))}
 				</div>
 
-				{/* Featured + grid */}
 				<div ref={contentRef} className="flex flex-col gap-6">
 					{featured && (
 						<FeaturedCard
@@ -824,7 +819,7 @@ export function Projects() {
 					)}
 				</div>
 
-				{filteredProjects.length === 0 && (
+				{!featured && (
 					<p className="text-center py-20 text-lg font-light text-sabs-muted-3">
 						Aucun projet pour cette compétence.
 					</p>
@@ -832,10 +827,7 @@ export function Projects() {
 			</div>
 
 			{selectedProject && (
-				<ProjectModal
-					project={selectedProject}
-					onClose={() => setSelectedProject(null)}
-				/>
+				<ProjectModal project={selectedProject} onClose={closeModal} />
 			)}
 		</section>
 	);

@@ -2,10 +2,9 @@
 
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
+import { useGsapContext } from "@/hooks/useGsapContext";
 import { ScrollReveal } from "./reactbits/ScrollReveal";
-
-gsap.registerPlugin(ScrollTrigger);
 
 interface FormData {
 	nom: string;
@@ -38,8 +37,31 @@ const INITIAL_FORM: FormData = {
 	message: "",
 };
 
+const PHONE_PREFIX = "555-";
+const DISCORD_SUFFIX = "@discord.gg";
+const CONTACT_ENDPOINT = "/api/v1/sabs/contact";
+
 const INPUT_CLASS =
 	"w-full px-4 py-3 rounded-lg text-sm font-light text-white placeholder-sabs-muted bg-sabs-bg-4 border border-sabs-border outline-none transition-all duration-300 min-h-11 focus:border-sabs-green focus:ring-2 focus:ring-sabs-green/10";
+const AFFIX_WRAPPER_CLASS =
+	"flex items-center rounded-lg overflow-hidden min-h-11 bg-sabs-bg-4 border border-sabs-border focus-within:border-sabs-green focus-within:ring-2 focus-within:ring-sabs-green/10 transition-all duration-300";
+const AFFIX_INPUT_CLASS =
+	"flex-1 px-4 py-3 text-sm font-light text-white placeholder-sabs-muted bg-transparent outline-none";
+
+const FEEDBACK = {
+	success: {
+		className: "bg-sabs-green/10 border border-sabs-green/30 text-sabs-green",
+		title: "Succès",
+		path: "M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z",
+		message: "Message envoyé. Nous vous recontacterons bientôt.",
+	},
+	error: {
+		className: "bg-sabs-red/10 border border-sabs-red/30 text-sabs-red",
+		title: "Erreur",
+		path: "M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z",
+		message: "Une erreur s'est produite. Veuillez réessayer.",
+	},
+} as const;
 
 function InputField({
 	id,
@@ -63,6 +85,21 @@ function InputField({
 	);
 }
 
+function FormFeedback({ status }: { status: "success" | "error" }) {
+	const feedback = FEEDBACK[status];
+	return (
+		<div
+			className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm ${feedback.className}`}
+		>
+			<svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+				<title>{feedback.title}</title>
+				<path fillRule="evenodd" d={feedback.path} clipRule="evenodd" />
+			</svg>
+			{feedback.message}
+		</div>
+	);
+}
+
 export function Contact() {
 	const sectionRef = useRef<HTMLElement>(null);
 	const headingRef = useRef<HTMLDivElement>(null);
@@ -71,33 +108,29 @@ export function Contact() {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
 
-	useEffect(() => {
-		const ctx = gsap.context(() => {
-			gsap.set([headingRef.current, formRef.current], { opacity: 0, y: 50 });
+	useGsapContext(sectionRef, () => {
+		gsap.set([headingRef.current, formRef.current], { opacity: 0, y: 50 });
 
-			ScrollTrigger.create({
-				trigger: sectionRef.current,
-				start: "top 70%",
-				onEnter: () => {
-					gsap.to(headingRef.current, {
-						opacity: 1,
-						y: 0,
-						duration: 0.9,
-						ease: "power3.out",
-					});
-					gsap.to(formRef.current, {
-						opacity: 1,
-						y: 0,
-						duration: 0.8,
-						ease: "power2.out",
-						delay: 0.25,
-					});
-				},
-			});
-		}, sectionRef);
-
-		return () => ctx.revert();
-	}, []);
+		ScrollTrigger.create({
+			trigger: sectionRef.current,
+			start: "top 70%",
+			onEnter: () => {
+				gsap.to(headingRef.current, {
+					opacity: 1,
+					y: 0,
+					duration: 0.9,
+					ease: "power3.out",
+				});
+				gsap.to(formRef.current, {
+					opacity: 1,
+					y: 0,
+					duration: 0.8,
+					ease: "power2.out",
+					delay: 0.25,
+				});
+			},
+		});
+	});
 
 	const handleChange = (
 		e: React.ChangeEvent<
@@ -109,7 +142,7 @@ export function Contact() {
 			const digits = value.replace(/\D/g, "").slice(0, 4);
 			setFormData((prev) => ({
 				...prev,
-				phone: digits ? `555-${digits}` : "",
+				phone: digits ? `${PHONE_PREFIX}${digits}` : "",
 			}));
 		} else {
 			setFormData((prev) => ({ ...prev, [name]: value }));
@@ -123,12 +156,12 @@ export function Contact() {
 
 		const submitData = {
 			...formData,
-			email: `${formData.email}@discord.gg`,
-			phone: formData.phone || "555-",
+			email: `${formData.email}${DISCORD_SUFFIX}`,
+			phone: formData.phone || PHONE_PREFIX,
 		};
 
 		try {
-			const res = await fetch("/api/v1/sabs/contact", {
+			const res = await fetch(CONTACT_ENDPOINT, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify(submitData),
@@ -152,11 +185,9 @@ export function Contact() {
 			id="contact"
 			className="relative min-h-screen flex items-center py-20 md:py-28 bg-sabs-bg-2"
 		>
-			{/* Bottom accent bar */}
 			<div className="absolute left-0 bottom-0 right-0 h-1 sabs-gradient-bg" />
 
 			<div className="container mx-auto px-6 sm:px-10 md:px-16 max-w-4xl">
-				{/* Heading */}
 				<div ref={headingRef} className="mb-12">
 					<p className="text-xs font-semibold tracking-[0.4em] uppercase mb-4 text-sabs-green">
 						Contact
@@ -175,7 +206,6 @@ export function Contact() {
 				</div>
 
 				<form ref={formRef} onSubmit={handleSubmit} className="space-y-5">
-					{/* Prénom / Nom */}
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 						<InputField id="prenom" label="Prénom">
 							<input
@@ -203,10 +233,9 @@ export function Contact() {
 						</InputField>
 					</div>
 
-					{/* Email Discord / Téléphone */}
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 						<InputField id="email" label="Email Discord">
-							<div className="flex items-center rounded-lg overflow-hidden min-h-11 bg-sabs-bg-4 border border-sabs-border focus-within:border-sabs-green focus-within:ring-2 focus-within:ring-sabs-green/10 transition-all duration-300">
+							<div className={AFFIX_WRAPPER_CLASS}>
 								<input
 									type="text"
 									id="email"
@@ -216,10 +245,10 @@ export function Contact() {
 									required
 									placeholder="username"
 									pattern="^[a-zA-Z0-9._-]+$"
-									className="flex-1 px-4 py-3 text-sm font-light text-white placeholder-sabs-muted bg-transparent outline-none"
+									className={AFFIX_INPUT_CLASS}
 								/>
 								<span className="px-3 text-xs font-semibold border-l border-sabs-border shrink-0 text-sabs-green">
-									@discord.gg
+									{DISCORD_SUFFIX}
 								</span>
 							</div>
 							<p className="text-xs mt-1 italic text-sabs-muted-3">
@@ -228,21 +257,21 @@ export function Contact() {
 						</InputField>
 
 						<InputField id="phone" label="Téléphone">
-							<div className="flex items-center rounded-lg overflow-hidden min-h-11 bg-sabs-bg-4 border border-sabs-border focus-within:border-sabs-green focus-within:ring-2 focus-within:ring-sabs-green/10 transition-all duration-300">
+							<div className={AFFIX_WRAPPER_CLASS}>
 								<span className="px-3 text-xs font-semibold border-r border-sabs-border shrink-0 text-sabs-green">
-									555-
+									{PHONE_PREFIX}
 								</span>
 								<input
 									type="text"
 									id="phone"
 									name="phone"
-									value={formData.phone.replace("555-", "")}
+									value={formData.phone.replace(PHONE_PREFIX, "")}
 									onChange={handleChange}
 									required
 									placeholder="1234"
 									maxLength={4}
 									inputMode="numeric"
-									className="flex-1 px-4 py-3 text-sm font-light text-white placeholder-sabs-muted bg-transparent outline-none"
+									className={AFFIX_INPUT_CLASS}
 								/>
 							</div>
 							<p className="text-xs mt-1 italic text-sabs-muted-3">
@@ -251,7 +280,6 @@ export function Contact() {
 						</InputField>
 					</div>
 
-					{/* Type événement / Objet */}
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 						<InputField id="typeEvent" label="Type d'événement">
 							<select
@@ -287,7 +315,6 @@ export function Contact() {
 						</InputField>
 					</div>
 
-					{/* Message */}
 					<InputField id="message" label="Message">
 						<textarea
 							id="message"
@@ -301,43 +328,8 @@ export function Contact() {
 						/>
 					</InputField>
 
-					{/* Feedback */}
-					{status === "success" && (
-						<div className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm bg-sabs-green/10 border border-sabs-green/30 text-sabs-green">
-							<svg
-								className="w-4 h-4 shrink-0"
-								fill="currentColor"
-								viewBox="0 0 20 20"
-							>
-								<title>Succès</title>
-								<path
-									fillRule="evenodd"
-									d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-									clipRule="evenodd"
-								/>
-							</svg>
-							Message envoyé. Nous vous recontacterons bientôt.
-						</div>
-					)}
-					{status === "error" && (
-						<div className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm bg-sabs-red/10 border border-sabs-red/30 text-sabs-red">
-							<svg
-								className="w-4 h-4 shrink-0"
-								fill="currentColor"
-								viewBox="0 0 20 20"
-							>
-								<title>Erreur</title>
-								<path
-									fillRule="evenodd"
-									d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-									clipRule="evenodd"
-								/>
-							</svg>
-							Une erreur s&apos;est produite. Veuillez réessayer.
-						</div>
-					)}
+					{status !== "idle" && <FormFeedback status={status} />}
 
-					{/* Submit */}
 					<button
 						type="submit"
 						disabled={isSubmitting}

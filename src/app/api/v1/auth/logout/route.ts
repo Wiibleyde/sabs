@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { clearSessionCookie } from "@/lib/session";
 
 export async function POST() {
 	try {
@@ -6,16 +7,7 @@ export async function POST() {
 			{ success: true, message: "Déconnexion réussie" },
 			{ status: 200 },
 		);
-
-		// Supprimer le cookie de session
-		response.cookies.set("dashboard-session", "", {
-			httpOnly: true,
-			secure: process.env.NODE_ENV === "production",
-			sameSite: "strict",
-			maxAge: 0,
-			path: "/", // Même path que pour la création
-		});
-
+		clearSessionCookie(response);
 		return response;
 	} catch {
 		return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });

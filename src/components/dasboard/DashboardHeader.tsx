@@ -3,12 +3,7 @@
 import { useLogout } from "@/hooks/useLogout";
 
 export function DashboardHeader() {
-	const { logoutWithConfirm } = useLogout({
-		confirmMessage: "Êtes-vous sûr de vouloir vous déconnecter ?",
-		redirectAfter: true,
-		redirectUrl: "/dashboard",
-		redirectDelay: 300,
-	});
+	const { logoutWithConfirm } = useLogout({ redirectAfter: true });
 
 	return (
 		<div className="flex items-start justify-between mb-12">

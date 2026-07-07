@@ -8,6 +8,15 @@ interface AuthState {
 	error: string | null;
 }
 
+const AUTH_ENDPOINT = "/api/v1/auth/pin";
+const LOGOUT_ENDPOINT = "/api/v1/auth/logout";
+
+const loggedOut = (error: string | null = null): AuthState => ({
+	isAuthenticated: false,
+	isLoading: false,
+	error,
+});
+
 export function useAuthSimple() {
 	const [authState, setAuthState] = useState<AuthState>({
 		isAuthenticated: false,
@@ -15,54 +24,35 @@ export function useAuthSimple() {
 		error: null,
 	});
 
-	// Vérifier l'authentification
 	const checkAuthentication = useCallback(async (): Promise<boolean> => {
 		try {
-			const response = await fetch("/api/v1/auth/pin", {
+			const response = await fetch(AUTH_ENDPOINT, {
 				method: "GET",
 				credentials: "include",
 				cache: "no-store",
 			});
 
-			if (response.ok) {
-				const data = await response.json();
-				const isAuth = data.authenticated || false;
-
-				setAuthState((prev) => ({
-					...prev,
-					isAuthenticated: isAuth,
-					isLoading: false,
-					error: null,
-				}));
-
-				return isAuth;
-			} else {
-				setAuthState((prev) => ({
-					...prev,
-					isAuthenticated: false,
-					isLoading: false,
-					error: null,
-				}));
+			if (!response.ok) {
+				setAuthState(loggedOut());
 				return false;
 			}
+
+			const data = await response.json();
+			const isAuth = Boolean(data.authenticated);
+			setAuthState({ isAuthenticated: isAuth, isLoading: false, error: null });
+			return isAuth;
 		} catch {
-			setAuthState((prev) => ({
-				...prev,
-				isAuthenticated: false,
-				isLoading: false,
-				error: "Erreur de vérification",
-			}));
+			setAuthState(loggedOut("Erreur de vérification"));
 			return false;
 		}
 	}, []);
 
-	// Connexion
 	const login = useCallback(
 		async (pin: string): Promise<{ success: boolean; error?: string }> => {
 			setAuthState((prev) => ({ ...prev, isLoading: true, error: null }));
 
 			try {
-				const response = await fetch("/api/v1/auth/pin", {
+				const response = await fetch(AUTH_ENDPOINT, {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					credentials: "include",
@@ -78,63 +68,32 @@ export function useAuthSimple() {
 						error: null,
 					});
 					return { success: true };
-				} else {
-					setAuthState((prev) => ({
-						...prev,
-						isAuthenticated: false,
-						isLoading: false,
-						error: data.error || "PIN incorrect",
-					}));
-					return { success: false, error: data.error || "PIN incorrect" };
 				}
+
+				const error = data.error || "PIN incorrect";
+				setAuthState(loggedOut(error));
+				return { success: false, error };
 			} catch {
-				const errorMessage = "Erreur de connexion";
-				setAuthState((prev) => ({
-					...prev,
-					isAuthenticated: false,
-					isLoading: false,
-					error: errorMessage,
-				}));
-				return { success: false, error: errorMessage };
+				const error = "Erreur de connexion";
+				setAuthState(loggedOut(error));
+				return { success: false, error };
 			}
 		},
 		[],
 	);
 
-	// Déconnexion
 	const logout = useCallback(async (): Promise<void> => {
+		setAuthState(loggedOut());
 		try {
-			// Mise à jour immédiate de l'état local
-			setAuthState({
-				isAuthenticated: false,
-				isLoading: false,
-				error: null,
-			});
-
-			// Appel API pour nettoyer le cookie
-			await fetch("/api/v1/auth/logout", {
-				method: "POST",
-				credentials: "include",
-			});
+			await fetch(LOGOUT_ENDPOINT, { method: "POST", credentials: "include" });
 		} catch {
-			// Même en cas d'erreur, on déconnecte localement
-			setAuthState({
-				isAuthenticated: false,
-				isLoading: false,
-				error: null,
-			});
+			setAuthState(loggedOut());
 		}
 	}, []);
 
-	// Vérification initiale
 	useEffect(() => {
 		checkAuthentication();
 	}, [checkAuthentication]);
 
-	return {
-		...authState,
-		login,
-		logout,
-		checkAuthentication,
-	};
+	return { ...authState, login, logout, checkAuthentication };
 }

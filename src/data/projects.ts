@@ -39,16 +39,6 @@ export const COMPETENCIES: Competency[] = [
 	"Pyrotechnie",
 ];
 
-export const COMPETENCY_COLORS: Record<Competency, string> = {
-	"Régie Vidéo": "from-violet-500 to-purple-600",
-	"Régie Lumière": "from-amber-400 to-yellow-500",
-	"Mise en scène": "from-blue-500 to-indigo-600",
-	Caméraman: "from-emerald-400 to-teal-500",
-	"Diffusion en direct/rediffusion": "from-red-500 to-orange-500",
-	"Régie mapping écran": "from-pink-500 to-rose-500",
-	Pyrotechnie: "from-orange-400 to-amber-500",
-};
-
 export const projects: Project[] = [
 	{
 		id: "course-sur-terre-tropos-2026",

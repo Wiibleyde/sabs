@@ -5,9 +5,12 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
+import { useGsapContext } from "@/hooks/useGsapContext";
 
-gsap.registerPlugin(ScrollTrigger);
+const COLUMN_TITLE_CLASS =
+	"text-xs font-bold tracking-[0.25em] uppercase mb-5 text-sabs-green";
+const FOOTER_LINK_CLASS = "transition-colors duration-300 hover:text-white";
 
 const SERVICES = [
 	{ text: "Régie caméra", dotClass: "bg-sabs-green" },
@@ -21,32 +24,27 @@ export function Footer() {
 	const footerRef = useRef<HTMLElement>(null);
 	const contentRef = useRef<HTMLDivElement>(null);
 
-	useEffect(() => {
-		const ctx = gsap.context(() => {
-			if (!contentRef.current) return;
-			gsap.set(Array.from(contentRef.current.children), { opacity: 0, y: 30 });
+	useGsapContext(footerRef, () => {
+		if (!contentRef.current) return;
+		gsap.set(Array.from(contentRef.current.children), { opacity: 0, y: 30 });
 
-			ScrollTrigger.create({
-				trigger: footerRef.current,
-				start: "top 80%",
-				onEnter: () => {
-					gsap.to(Array.from(contentRef.current?.children ?? []), {
-						opacity: 1,
-						y: 0,
-						duration: 0.7,
-						ease: "power2.out",
-						stagger: 0.1,
-					});
-				},
-			});
-		}, footerRef);
-
-		return () => ctx.revert();
-	}, []);
+		ScrollTrigger.create({
+			trigger: footerRef.current,
+			start: "top 80%",
+			onEnter: () => {
+				gsap.to(Array.from(contentRef.current?.children ?? []), {
+					opacity: 1,
+					y: 0,
+					duration: 0.7,
+					ease: "power2.out",
+					stagger: 0.1,
+				});
+			},
+		});
+	});
 
 	return (
 		<footer ref={footerRef} className="relative pt-20 pb-10 bg-sabs-bg">
-			{/* Top gradient line */}
 			<div className="absolute top-0 left-0 right-0 h-1 sabs-gradient-bg" />
 
 			<div className="container mx-auto px-6 sm:px-10 md:px-16 max-w-6xl">
@@ -54,7 +52,6 @@ export function Footer() {
 					ref={contentRef}
 					className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16"
 				>
-					{/* Brand */}
 					<div>
 						<div className="flex items-center gap-3 mb-5">
 							<Image
@@ -74,11 +71,8 @@ export function Footer() {
 						</p>
 					</div>
 
-					{/* Services */}
 					<div>
-						<h3 className="text-xs font-bold tracking-[0.25em] uppercase mb-5 text-sabs-green">
-							Services
-						</h3>
+						<h3 className={COLUMN_TITLE_CLASS}>Services</h3>
 						<ul className="space-y-3">
 							{SERVICES.map((service) => (
 								<li key={service.text} className="flex items-center gap-3">
@@ -93,11 +87,8 @@ export function Footer() {
 						</ul>
 					</div>
 
-					{/* Contact */}
 					<div>
-						<h3 className="text-xs font-bold tracking-[0.25em] uppercase mb-5 text-sabs-green">
-							Contact
-						</h3>
+						<h3 className={COLUMN_TITLE_CLASS}>Contact</h3>
 						<ul className="space-y-3 text-sm font-light text-sabs-muted">
 							<li>max.janssens@sabs.com</li>
 							<li>555-3813</li>
@@ -106,23 +97,16 @@ export function Footer() {
 					</div>
 				</div>
 
-				{/* Bottom bar */}
 				<div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs border-t border-sabs-border text-sabs-muted-3">
 					<p>
 						<span className="font-semibold text-sabs-green">SABS</span> — San
 						Andreas Broadcast Service
 					</p>
 					<div className="flex items-center gap-6">
-						<Link
-							href="/legal-mentions"
-							className="transition-colors duration-300 hover:text-white"
-						>
+						<Link href="/legal-mentions" className={FOOTER_LINK_CLASS}>
 							Mentions légales
 						</Link>
-						<Link
-							href="/dashboard"
-							className="transition-colors duration-300 hover:text-white"
-						>
+						<Link href="/dashboard" className={FOOTER_LINK_CLASS}>
 							Dashboard
 						</Link>
 					</div>

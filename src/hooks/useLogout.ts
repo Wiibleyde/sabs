@@ -20,34 +20,24 @@ export function useLogout(options: UseLogoutOptions = {}) {
 		redirectDelay = 300,
 	} = options;
 
+	const redirect = useCallback(() => {
+		if (!redirectAfter) return;
+		setTimeout(() => {
+			window.location.href = redirectUrl;
+		}, redirectDelay);
+	}, [redirectAfter, redirectUrl, redirectDelay]);
+
 	const logoutWithConfirm = useCallback(async (): Promise<boolean> => {
-		if (confirm(confirmMessage)) {
-			await logout();
-
-			if (redirectAfter) {
-				setTimeout(() => {
-					window.location.href = redirectUrl;
-				}, redirectDelay);
-			}
-
-			return true;
-		}
-		return false;
-	}, [logout, confirmMessage, redirectAfter, redirectUrl, redirectDelay]);
+		if (!confirm(confirmMessage)) return false;
+		await logout();
+		redirect();
+		return true;
+	}, [logout, confirmMessage, redirect]);
 
 	const logoutSilent = useCallback(async (): Promise<void> => {
 		await logout();
+		redirect();
+	}, [logout, redirect]);
 
-		if (redirectAfter) {
-			setTimeout(() => {
-				window.location.href = redirectUrl;
-			}, redirectDelay);
-		}
-	}, [logout, redirectAfter, redirectUrl, redirectDelay]);
-
-	return {
-		logoutWithConfirm,
-		logoutSilent,
-		logout,
-	};
+	return { logoutWithConfirm, logoutSilent, logout };
 }
