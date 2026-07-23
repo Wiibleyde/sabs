@@ -3,6 +3,7 @@ import { Footer } from "@/components/Footer";
 import { Hero } from "@/components/Hero";
 import { Presentation } from "@/components/Presentation";
 import { Projects } from "@/components/Projects";
+import { Team } from "@/components/Team";
 
 export default function SabsPage() {
 	return (
@@ -10,6 +11,7 @@ export default function SabsPage() {
 			<Hero />
 			<Presentation />
 			<Projects />
+			<Team />
 			<Contact />
 			<Footer />
 		</main>
