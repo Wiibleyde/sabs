@@ -135,4 +135,22 @@ export const projects: Project[] = [
 			"Feu d'artifice avec projection lumineuse et pyrotechnie pour la Pride 2026.",
 		accent: "rainbow",
 	},
+	{
+		id: "crowley-combat-club-1",
+		title: "Crowley Combat Club",
+		date: "2026-07-23",
+		medias: [
+			{
+				type: "image",
+				url: "/img/events/ccc/ccc1.png",
+			},
+			{
+				type: "image",
+				url: "/img/events/ccc/ccc2.png",
+			},
+		],
+		competencies: ["Régie Lumière", "Régie mapping écran"],
+		description:
+			"Régie lumière et mapping écran pour le premier événement de Crowley Combat Club.",
+	},
 ];
