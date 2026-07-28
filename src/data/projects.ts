@@ -153,4 +153,18 @@ export const projects: Project[] = [
 		description:
 			"Régie lumière et mapping écran pour le premier événement de Crowley Combat Club.",
 	},
+	{
+		id: "openning-olympiades-1",
+		title: "Cérémonie d'ouverture des olympiades",
+		date: "2026-07-27",
+		medias: [
+			{
+				type: "youtube",
+				url: "https://youtu.be/MsIjVUfpvks"
+			}
+		],
+		competencies:["Pyrotechnie", "Régie Lumière", "Régie mapping écran"],
+		description:
+			"Feu d'artifice avec projection lumineuse et pyrotechnie pour la cérémonie d'ouverture des olympiades"
+	},
 ];
