@@ -12,6 +12,12 @@ import {
 	projects,
 } from "@/data/projects";
 import { useGsapContext } from "@/hooks/useGsapContext";
+import {
+	formatProjectDate as formatDate,
+	getMediaThumbnail,
+	getProjectThumbnail,
+	getYouTubeId,
+} from "@/lib/projectMedia";
 import { ScrollReveal } from "./reactbits/ScrollReveal";
 
 const RAINBOW_GRADIENT =
@@ -64,39 +70,6 @@ const COMPETENCY_CLASSES: Record<Competency, string> = {
 	"Régie mapping écran": "bg-sabs-red/10 border-sabs-red/30 text-sabs-red",
 	Pyrotechnie: "bg-sabs-gold/10 border-sabs-gold/30 text-sabs-gold",
 };
-
-function getYouTubeId(url: string): string | null {
-	const m = url.match(
-		/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([^&\n?#]+)/,
-	);
-	return m ? m[1] : null;
-}
-
-function getMediaThumbnail(media: ProjectMedia): string | null {
-	if (media.type === "youtube") {
-		const id = getYouTubeId(media.url);
-		return id ? `https://img.youtube.com/vi/${id}/maxresdefault.jpg` : null;
-	}
-	if (media.type === "image") return media.url;
-	return null;
-}
-
-function getProjectThumbnail(p: Project): string | null {
-	for (const m of p.medias) {
-		const thumb = getMediaThumbnail(m);
-		if (thumb) return thumb;
-	}
-	return null;
-}
-
-function formatDate(iso: string): string {
-	const [y, m, d] = iso.split("-").map(Number);
-	return new Date(y, m - 1, d).toLocaleDateString("fr-FR", {
-		day: "numeric",
-		month: "long",
-		year: "numeric",
-	});
-}
 
 function isVideoMedia(media?: ProjectMedia): boolean {
 	return media?.type === "youtube" || media?.type === "twitch";

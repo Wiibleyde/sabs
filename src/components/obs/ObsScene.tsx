@@ -6,6 +6,7 @@ import { Aurora } from "@/components/reactbits/Aurora";
 import { GlitchText } from "@/components/reactbits/GlitchText";
 import { Countdown } from "./Countdown";
 import type { ObsAccent, ObsSceneConfig } from "./params";
+import { ProjectsMarquee } from "./ProjectsMarquee";
 
 const ACCENT_VARS: Record<ObsAccent, string> = {
 	green: "var(--color-sabs-green)",
@@ -78,7 +79,12 @@ export function ObsScene({ config }: { config: ObsSceneConfig }) {
 				}}
 			/>
 
-			<div className="relative z-10 flex flex-col items-center px-6 text-center fade-in">
+			{/* Keep the centered block clear of the project strip when it's shown */}
+			<div
+				className={`relative z-10 flex flex-col items-center px-6 text-center fade-in ${
+					config.showProjects ? "pb-44" : ""
+				}`}
+			>
 				{/* Status pill */}
 				<div
 					className="flex items-center gap-2.5 mb-10 px-4 py-2 rounded-full border"
@@ -136,9 +142,17 @@ export function ObsScene({ config }: { config: ObsSceneConfig }) {
 			</div>
 
 			{config.hint && (
-				<p className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 text-xs tracking-[0.3em] uppercase text-sabs-muted-3 whitespace-nowrap">
+				<p
+					className={`absolute left-1/2 -translate-x-1/2 z-10 text-xs tracking-[0.3em] uppercase text-sabs-muted-3 whitespace-nowrap ${
+						config.showProjects ? "bottom-40" : "bottom-10"
+					}`}
+				>
 					{config.hint}
 				</p>
+			)}
+
+			{config.showProjects && (
+				<ProjectsMarquee accent={accent} label={config.projectsLabel} />
 			)}
 		</main>
 	);

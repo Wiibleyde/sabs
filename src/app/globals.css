@@ -222,6 +222,25 @@ html {
 	}
 }
 
+/* OBS project strip — the track holds two identical copies of the list, so
+   sliding it by half its width loops with no visible seam. */
+.obs-marquee-track {
+	animation: obs-marquee var(--marquee-duration, 40s) linear infinite;
+}
+@keyframes obs-marquee {
+	from {
+		transform: translateX(0);
+	}
+	to {
+		transform: translateX(-50%);
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.obs-marquee-track {
+		animation: none;
+	}
+}
+
 .fade-in {
 	animation: fadeIn 0.5s ease-in-out;
 }
