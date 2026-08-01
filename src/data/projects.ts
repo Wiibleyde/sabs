@@ -160,11 +160,29 @@ export const projects: Project[] = [
 		medias: [
 			{
 				type: "youtube",
-				url: "https://youtu.be/MsIjVUfpvks"
-			}
+				url: "https://youtu.be/MsIjVUfpvks",
+			},
 		],
-		competencies:["Pyrotechnie", "Régie Lumière", "Régie mapping écran"],
+		competencies: ["Pyrotechnie", "Régie Lumière", "Régie mapping écran"],
 		description:
-			"Feu d'artifice avec projection lumineuse et pyrotechnie pour la cérémonie d'ouverture des olympiades"
+			"Feu d'artifice avec projection lumineuse et pyrotechnie pour la cérémonie d'ouverture des olympiades",
+	},
+	{
+		id: "olympiades-rcbandito-race-1",
+		title: "RC Bandito Race",
+		date: "2026-07-31",
+		medias: [
+			{
+				type: "youtube",
+				url: "https://youtu.be/gJADNMQQuPA?si=-OrGxDNM8i0wzBFK",
+			},
+		],
+		competencies: [
+			"Caméraman",
+			"Diffusion en direct/rediffusion",
+			"Régie Vidéo",
+		],
+		description:
+			"Régie vidéo pour la course de RC Bandito organisée par la CFLS.",
 	},
 ];

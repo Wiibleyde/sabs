@@ -5,8 +5,8 @@ import Image from "next/image";
 import { Aurora } from "@/components/reactbits/Aurora";
 import { GlitchText } from "@/components/reactbits/GlitchText";
 import { Countdown } from "./Countdown";
-import type { ObsAccent, ObsSceneConfig } from "./params";
 import { ProjectsMarquee } from "./ProjectsMarquee";
+import type { ObsAccent, ObsSceneConfig } from "./params";
 
 const ACCENT_VARS: Record<ObsAccent, string> = {
 	green: "var(--color-sabs-green)",

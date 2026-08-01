@@ -124,7 +124,7 @@ export function resolveObsConfig(
 		bg,
 		showLogo: flag(raw.logo, true),
 		glitch: flag(raw.glitch, defaults.glitch),
-		showProjects: flag(raw.projects, false),
+		showProjects: flag(raw.projects, true),
 		projectsLabel: first(raw.projectsLabel) ?? PROJECTS_LABEL,
 		until: first(raw.until),
 	};
