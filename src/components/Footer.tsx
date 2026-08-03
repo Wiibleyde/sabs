@@ -6,19 +6,12 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
+import { SERVICES } from "@/data/services";
 import { useGsapContext } from "@/hooks/useGsapContext";
 
 const COLUMN_TITLE_CLASS =
 	"text-xs font-bold tracking-[0.25em] uppercase mb-5 text-sabs-green";
 const FOOTER_LINK_CLASS = "transition-colors duration-300 hover:text-white";
-
-const SERVICES = [
-	{ text: "Régie caméra", dotClass: "bg-sabs-green" },
-	{ text: "Régie lumière", dotClass: "bg-sabs-purple" },
-	{ text: "Mise en scène", dotClass: "bg-sabs-red" },
-	{ text: "Solutions sur mesure", dotClass: "bg-sabs-gold" },
-	{ text: "Feu d'artifice", dotClass: "bg-sabs-green" },
-];
 
 export function Footer() {
 	const footerRef = useRef<HTMLElement>(null);

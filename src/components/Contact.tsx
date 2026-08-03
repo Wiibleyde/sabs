@@ -3,6 +3,7 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useRef, useState } from "react";
+import { EVENT_TYPES } from "@/data/eventTypes";
 import { useGsapContext } from "@/hooks/useGsapContext";
 import { ScrollReveal } from "./reactbits/ScrollReveal";
 
@@ -15,17 +16,6 @@ interface FormData {
 	objet: string;
 	message: string;
 }
-
-const EVENT_TYPES = [
-	"Concert",
-	"Podcast",
-	"Émission",
-	"Événement sportif",
-	"Conférence",
-	"Événement corporate",
-	"Festival",
-	"Autre",
-];
 
 const INITIAL_FORM: FormData = {
 	nom: "",

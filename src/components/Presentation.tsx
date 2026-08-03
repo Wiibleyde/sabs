@@ -4,6 +4,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import dynamic from "next/dynamic";
 import { useRef } from "react";
+import { FEATURES, type FeatureId } from "@/data/features";
 import { useGsapContext } from "@/hooks/useGsapContext";
 import { ScrollReveal } from "./reactbits/ScrollReveal";
 
@@ -15,79 +16,42 @@ const LetterGlitch = dynamic(
 const MASK_GRADIENT =
 	"radial-gradient(ellipse 70% 60% at 50% 45%, transparent 38%, black 100%)";
 
-const FEATURES = [
-	{
-		colorClass: "text-sabs-green",
-		borderClass: "border-t-sabs-green",
-		bgClass: "bg-sabs-green/10",
-		icon: (
-			<svg
-				width="28"
-				height="28"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				strokeWidth="1.5"
-				strokeLinecap="round"
-				strokeLinejoin="round"
-			>
-				<title>Régie caméra</title>
-				<path d="M15 10l4.553-2.069A1 1 0 0121 8.845V15.155a1 1 0 01-1.447.894L15 14v-4z" />
-				<rect x="3" y="8" width="12" height="8" rx="2" />
-				<circle cx="7" cy="12" r="1" fill="currentColor" stroke="none" />
-			</svg>
-		),
-		title: "Régie caméra",
-		desc: "Captation multicaméra professionnelle avec direction technique et mixage vidéo en temps réel.",
-	},
-	{
-		colorClass: "text-sabs-gold",
-		borderClass: "border-t-sabs-gold",
-		bgClass: "bg-sabs-gold/10",
-		icon: (
-			<svg
-				width="28"
-				height="28"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				strokeWidth="1.5"
-				strokeLinecap="round"
-				strokeLinejoin="round"
-			>
-				<title>Régie lumière</title>
-				<circle cx="12" cy="12" r="4" />
-				<path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-			</svg>
-		),
-		title: "Régie lumière",
-		desc: "Conception et pilotage d'ambiances lumineuses adaptées à chaque scène, du mapping à l'éclairage de scène.",
-	},
-	{
-		colorClass: "text-sabs-purple",
-		borderClass: "border-t-sabs-purple",
-		bgClass: "bg-sabs-purple/10",
-		icon: (
-			<svg
-				width="28"
-				height="28"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				strokeWidth="1.5"
-				strokeLinecap="round"
-				strokeLinejoin="round"
-			>
-				<title>Sur mesure</title>
-				<path d="M12 2L2 7l10 5 10-5-10-5z" />
-				<path d="M2 17l10 5 10-5" />
-				<path d="M2 12l10 5 10-5" />
-			</svg>
-		),
-		title: "Sur mesure",
-		desc: "Chaque projet est unique — nous adaptons nos compétences et notre matériel à n'importe quelle demande.",
-	},
-];
+const ICON_PROPS = {
+	width: 28,
+	height: 28,
+	viewBox: "0 0 24 24",
+	fill: "none",
+	stroke: "currentColor",
+	strokeWidth: 1.5,
+	strokeLinecap: "round",
+	strokeLinejoin: "round",
+} as const;
+
+const FEATURE_ICONS: Record<FeatureId, React.ReactNode> = {
+	camera: (
+		<svg {...ICON_PROPS}>
+			<title>Régie caméra</title>
+			<path d="M15 10l4.553-2.069A1 1 0 0121 8.845V15.155a1 1 0 01-1.447.894L15 14v-4z" />
+			<rect x="3" y="8" width="12" height="8" rx="2" />
+			<circle cx="7" cy="12" r="1" fill="currentColor" stroke="none" />
+		</svg>
+	),
+	lumiere: (
+		<svg {...ICON_PROPS}>
+			<title>Régie lumière</title>
+			<circle cx="12" cy="12" r="4" />
+			<path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+		</svg>
+	),
+	"sur-mesure": (
+		<svg {...ICON_PROPS}>
+			<title>Sur mesure</title>
+			<path d="M12 2L2 7l10 5 10-5-10-5z" />
+			<path d="M2 17l10 5 10-5" />
+			<path d="M2 12l10 5 10-5" />
+		</svg>
+	),
+};
 
 export function Presentation() {
 	const sectionRef = useRef<HTMLElement>(null);
@@ -196,7 +160,7 @@ export function Presentation() {
 							<div
 								className={`mb-5 inline-flex items-center justify-center w-12 h-12 rounded-xl ${feature.bgClass} ${feature.colorClass}`}
 							>
-								{feature.icon}
+								{FEATURE_ICONS[feature.id]}
 							</div>
 							<h3 className="text-lg font-bold mb-3 text-white">
 								{feature.title}

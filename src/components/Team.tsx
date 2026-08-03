@@ -4,44 +4,10 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import { useRef } from "react";
+import { TEAM } from "@/data/team";
 import { useGsapContext } from "@/hooks/useGsapContext";
 import { Multiview, MultiviewTile } from "./Multiview";
 import { ScrollReveal } from "./reactbits/ScrollReveal";
-
-interface TeamMember {
-	name: string;
-	role: string;
-	/** Path to the member photo; null renders the "no signal" placeholder. */
-	photo: string | null;
-	accent: string;
-}
-
-const TEAM: TeamMember[] = [
-	{
-		name: "Max Janssens",
-		role: "Fondateur & Directeur",
-		photo: null,
-		accent: "#40c395",
-	},
-	{
-		name: "Matthieu Janssens",
-		role: "Co-Directeur",
-		photo: null,
-		accent: "#dcb836",
-	},
-	{
-		name: "Akilane Lowell",
-		role: "Staff SABS",
-		photo: "/img/sabs/members/aki.png",
-		accent: "#b64457",
-	},
-	{
-		name: "Samira Macarti",
-		role: "Staff SABS",
-		photo: "/img/sabs/members/sami.png",
-		accent: "#615388",
-	},
-];
 
 function getInitials(name: string): string {
 	return name
