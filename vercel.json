@@ -3,8 +3,13 @@
 	"framework": null,
 	"installCommand": "",
 	"buildCommand": "",
-	"outputDirectory": ".",
+	"outputDirectory": "public",
 	"redirects": [
+		{
+			"source": "/",
+			"destination": "https://sabs.wiibleyde.dev/",
+			"permanent": true
+		},
 		{
 			"source": "/:path*",
 			"destination": "https://sabs.wiibleyde.dev/:path*",

@@ -9,10 +9,11 @@ Le site est désormais servi depuis l'image Docker publiée sur GHCR
 
 ## Contenu
 
-| Fichier      | Rôle                                                             |
-| ------------ | ---------------------------------------------------------------- |
-| `vercel.json`| Redirection 308 + neutralisation du build                        |
-| `index.html` | Filet de sécurité (`meta refresh`) si une requête passe à côté   |
+| Fichier             | Rôle                                                        |
+| ------------------- | ----------------------------------------------------------- |
+| `vercel.json`       | Redirections 308 + neutralisation du build                   |
+| `public/index.html` | Filet de sécurité (`meta refresh`) si une requête passe à côté |
+| `public/404.html`   | Idem, pour tout chemin non matché                            |
 
 ## `vercel.json`
 
@@ -21,8 +22,13 @@ Le site est désormais servi depuis l'image Docker publiée sur GHCR
 	"framework": null,
 	"installCommand": "",
 	"buildCommand": "",
-	"outputDirectory": ".",
+	"outputDirectory": "public",
 	"redirects": [
+		{
+			"source": "/",
+			"destination": "https://sabs.wiibleyde.dev/",
+			"permanent": true
+		},
 		{
 			"source": "/:path*",
 			"destination": "https://sabs.wiibleyde.dev/:path*",
@@ -48,16 +54,20 @@ donc la configuration est portée par la branche et non par l'UI :
 - `framework: null` — aucun framework, donc aucun `next build`
 - `installCommand: ""` — rien à installer (pas de `package.json` ici)
 - `buildCommand: ""` — pas d'étape de build
-- `outputDirectory: "."` — la racine du repo est servie telle quelle
+- `outputDirectory: "public"` — le dossier statique servi tel quel, sans build
 
 ### La redirection
 
-- `/:path*` couvre la racine **et** tous les sous-chemins.
+- Deux règles plutôt qu'une : `/:path*` ne matche pas systématiquement la
+  racine selon la façon dont le motif est compilé, d'où la règle explicite pour
+  `/`. Une première version n'avait que le motif générique et renvoyait un
+  `404: NOT_FOUND` sur la page d'accueil.
 - La query string est conservée automatiquement par Vercel. C'est indispensable
   pour les overlays OBS, dont le contenu est piloté par les paramètres d'URL :
   `sabs.vercel.app/obs/brb?title=X` → `sabs.wiibleyde.dev/obs/brb?title=X`.
-- Les redirections sont évaluées **avant** le système de fichiers : `index.html`
-  n'est donc jamais servi en pratique, il ne sert que de filet de sécurité.
+- Les redirections sont évaluées **avant** le système de fichiers : les pages de
+  `public/` ne sont donc jamais servies en pratique, elles ne sont qu'un filet de
+  sécurité pour qu'un visiteur ne tombe jamais sur un 404 brut de Vercel.
 - `"permanent": true` renvoie un **308** (bon pour le SEO, mais mis en cache de
   façon très agressive par les navigateurs). Pour une redirection réversible,
   passer à `"permanent": false` → **307**.
