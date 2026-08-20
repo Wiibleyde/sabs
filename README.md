@@ -72,7 +72,17 @@ Optionnel, pour ne plus builder de previews sur `main` et les branches de
 travail — **Settings → Git → Ignored Build Step** :
 
 ```bash
-[ "$VERCEL_GIT_COMMIT_REF" = "vercel/redirect" ]
+[ "$VERCEL_GIT_COMMIT_REF" != "vercel/redirect" ]
+```
+
+Attention au sens de la condition, il est contre-intuitif : la commande sort en
+**0 pour annuler** le déploiement, et en **1 pour le lancer**. D'où la négation —
+on annule partout *sauf* sur `vercel/redirect`. Avec `=` au lieu de `!=`, c'est
+exactement le déploiement de la redirection qui se fait annuler :
+
+```
+The Deployment has been canceled as a result of running the command defined in
+the "Ignored Build Step" setting.
 ```
 
 Tout le reste (framework, build, output) est porté par `vercel.json`. Inutile de
