@@ -75,7 +75,7 @@ runtime** : la même image fonctionne pour tous les environnements, aucun `--bui
 
 Le workflow [`.github/workflows/docker-publish.yml`](.github/workflows/docker-publish.yml)
 construit et publie l'image sur chaque push sur `main` (et en déclenchement manuel via
-`workflow_dispatch`). Il utilise le `GITHUB_TOKEN` du repository — aucun secret à configurer.
+`workflow_dispatch`). Il utilise le `GITHUB_TOKEN` du repository - aucun secret à configurer.
 
 ## 🔐 Authentification
 
@@ -140,16 +140,16 @@ SABS_DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...
 ```
 
 `DASHBOARD_PIN` et `JWT_SECRET` ont des valeurs par défaut dans le code pour le
-développement local — **définissez-les explicitement en production**.
+développement local - **définissez-les explicitement en production**.
 
 ## 🎥 Overlays OBS
 
 Quatre scènes prêtes à être utilisées comme *browser source* dans OBS :
 
-- `/obs/starting-soon` — écran d'attente avec compte à rebours (`?until=2026-08-08T20:00:00Z`)
-- `/obs/brb` — pause
-- `/obs/ended` — fin de live
-- `/obs/loading` — connexion au flux
+- `/obs/starting-soon` - écran d'attente avec compte à rebours (`?until=2026-08-08T20:00:00Z`)
+- `/obs/brb` - pause
+- `/obs/ended` - fin de live
+- `/obs/loading` - connexion au flux
 
 Tout le texte est personnalisable via les query params, sans redéploiement :
 
@@ -168,7 +168,7 @@ Voir `src/components/obs/params.ts` pour la liste complète.
 - ✅ Authentification par code PIN (JWT + cookie `httpOnly`)
 - ✅ Formulaire de contact relayé vers Discord
 - ✅ Design responsive
-- 🚧 Dashboard de supervision (SRT / RTMP / statistiques) — en construction
+- 🚧 Dashboard de supervision (SRT / RTMP / statistiques) - en construction
 
 ## 🛡️ Sécurité
 
@@ -179,10 +179,10 @@ Voir `src/components/obs/params.ts` pour la liste complète.
 
 ## 📱 Pages disponibles
 
-- **[Accueil](http://localhost:3000)** — page d'accueil SABS
-- **[Dashboard](http://localhost:3000/dashboard)** — tableau de bord protégé
-- **[Mentions légales](http://localhost:3000/legal-mentions)** — informations légales
-- **Overlays OBS** — voir la section dédiée ci-dessus
+- **[Accueil](http://localhost:3000)** - page d'accueil SABS
+- **[Dashboard](http://localhost:3000/dashboard)** - tableau de bord protégé
+- **[Mentions légales](http://localhost:3000/legal-mentions)** - informations légales
+- **Overlays OBS** - voir la section dédiée ci-dessus
 
 ## 🔧 Scripts disponibles
 
@@ -205,8 +205,8 @@ bun run format
 
 Deux options :
 
-- **Docker / GHCR** — voir la section [🐳 Docker](#-docker) (auto-hébergement)
-- **[Vercel](https://vercel.com/new?filter=next.js)** — déploiement natif Next.js
+- **Docker / GHCR** - voir la section [🐳 Docker](#-docker) (auto-hébergement)
+- **[Vercel](https://vercel.com/new?filter=next.js)** - déploiement natif Next.js
 
 `output: "standalone"` est activé dans `next.config.ts` pour le build Docker ; cette
 option est ignorée par Vercel.

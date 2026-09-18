@@ -15,7 +15,7 @@ const ACCENT_VARS: Record<ObsAccent, string> = {
 	gold: "var(--color-sabs-gold)",
 };
 
-// Symmetric brand trios — the chosen accent leads, neighbouring brand hues
+// Symmetric brand trios - the chosen accent leads, neighbouring brand hues
 // fill the flow so the aurora reads as on-brand for every accent.
 const AURORA_STOPS: Record<ObsAccent, string[]> = {
 	green: ["#40c395", "#615388", "#40c395"],
@@ -47,7 +47,7 @@ function Decoration({
 
 /**
  * Full-screen branded scene for OBS browser sources (designed for 1920×1080).
- * Solid sabs-bg fill — use as a standalone OBS scene, not an overlay. All copy
+ * Solid sabs-bg fill - use as a standalone OBS scene, not an overlay. All copy
  * comes from the resolved query-param config (see ./params).
  */
 export function ObsScene({ config }: { config: ObsSceneConfig }) {
@@ -56,7 +56,7 @@ export function ObsScene({ config }: { config: ObsSceneConfig }) {
 	return (
 		<main className="fixed inset-0 flex flex-col items-center justify-center overflow-hidden bg-sabs-bg select-none">
 			{/* Aurora background (WebGL). One mirrored instance frames the glow
-			    top + bottom in a single pass — half the GPU of two stacked
+			    top + bottom in a single pass - half the GPU of two stacked
 			    canvases. */}
 			{config.bg === "aurora" && (
 				<div className="absolute inset-0">
@@ -70,7 +70,7 @@ export function ObsScene({ config }: { config: ObsSceneConfig }) {
 				</div>
 			)}
 
-			{/* Radial vignette — gentle, just enough to keep text readable */}
+			{/* Radial vignette - gentle, just enough to keep text readable */}
 			<div
 				className="absolute inset-0 pointer-events-none"
 				style={{

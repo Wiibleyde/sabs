@@ -6,7 +6,7 @@ import { useEffect, useRef } from "react";
 /**
  * Flowing aurora gradient background (WebGL via ogl). Vendored from React Bits
  * (reactbits.dev), converted to a named export and project formatting.
- * Renders a transparent canvas sized to its parent — place it absolutely
+ * Renders a transparent canvas sized to its parent - place it absolutely
  * behind content. `colorStops` takes 3 hex colors (left → mid → right).
  */
 

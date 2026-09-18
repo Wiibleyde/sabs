@@ -21,7 +21,7 @@ import { Children, type ReactNode, type Ref, useEffect, useRef } from "react";
  * ```
  */
 
-// SVG feTurbulence static — cheap CRT noise, no animation cost.
+// SVG feTurbulence static - cheap CRT noise, no animation cost.
 const NOISE_BG = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E")`;
 
 const SCANLINES_BG =
@@ -139,7 +139,7 @@ export function MultiviewTile({
 				))
 			)}
 
-			{/* CRT effects — full strength on standby only; a live feed stays clean */}
+			{/* CRT effects - full strength on standby only; a live feed stays clean */}
 			{noise && !hasFeed && (
 				<div
 					className="absolute inset-0 pointer-events-none opacity-30 group-hover:opacity-10 transition-opacity duration-500"

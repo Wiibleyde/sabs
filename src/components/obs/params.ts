@@ -2,7 +2,7 @@
  * Query-param config for OBS browser-source overlay scenes.
  *
  * Every screen is text-customizable from the URL so a streamer can edit copy
- * without redeploying — e.g. /obs/brb?title=Pause%20technique&accent=gold.
+ * without redeploying - e.g. /obs/brb?title=Pause%20technique&accent=gold.
  *
  * Shared params (all screens):
  *   title     main heading
@@ -10,14 +10,14 @@
  *   hint      small footer line (bottom of screen)
  *   label     status-pill text
  *   accent    green | purple | red | gold (brand color used for accents)
- *   logo      1|0 — show/hide the SABS logo (default 1)
- *   glitch    1|0 — glitch effect on the title
- *   projects  1|0 — bottom strip auto-scrolling through past projects,
+ *   logo      1|0 - show/hide the SABS logo (default 1)
+ *   glitch    1|0 - glitch effect on the title
+ *   projects  1|0 - bottom strip auto-scrolling through past projects,
  *                   as a reminder to go look at the portfolio (default 0)
  *   projectsLabel  copy above that strip
  *
  * Per-screen params:
- *   starting-soon: until — ISO datetime, renders a live countdown
+ *   starting-soon: until - ISO datetime, renders a live countdown
  */
 
 export type ObsVariant = "starting-soon" | "brb" | "ended" | "loading";

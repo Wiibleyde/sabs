@@ -33,6 +33,6 @@ export const FEATURES: Feature[] = [
 		borderClass: "border-t-sabs-purple",
 		bgClass: "bg-sabs-purple/10",
 		title: "Sur mesure",
-		desc: "Chaque projet est unique — nous adaptons nos compétences et notre matériel à n'importe quelle demande.",
+		desc: "Chaque projet est unique - nous adaptons nos compétences et notre matériel à n'importe quelle demande.",
 	},
 ];

@@ -102,7 +102,7 @@ export function Presentation() {
 			id="presentation"
 			className="relative min-h-screen flex items-center py-20 md:py-28 bg-sabs-bg-2"
 		>
-			{/* Broadcast static backdrop — fades out toward the center for legibility */}
+			{/* Broadcast static backdrop - fades out toward the center for legibility */}
 			<div
 				className="absolute inset-0 z-0 overflow-hidden pointer-events-none"
 				style={{

@@ -29,6 +29,21 @@
 	--color-sabs-gradient-1: #615388;
 	--color-sabs-gradient-2: #b64457;
 	--color-sabs-gradient-3: #dcb836;
+
+	/* Matt' Max terminal - phosphor CRT palette, deliberately off-brand */
+	--color-term: #33ff66;
+	--color-term-bright: #a8ffc0;
+	--color-term-glow: #d8ffe3;
+	--color-term-lime: #a6ff4d;
+	--color-term-dim: #1f8f43;
+	--color-term-bg: #020a04;
+	--color-term-bg-2: #05130a;
+	--color-term-border: #1a5c2c;
+	--color-term-border-2: #123d1e;
+
+	--text-shadow-term: 0 0 6px rgb(51 255 102 / 0.55);
+	--text-shadow-term-strong: 0 0 9px rgb(51 255 102 / 0.9);
+	--text-shadow-term-banner: 0 0 12px rgb(51 255 102 / 0.7);
 }
 
 html,
@@ -41,7 +56,7 @@ html {
 	scroll-behavior: smooth;
 }
 
-/* 4-stop brand gradient — used as background or text fill */
+/* 4-stop brand gradient - used as background or text fill */
 .sabs-gradient-bg {
 	background: linear-gradient(
 		90deg,
@@ -52,7 +67,7 @@ html {
 	);
 }
 
-/* Vertical variant — for tall side accent bars */
+/* Vertical variant - for tall side accent bars */
 .sabs-gradient-bg-vertical {
 	background: linear-gradient(
 		180deg,
@@ -63,7 +78,7 @@ html {
 	);
 }
 
-/* Flowing variant — colors loop endlessly along the bar. Gradient ends on the
+/* Flowing variant - colors loop endlessly along the bar. Gradient ends on the
    start color and is twice the element width, so scrolling the position by a
    full tile loops seamlessly. */
 .sabs-gradient-flow {
@@ -92,7 +107,7 @@ html {
 	}
 }
 
-/* Broadcast-signal glitch — keeps gradient fill, flashes offset slices */
+/* Broadcast-signal glitch - keeps gradient fill, flashes offset slices */
 .sabs-glitch {
 	position: relative;
 	display: inline-block;
@@ -222,7 +237,7 @@ html {
 	}
 }
 
-/* OBS project strip — the track holds two identical copies of the list, so
+/* OBS project strip - the track holds two identical copies of the list, so
    sliding it by half its width loops with no visible seam. */
 .obs-marquee-track {
 	animation: obs-marquee var(--marquee-duration, 40s) linear infinite;
@@ -246,4 +261,22 @@ html {
 }
 .fade-out {
 	animation: fadeOut 0.3s ease-in-out forwards;
+}
+
+/* CRT overlays for the Matt' Max terminal - stacked over the log, never clickable */
+.term-scanlines {
+	background-image: repeating-linear-gradient(
+		to bottom,
+		rgb(51 255 102 / 0.055) 0px,
+		rgb(51 255 102 / 0.055) 1px,
+		transparent 1px,
+		transparent 3px
+	);
+}
+.term-vignette {
+	background: radial-gradient(
+		ellipse at center,
+		transparent 55%,
+		rgb(0 0 0 / 0.55) 100%
+	);
 }

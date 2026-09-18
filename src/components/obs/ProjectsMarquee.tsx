@@ -6,7 +6,7 @@ import type { Project } from "@/data/projects";
 import { projects } from "@/data/projects";
 import { formatProjectDate, getProjectThumbnail } from "@/lib/projectMedia";
 
-/** Seconds each card spends crossing the strip — slow enough to read. */
+/** Seconds each card spends crossing the strip - slow enough to read. */
 const SECONDS_PER_ITEM = 7;
 
 /** Most recent projects first; the strip is a teaser, not the full portfolio. */
@@ -18,7 +18,7 @@ function recentProjects(max: number): Project[] {
 
 function Thumbnail({ project }: { project: Project }) {
 	const src = getProjectThumbnail(project);
-	// YouTube maxres thumbnails 404 on some videos — fall back to the placeholder
+	// YouTube maxres thumbnails 404 on some videos - fall back to the placeholder
 	// instead of leaving a broken image on an unattended screen.
 	const [failed, setFailed] = useState(false);
 
@@ -74,7 +74,7 @@ function Card({ project, accent }: { project: Project; accent: string }) {
 }
 
 /**
- * Bottom strip that loops through past projects — a passive nudge to go look at
+ * Bottom strip that loops through past projects - a passive nudge to go look at
  * the portfolio while the waiting scene is up. The list is rendered twice and
  * the track scrolls by exactly half its width, so the loop is seamless; the
  * trailing padding on each copy keeps both halves the same width.

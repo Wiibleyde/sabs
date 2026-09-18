@@ -59,7 +59,7 @@ export function Footer() {
 							</span>
 						</div>
 						<p className="text-sm font-light leading-relaxed text-sabs-muted">
-							San Andreas Broadcast Service — Régie audiovisuelle
+							San Andreas Broadcast Service - Régie audiovisuelle
 							professionnelle pour tous vos événements.
 						</p>
 					</div>
@@ -92,7 +92,7 @@ export function Footer() {
 
 				<div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs border-t border-sabs-border text-sabs-muted-3">
 					<p>
-						<span className="font-semibold text-sabs-green">SABS</span> — San
+						<span className="font-semibold text-sabs-green">SABS</span> - San
 						Andreas Broadcast Service
 					</p>
 					<div className="flex items-center gap-6">

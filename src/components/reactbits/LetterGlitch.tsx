@@ -13,7 +13,7 @@ interface Cell {
 /**
  * Canvas grid of brand-colored glyphs that flicker like broadcast static.
  * Sizes itself to its parent; meant to sit absolutely behind section content
- * at low opacity (client-only — uses canvas + window).
+ * at low opacity (client-only - uses canvas + window).
  */
 export function LetterGlitch({
 	className = "",

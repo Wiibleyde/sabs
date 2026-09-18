@@ -98,7 +98,7 @@ export function Team() {
 						<span className="font-semibold text-white">
 							petite équipe soudée
 						</span>{" "}
-						de passionnés. Chacun sa spécialité — caméra, lumière, régie — mais
+						de passionnés. Chacun sa spécialité - caméra, lumière, régie - mais
 						une seule façon de travailler :{" "}
 						<span className="font-medium text-sabs-green">
 							sur le terrain, ensemble

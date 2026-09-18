@@ -2,17 +2,18 @@
 
 ## Project Overview
 
-SABS (San Andreas Broadcast Service) is a **Next.js 16 marketing site** for a GTA-RP audiovisual/broadcast crew. It ships three things:
+SABS (San Andreas Broadcast Service) is a **Next.js 16 marketing site** for a GTA-RP audiovisual/broadcast crew. It ships four things:
 
-1. **Public landing page** (`/`) — hero, presentation, project portfolio, team, contact form.
-2. **OBS overlay scenes** (`/obs/*`) — browser-source screens configured entirely from URL query params.
-3. **PIN-gated dashboard** (`/dashboard`) — currently a placeholder ("En construction") behind JWT auth.
+1. **Public landing page** (`/`) - hero, presentation, project portfolio, team, contact form.
+2. **OBS overlay scenes** (`/obs/*`) - browser-source screens configured entirely from URL query params.
+3. **PIN-gated dashboard** (`/dashboard`) - currently a placeholder ("En construction") behind JWT auth.
+4. **Matt' Max terminal** (`/mattmax`) - a fake shell teasing an event; answers are gated behind a `sudo` prefix.
 
 There is **no live stream monitoring**: no MediaMTX client, no RTMP status endpoint, no SWR polling. Do not assume any of those exist.
 
 **Key Stack:**
 
-- Next.js 16 (App Router, Turbopack) — `next` 16.2.12
+- Next.js 16 (App Router, Turbopack) - `next` 16.2.12
 - React 19 + TypeScript 6 (`strict: true`)
 - Bun as runtime and package manager (`bun.lock` is the only lockfile)
 - JWT session auth via `jsonwebtoken`
@@ -38,9 +39,9 @@ The auth system is **stateless JWT-based**:
 
 `src/lib/session.ts` exports: `SESSION_COOKIE`, `createSessionToken()`, `verifySessionToken()`, `setSessionCookie()`, `clearSessionCookie()`.
 
-**Note:** `useAuthSimple` checks the session **once on mount** — it does not poll. `AuthProvider.tsx` holds both the context and the `useAuth()` hook; there is no separate `AuthContext` file.
+**Note:** `useAuthSimple` checks the session **once on mount** - it does not poll. `AuthProvider.tsx` holds both the context and the `useAuth()` hook; there is no separate `AuthContext` file.
 
-**Pattern:** Protected pages wrap content with `<ProtectedRoute>`, which uses `useAuth()` and renders `<AuthGuard>` (the PIN form) when unauthenticated. Never directly check JWT in client code—the context handles it. `<ProtectedRoute>` must be inside an `<AuthProvider>` or `useAuth()` throws.
+**Pattern:** Protected pages wrap content with `<ProtectedRoute>`, which uses `useAuth()` and renders `<AuthGuard>` (the PIN form) when unauthenticated. Never directly check JWT in client code-the context handles it. `<ProtectedRoute>` must be inside an `<AuthProvider>` or `useAuth()` throws.
 
 ### Data Fetching
 
@@ -58,15 +59,16 @@ Page content lives in `src/data/`, not inline in components. Components import i
 | `features.ts` | `Feature`, `FeatureId`, `FEATURES` (presentation cards) |
 | `eventTypes.ts` | `EVENT_TYPES` (contact form select) |
 | `dashboardCards.ts` | `DashboardCard`, `COMING_SOON_CARDS` |
+| `mattmaxTerminal.ts` | `LineTone`, `TerminalLine`, `TerminalCommand`, `PROMPT_USER`, `PROMPT_HOST`, `BANNER`, `COMMANDS`, `permissionDeniedLines()`, `unknownCommandLines()` |
 
 **Rules:**
 
-- `src/data/` is **`.ts` only — no `.tsx`**. Data files carry no JSX. When an entry needs an icon, give it a string id and keep the SVG in a `Record<Id, ReactNode>` map inside the component (see `FeatureId` → `FEATURE_ICONS` in `Presentation.tsx`).
+- `src/data/` is **`.ts` only - no `.tsx`**. Data files carry no JSX. When an entry needs an icon, give it a string id and keep the SVG in a `Record<Id, ReactNode>` map inside the component (see `FeatureId` → `FEATURE_ICONS` in `Presentation.tsx`).
 - Keep render-only constants (Tailwind class strings, gradients, accent maps) in the component, not in `src/data/`.
 
 ### OBS Overlay Scenes
 
-`/obs/{starting-soon,brb,ended,loading}` are one-liners: `export default createObsPage("brb")`. All copy, accent color, background, logo/glitch toggles and the project marquee come from URL search params, resolved by `resolveObsConfig()` in `src/components/obs/params.ts` — the doc comment there is the source of truth for supported params. Add new options there, not in the page components.
+`/obs/{starting-soon,brb,ended,loading}` are one-liners: `export default createObsPage("brb")`. All copy, accent color, background, logo/glitch toggles and the project marquee come from URL search params, resolved by `resolveObsConfig()` in `src/components/obs/params.ts` - the doc comment there is the source of truth for supported params. Add new options there, not in the page components.
 
 ### Component Organization
 
@@ -75,6 +77,7 @@ Page content lives in `src/data/`, not inline in components. Components import i
 - **`src/components/dasboard/`** → `DashboardGrid`, `DashboardHeader`, `DashboardLayout` (note: typo "dasboard" is intentional, keep it)
 - **`src/components/obs/`** → `createObsPage`, `ObsScene`, `Countdown`, `ProjectsMarquee`, `params.ts`
 - **`src/components/reactbits/`** → vendored effects: `Aurora`, `GlitchText`, `LetterGlitch`, `ScrollReveal`
+- **`src/components/mattmax/`** → `Terminal` (fake shell for `/mattmax`)
 - **`src/components/three/`** → `ParticleField` (react-three-fiber)
 - **`src/contexts/`** → `AuthProvider.tsx`
 - **`src/data/`** → static content (see above)
@@ -98,7 +101,7 @@ bun run build        # Optimized build (standalone output)
 bun run start        # Production server
 ```
 
-`package-lock.json` was removed — do not reintroduce npm lockfiles.
+`package-lock.json` was removed - do not reintroduce npm lockfiles.
 
 ### Code Quality (Use Biome, Not ESLint)
 
@@ -110,7 +113,7 @@ bun run format       # Format code
 bunx tsc --noEmit    # Typecheck (no test suite in this repo)
 ```
 
-**Important:** Biome is the only linter—no ESLint. Configuration is in `biome.json` (tabs, double quotes, `recommended` preset, organize-imports assist on, Tailwind directives enabled). `biome.json` ignores `public/` and `.claude/` only, so editor config dirs like `.zed/` are formatted too. There is no `type-check` script; use `bunx tsc --noEmit` if you need one.
+**Important:** Biome is the only linter-no ESLint. Configuration is in `biome.json` (tabs, double quotes, `recommended` preset, organize-imports assist on, Tailwind directives enabled). `biome.json` ignores `public/` and `.claude/` only, so editor config dirs like `.zed/` are formatted too. There is no `type-check` script; use `bunx tsc --noEmit` if you need one.
 
 ### Environment Variables
 
@@ -132,11 +135,11 @@ All env vars are read at **runtime** (no `NEXT_PUBLIC_*` in the codebase), so th
 
 `Dockerfile` is a 3-stage build:
 
-1. **`deps`** — `oven/bun:1.3-alpine`, `bun install --frozen-lockfile`
-2. **`builder`** — same base, `bun run build`
-3. **`runner`** — `node:22-alpine`, copies `.next/standalone` + `.next/static` + `public`, runs `node server.js` as the non-root `node` user
+1. **`deps`** - `oven/bun:1.3-alpine`, `bun install --frozen-lockfile`
+2. **`builder`** - same base, `bun run build`
+3. **`runner`** - `node:22-alpine`, copies `.next/standalone` + `.next/static` + `public`, runs `node server.js` as the non-root `node` user
 
-Both stages are musl-based on purpose: `sharp` (a `next` optional dependency, used by `next/image` optimization) resolves to `@img/sharp-linuxmusl-x64` at install time and gets traced into the standalone bundle. **Do not mix a glibc builder with an alpine runner** — image optimization breaks at runtime.
+Both stages are musl-based on purpose: `sharp` (a `next` optional dependency, used by `next/image` optimization) resolves to `@img/sharp-linuxmusl-x64` at install time and gets traced into the standalone bundle. **Do not mix a glibc builder with an alpine runner** - image optimization breaks at runtime.
 
 `next.config.ts` sets `output: "standalone"`; the Dockerfile depends on it. Removing it breaks the image.
 
@@ -149,12 +152,12 @@ Runtime env defaults in the image: `NODE_ENV=production`, `PORT=3000`, `HOSTNAME
 
 ### GHCR publishing
 
-`.github/workflows/docker-publish.yml` builds and pushes to `ghcr.io/wiibleyde/sabs` on push to `main` and on `workflow_dispatch`. Auth uses the built-in `GITHUB_TOKEN` with `packages: write` — no secrets to configure. Layer cache via `type=gha`.
+`.github/workflows/docker-publish.yml` builds and pushes to `ghcr.io/wiibleyde/sabs` on push to `main` and on `workflow_dispatch`. Auth uses the built-in `GITHUB_TOKEN` with `packages: write` - no secrets to configure. Layer cache via `type=gha`.
 
 Tags produced (`docker/metadata-action`):
 
 - `latest`
-- `{{date 'YYYYMMDD-HHmmss'}}` — immutable timestamped build
+- `{{date 'YYYYMMDD-HHmmss'}}` - immutable timestamped build
 
 No git-tag trigger and no semver tags: the workflow is intentionally branch-driven only. Build is `linux/amd64` only; adding arm64 requires `platforms:` on the build step and roughly doubles CI time via QEMU.
 
@@ -179,7 +182,7 @@ All APIs follow `/api/v1/` namespace:
 - **Auth:** `POST /api/v1/auth/pin` (login), `GET /api/v1/auth/pin` (verify), `POST /api/v1/auth/logout` (logout)
 - **Contact:** `POST /api/v1/sabs/contact` (validates all 7 fields, forwards a Discord embed to `SABS_DISCORD_WEBHOOK_URL`)
 
-Responses use `NextResponse.json()` with appropriate status codes. Auth routes return `{ error: "message" }` on failure; the contact route returns `{ message: "..." }` — match the neighbouring route's shape rather than inventing a third.
+Responses use `NextResponse.json()` with appropriate status codes. Auth routes return `{ error: "message" }` on failure; the contact route returns `{ message: "..." }` - match the neighbouring route's shape rather than inventing a third.
 
 ## Common Patterns
 
@@ -190,14 +193,14 @@ Responses use `NextResponse.json()` with appropriate status codes. Auth routes r
 3. Import and add to `src/components/dasboard/DashboardGrid.tsx`, replacing the matching `COMING_SOON_CARDS` placeholder entry
 4. Grid auto-layouts with Tailwind (responsive design already handled)
 
-There is no shared card wrapper component — cards style themselves with `bg-sabs-bg-2 border border-sabs-border` plus a `border-t-2` accent class.
+There is no shared card wrapper component - cards style themselves with `bg-sabs-bg-2 border border-sabs-border` plus a `border-t-2` accent class.
 
 ### Adding an API Endpoint
 
 1. Create file: `src/app/api/v1/[feature]/[action]/route.ts`
 2. Export `async function POST/GET(request: NextRequest)`
 3. Use `NextResponse.json()` to return data
-4. Add token validation if protected: read `SESSION_COOKIE` from `request.cookies`, then `verifySessionToken(token)` — both from `@/lib/session`
+4. Add token validation if protected: read `SESSION_COOKIE` from `request.cookies`, then `verifySessionToken(token)` - both from `@/lib/session`
 
 ### Adding Authentication to a Route
 
@@ -207,8 +210,16 @@ Wrap page in `<AuthProvider>` + `<ProtectedRoute>`. Example: `src/app/dashboard/
 
 1. Create `src/components/MySection.tsx` with "use client"
 2. Put copy/list content in a new `src/data/*.ts` module
-3. Animate with `useGsapContext(ref, ...)` + `ScrollTrigger` — the hook handles cleanup
+3. Animate with `useGsapContext(ref, ...)` + `ScrollTrigger` - the hook handles cleanup
 4. Mount it in `src/app/page.tsx`
+
+### Adding a Terminal Command (`/mattmax`)
+
+1. Append an entry to `COMMANDS` in `src/data/mattmaxTerminal.ts`
+2. Set `requiresSudo: true` to hide the answer behind `sudo <name>`; without it the command answers to anyone
+3. `help` and Tab completion are derived from `COMMANDS`, so nothing else to touch
+
+`help`, `clear`, `date` and the `sudo` prefix are built in `Terminal.tsx` - they are not entries in `COMMANDS`.
 
 ### Adding an OBS Overlay Option
 
@@ -219,18 +230,19 @@ Wrap page in `<AuthProvider>` + `<ProtectedRoute>`. Example: `src/app/dashboard/
 ## Performance Notes
 
 - **Turbopack** is default for `bun run dev` (much faster than Webpack); `bun run build` uses the standard builder
-- **Heavy visuals are `next/dynamic` with `ssr: false`** — `ParticleField` (Hero), `LetterGlitch` (Presentation) — keep new WebGL/canvas work behind the same pattern, and out of shared layouts
+- **Heavy visuals are `next/dynamic` with `ssr: false`** - `ParticleField` (Hero), `LetterGlitch` (Presentation) - keep new WebGL/canvas work behind the same pattern, and out of shared layouts
+- **Terminal palette** - `/mattmax` uses its own `--color-term-*` / `--text-shadow-term*` tokens in `globals.css`, plus the `.term-scanlines` and `.term-vignette` CRT overlays. It is intentionally off-brand; do not swap it for `sabs-*` tokens.
 - **Tailwind v4 JIT** compiles only used classes, so dynamic class strings must appear as full literals (see `RAINBOW_TEXT_CLASS` in `Projects.tsx`)
 - **`useGsapContext`** scopes GSAP animations to a ref and reverts them on unmount; avoid raw `gsap.to` in effects
 - `public/` is ~32 MB of imagery and ships into the Docker image as-is
 
 ## Security Reminders
 
-- Never commit `.env.local`; use `.env.example` template (`.gitignore` covers `.env*`, and `.dockerignore` keeps them out of the image — `.env.example` is the one exception)
+- Never commit `.env.local`; use `.env.example` template (`.gitignore` covers `.env*`, and `.dockerignore` keeps them out of the image - `.env.example` is the one exception)
 - JWT tokens expire in 24h; the session cookie `maxAge` matches (86400s)
 - Cookie is `httpOnly`, `sameSite: "strict"`, `path: "/"`, and `secure` only in production
-- **PIN comparison is a plain `!==` in `auth/pin/route.ts` — not timing-safe.** Use `crypto.timingSafeEqual` if this becomes a real secret
-- `JWT_SECRET` and `DASHBOARD_PIN` have committed fallback defaults — production must override both
+- **PIN comparison is a plain `!==` in `auth/pin/route.ts` - not timing-safe.** Use `crypto.timingSafeEqual` if this becomes a real secret
+- `JWT_SECRET` and `DASHBOARD_PIN` have committed fallback defaults - production must override both
 - The contact route forwards user input straight into a Discord embed with no length cap or sanitisation
 - Docker image runs as non-root `node`
 
