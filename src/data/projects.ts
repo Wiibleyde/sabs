@@ -185,4 +185,22 @@ export const projects: Project[] = [
 		description:
 			"Régie vidéo pour la course de RC Bandito organisée par la CFLS.",
 	},
+	{
+		id: "rallye-bennys-2026",
+		title: "Course de Rallye du Benny's 2026",
+		date: "2026-09-11",
+		medias: [
+			{
+				type: "youtube",
+				url: "https://youtu.be/9rnY8ZSAeHw",
+			},
+		],
+		competencies: [
+			"Caméraman",
+			"Diffusion en direct/rediffusion",
+			"Régie Vidéo",
+		],
+		description:
+			"Régie vidéo et diffusion en direct pour la course de rallye organisée par le Benny's.",
+	},
 ];

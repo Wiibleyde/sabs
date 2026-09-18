@@ -20,6 +20,7 @@ There is **no live stream monitoring**: no MediaMTX client, no RTMP status endpo
 - GSAP + ScrollTrigger for animation
 - `three` / `@react-three/fiber` (particles) and `ogl` (aurora shader)
 - Biome 2.5.6 for linting/formatting
+- Docker (`output: "standalone"`) + GHCR publishing via GitHub Actions
 
 ## Architecture Patterns
 
@@ -39,7 +40,11 @@ The auth system is **stateless JWT-based**:
 
 **Note:** `useAuthSimple` checks the session **once on mount** — it does not poll. `AuthProvider.tsx` holds both the context and the `useAuth()` hook; there is no separate `AuthContext` file.
 
-**Pattern:** Protected pages wrap content with `<ProtectedRoute>`, which uses `useAuth()` and renders `<AuthGuard>` (the PIN form) when unauthenticated. Never directly check JWT in client code—the context handles it.
+**Pattern:** Protected pages wrap content with `<ProtectedRoute>`, which uses `useAuth()` and renders `<AuthGuard>` (the PIN form) when unauthenticated. Never directly check JWT in client code—the context handles it. `<ProtectedRoute>` must be inside an `<AuthProvider>` or `useAuth()` throws.
+
+### Data Fetching
+
+There is **no SWR, React Query, or MediaMTX client in this codebase**. Everything is either static, server-rendered, or a plain `fetch` in a hook (`useAuthSimple`). If you add polling, add the dependency explicitly and prefer a data-fetching library over raw `setInterval`.
 
 ### Static Content (`src/data/`)
 
@@ -61,7 +66,7 @@ Page content lives in `src/data/`, not inline in components. Components import i
 
 ### OBS Overlay Scenes
 
-`/obs/{starting-soon,brb,ended,loading}` are one-liners: `export default createObsPage("brb")`. All copy, accent color, background, logo/glitch toggles and the project marquee come from URL search params, resolved by `resolveObsConfig()` in `src/components/obs/params.ts` — the doc comment there is the source of truth for supported params.
+`/obs/{starting-soon,brb,ended,loading}` are one-liners: `export default createObsPage("brb")`. All copy, accent color, background, logo/glitch toggles and the project marquee come from URL search params, resolved by `resolveObsConfig()` in `src/components/obs/params.ts` — the doc comment there is the source of truth for supported params. Add new options there, not in the page components.
 
 ### Component Organization
 
@@ -78,6 +83,10 @@ Page content lives in `src/data/`, not inline in components. Components import i
 
 **Naming:** React component files are PascalCase (`Team.tsx`); everything else is camelCase (`useAuthSimple.ts`, `projectMedia.ts`, `dashboardCards.ts`). Typo "dasboard" is in original codebase.
 
+### Analytics
+
+`src/app/layout.tsx` injects the Umami script **only when `NODE_ENV === "production"`** (`UMAMI_SRC` / `UMAMI_WEBSITE_ID` / `UMAMI_DOMAINS` constants at the top of the file). Nothing is loaded in dev.
+
 ## Development Workflows
 
 ### Setup & Build
@@ -85,7 +94,7 @@ Page content lives in `src/data/`, not inline in components. Components import i
 ```bash
 bun install
 bun run dev          # Start with Turbopack (port 3000)
-bun run build        # Optimized build
+bun run build        # Optimized build (standalone output)
 bun run start        # Production server
 ```
 
@@ -101,7 +110,7 @@ bun run format       # Format code
 bunx tsc --noEmit    # Typecheck (no test suite in this repo)
 ```
 
-**Important:** Biome is the only linter—no ESLint. Configuration is in `biome.json` (tabs, double quotes, `recommended` preset, organize-imports assist on, Tailwind directives enabled). `biome.json` ignores `public/` and `.claude/` only, so editor config dirs like `.zed/` are formatted too.
+**Important:** Biome is the only linter—no ESLint. Configuration is in `biome.json` (tabs, double quotes, `recommended` preset, organize-imports assist on, Tailwind directives enabled). `biome.json` ignores `public/` and `.claude/` only, so editor config dirs like `.zed/` are formatted too. There is no `type-check` script; use `bunx tsc --noEmit` if you need one.
 
 ### Environment Variables
 
@@ -115,6 +124,40 @@ SABS_DISCORD_WEBHOOK_URL=https://...       # Contact form target; no default, 50
 
 `DASHBOARD_PIN` and `JWT_SECRET` fall back to hardcoded defaults, so the app boots without them. `SABS_DISCORD_WEBHOOK_URL` does not and is currently missing from `.env.example`.
 
+All env vars are read at **runtime** (no `NEXT_PUBLIC_*` in the codebase), so the Docker image needs no build args.
+
+## Docker & CI
+
+### Image layout
+
+`Dockerfile` is a 3-stage build:
+
+1. **`deps`** — `oven/bun:1.3-alpine`, `bun install --frozen-lockfile`
+2. **`builder`** — same base, `bun run build`
+3. **`runner`** — `node:22-alpine`, copies `.next/standalone` + `.next/static` + `public`, runs `node server.js` as the non-root `node` user
+
+Both stages are musl-based on purpose: `sharp` (a `next` optional dependency, used by `next/image` optimization) resolves to `@img/sharp-linuxmusl-x64` at install time and gets traced into the standalone bundle. **Do not mix a glibc builder with an alpine runner** — image optimization breaks at runtime.
+
+`next.config.ts` sets `output: "standalone"`; the Dockerfile depends on it. Removing it breaks the image.
+
+```bash
+docker build -t sabs:local .
+docker run -p 3000:3000 -e JWT_SECRET=dev-secret sabs:local
+```
+
+Runtime env defaults in the image: `NODE_ENV=production`, `PORT=3000`, `HOSTNAME=0.0.0.0`, `NEXT_TELEMETRY_DISABLED=1`.
+
+### GHCR publishing
+
+`.github/workflows/docker-publish.yml` builds and pushes to `ghcr.io/wiibleyde/sabs` on push to `main` and on `workflow_dispatch`. Auth uses the built-in `GITHUB_TOKEN` with `packages: write` — no secrets to configure. Layer cache via `type=gha`.
+
+Tags produced (`docker/metadata-action`):
+
+- `latest`
+- `{{date 'YYYYMMDD-HHmmss'}}` — immutable timestamped build
+
+No git-tag trigger and no semver tags: the workflow is intentionally branch-driven only. Build is `linux/amd64` only; adding arm64 requires `platforms:` on the build step and roughly doubles CI time via QEMU.
+
 ## Type Safety & Imports
 
 **Path Aliases** (tsconfig.json):
@@ -126,6 +169,7 @@ SABS_DISCORD_WEBHOOK_URL=https://...       # Contact form target; no default, 50
 
 - Always use TypeScript interfaces; no `any` types (codebase currently has zero)
 - Request/response body types defined in route files (e.g., `ContactBody` in `sabs/contact/route.ts`)
+- OBS/config shapes live next to their parser (`src/components/obs/params.ts`)
 - React components are "use client" when using hooks or state
 
 ## API Conventions
@@ -143,7 +187,7 @@ Responses use `NextResponse.json()` with appropriate status codes. Auth routes r
 
 1. Add the card's content to `src/data/dashboardCards.ts` if it is static
 2. For a live card, create `src/components/dasboard/MyCard.tsx` with "use client"
-3. Import and add to `src/components/dasboard/DashboardGrid.tsx`
+3. Import and add to `src/components/dasboard/DashboardGrid.tsx`, replacing the matching `COMING_SOON_CARDS` placeholder entry
 4. Grid auto-layouts with Tailwind (responsive design already handled)
 
 There is no shared card wrapper component — cards style themselves with `bg-sabs-bg-2 border border-sabs-border` plus a `border-t-2` accent class.
@@ -166,25 +210,33 @@ Wrap page in `<AuthProvider>` + `<ProtectedRoute>`. Example: `src/app/dashboard/
 3. Animate with `useGsapContext(ref, ...)` + `ScrollTrigger` — the hook handles cleanup
 4. Mount it in `src/app/page.tsx`
 
+### Adding an OBS Overlay Option
+
+1. Add the field to `ObsSceneConfig` and parse it in `resolveObsConfig()` (`src/components/obs/params.ts`)
+2. Document it in that file's header comment
+3. Consume it in `ObsScene.tsx` / the relevant sub-component
+
 ## Performance Notes
 
 - **Turbopack** is default for `bun run dev` (much faster than Webpack); `bun run build` uses the standard builder
-- **Heavy visuals are `next/dynamic` with `ssr: false`** — `ParticleField` (Hero), `LetterGlitch` (Presentation) — keep new WebGL/canvas work behind the same pattern
+- **Heavy visuals are `next/dynamic` with `ssr: false`** — `ParticleField` (Hero), `LetterGlitch` (Presentation) — keep new WebGL/canvas work behind the same pattern, and out of shared layouts
 - **Tailwind v4 JIT** compiles only used classes, so dynamic class strings must appear as full literals (see `RAINBOW_TEXT_CLASS` in `Projects.tsx`)
 - **`useGsapContext`** scopes GSAP animations to a ref and reverts them on unmount; avoid raw `gsap.to` in effects
+- `public/` is ~32 MB of imagery and ships into the Docker image as-is
 
 ## Security Reminders
 
-- Never commit `.env.local`; use `.env.example` template (`.gitignore` covers `.env*`)
+- Never commit `.env.local`; use `.env.example` template (`.gitignore` covers `.env*`, and `.dockerignore` keeps them out of the image — `.env.example` is the one exception)
 - JWT tokens expire in 24h; the session cookie `maxAge` matches (86400s)
 - Cookie is `httpOnly`, `sameSite: "strict"`, `path: "/"`, and `secure` only in production
 - **PIN comparison is a plain `!==` in `auth/pin/route.ts` — not timing-safe.** Use `crypto.timingSafeEqual` if this becomes a real secret
 - `JWT_SECRET` and `DASHBOARD_PIN` have committed fallback defaults — production must override both
 - The contact route forwards user input straight into a Discord embed with no length cap or sanitisation
+- Docker image runs as non-root `node`
 
 ## References
 
 - **`src/components/obs/params.ts`:** authoritative doc comment for OBS scene URL params
-- **Next.js Docs:** Official Next.js 16 App Router patterns
+- **README.md:** setup, Docker/GHCR usage, OBS overlay params
+- **Next.js Docs:** Official Next.js 16 App Router + self-hosting/Docker patterns
 - **Biome:** Linting via `biome.json` (no manual ESLint config needed)
-- **README.md:** setup notes, but its RTMP/MediaMTX framing is stale — prefer this file
