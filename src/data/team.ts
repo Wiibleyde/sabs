@@ -26,9 +26,9 @@ export const TEAM: TeamMember[] = [
 		accent: "#b64457",
 	},
 	{
-		name: "Samira Macarti",
+		name: "Ashley Gray",
 		role: "Staff SABS",
-		photo: "/img/sabs/members/sami.png",
+		photo: null,
 		accent: "#615388",
 	},
 ];
