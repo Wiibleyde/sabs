@@ -20,15 +20,15 @@ import {
 
 const BOOT_DELAY_MS = 110;
 
-/** `term-*` tokens live in globals.css - a green CRT, deliberately off-brand. */
+/** `mm-*` tokens live in globals.css - Matt' Max 2026 DA, pink stays rare. */
 const TONE_CLASS: Record<LineTone, string> = {
-	default: "text-term",
-	accent: "text-term-bright text-shadow-term",
-	muted: "text-term-dim",
-	error: "text-term-glow text-shadow-term-strong",
-	warn: "text-term-lime",
-	banner: "text-term text-shadow-term-banner",
-	prompt: "text-term",
+	default: "text-mm-mint/85",
+	accent: "font-extrabold text-mm-mint text-shadow-mm",
+	muted: "text-mm-teal",
+	error: "text-mm-pink text-shadow-mm-pink",
+	warn: "font-extrabold text-mm-pink",
+	banner: "font-extrabold tracking-[0.08em] text-mm-mint text-shadow-mm-split",
+	prompt: "text-mm-mint/85",
 };
 
 /** Spacer printed after a command's output. */
@@ -62,10 +62,11 @@ function helpLines(): TerminalLine[] {
 function Prompt() {
 	return (
 		<>
-			<span className="text-term-bright">{PROMPT_USER}</span>
-			<span className="text-term-dim">@</span>
-			<span className="text-term-bright">{PROMPT_HOST}</span>
-			<span className="text-term-dim">:~$&nbsp;</span>
+			<span className="text-mm-teal">&gt;&nbsp;</span>
+			<span className="font-extrabold text-mm-mint">{PROMPT_USER}</span>
+			<span className="text-mm-dim">@</span>
+			<span className="font-extrabold text-mm-mint">{PROMPT_HOST}</span>
+			<span className="text-mm-dim">:~$&nbsp;</span>
 		</>
 	);
 }
@@ -213,32 +214,34 @@ export function Terminal() {
 	};
 
 	return (
-		<div className="w-full max-w-4xl">
-			<div className="overflow-hidden rounded-lg border border-term-border bg-term-bg shadow-[0_0_60px_rgb(51_255_102/0.12)]">
-				<div className="h-px w-full bg-linear-to-r from-transparent via-term to-transparent" />
+		<div className="flex min-h-0 w-full max-w-4xl flex-1 flex-col normal-case">
+			<div className="flex min-h-0 flex-1 flex-col overflow-hidden border border-mm-rule/40 bg-mm-bg/90 shadow-[0_0_60px_rgb(0_255_204/0.08)] backdrop-blur-sm">
+				<div className="h-px w-full bg-linear-to-r from-transparent via-mm-rule to-transparent" />
 
-				<div className="flex items-center gap-2 border-b border-term-border-2 bg-term-bg-2 px-4 py-2.5">
-					<span className="h-2.5 w-2.5 rounded-full bg-term/80" />
-					<span className="h-2.5 w-2.5 rounded-full bg-term/45" />
-					<span className="h-2.5 w-2.5 rounded-full bg-term/20" />
-					<span className="ml-3 font-mono text-xs text-term-dim">
+				<div className="flex items-center justify-between border-b border-mm-rule/20 px-4 py-2.5 text-[10px] uppercase tracking-[0.3em] sm:text-xs">
+					<span className="font-extrabold text-mm-pink">{"signal//"}</span>
+					<span className="text-mm-teal">
 						{PROMPT_USER}@{PROMPT_HOST}: ~
+					</span>
+					<span className="flex items-center gap-2 text-mm-teal">
+						<span className="mm-cursor h-1.5 w-1.5 rounded-full bg-mm-pink" />
+						live
 					</span>
 				</div>
 
 				{/* biome-ignore lint/a11y/noStaticElementInteractions: click-to-focus is a convenience; the input itself stays keyboard reachable */}
 				<div
 					onMouseDown={handleSurfaceMouseDown}
-					className="relative w-full cursor-text"
+					className="relative min-h-0 w-full flex-1 cursor-text"
 				>
-					<div className="term-scanlines pointer-events-none absolute inset-0 z-10" />
-					<div className="term-vignette pointer-events-none absolute inset-0 z-10" />
+					<div className="mm-scanlines pointer-events-none absolute inset-0 z-10" />
+					<div className="mm-vignette pointer-events-none absolute inset-0 z-10 opacity-60" />
 					<div
 						ref={scrollRef}
 						role="log"
 						aria-live="polite"
 						aria-label="Sortie du terminal"
-						className="h-[60vh] min-h-80 overflow-y-auto px-4 py-4 font-mono text-[13px] leading-relaxed sm:text-sm"
+						className="h-full overflow-y-auto px-4 py-4 text-[13px] leading-relaxed [scrollbar-width:none] sm:text-sm [&::-webkit-scrollbar]:hidden"
 					>
 						{lines.map((line, index) => (
 							<div
@@ -270,7 +273,7 @@ export function Terminal() {
 									autoCapitalize="off"
 									spellCheck={false}
 									aria-label="Saisie du terminal"
-									className="flex-1 bg-transparent font-mono text-term caret-term outline-none"
+									className="mm-input flex-1 bg-transparent text-mm-mint caret-mm-mint outline-none"
 								/>
 							</form>
 						)}
@@ -278,7 +281,7 @@ export function Terminal() {
 				</div>
 			</div>
 
-			<p className="mt-4 text-center font-mono text-xs text-term-dim">
+			<p className="mt-2 shrink-0 text-center text-[11px] text-mm-dim">
 				`help` pour les commandes · ↑ ↓ historique · Tab complétion
 			</p>
 		</div>

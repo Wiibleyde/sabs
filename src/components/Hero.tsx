@@ -89,7 +89,7 @@ export function Hero() {
 		<section
 			ref={sectionRef}
 			id="hero"
-			className="relative h-screen w-full flex flex-col items-center justify-center bg-sabs-bg overflow-x-hidden"
+			className="relative h-[calc(100svh-2.75rem)] sm:h-[calc(100svh-3rem)] w-full flex flex-col items-center justify-center bg-sabs-bg overflow-x-hidden"
 		>
 			<div className="absolute inset-0 z-0">
 				<ParticleField />

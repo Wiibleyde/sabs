@@ -30,20 +30,27 @@
 	--color-sabs-gradient-2: #b64457;
 	--color-sabs-gradient-3: #dcb836;
 
-	/* Matt' Max terminal - phosphor CRT palette, deliberately off-brand */
-	--color-term: #33ff66;
-	--color-term-bright: #a8ffc0;
-	--color-term-glow: #d8ffe3;
-	--color-term-lime: #a6ff4d;
-	--color-term-dim: #1f8f43;
-	--color-term-bg: #020a04;
-	--color-term-bg-2: #05130a;
-	--color-term-border: #1a5c2c;
-	--color-term-border-2: #123d1e;
+	/* Matt' Max 2026 DA - navy CRT, mint hero colour, pink as the one accent.
+	   Source of truth: D:\Documents\Matt' Max\2026\DA.md (src/ds/tokens.ts). */
+	--color-mm-bg: #04070e;
+	--color-mm-bg-row: #060a13;
+	--color-mm-grid: #0b1622;
+	--color-mm-grid-hot: #1a4a54;
+	--color-mm-mint: #00ffcc;
+	--color-mm-mint-dk: #00b894;
+	--color-mm-teal: #12b896;
+	--color-mm-rule: #46c8be;
+	--color-mm-dim: #0f6f62;
+	--color-mm-pink: #ec4d78;
+	--color-mm-split-l: #3f7fd0;
+	--color-mm-split-r: #d6406a;
 
-	--text-shadow-term: 0 0 6px rgb(51 255 102 / 0.55);
-	--text-shadow-term-strong: 0 0 9px rgb(51 255 102 / 0.9);
-	--text-shadow-term-banner: 0 0 12px rgb(51 255 102 / 0.7);
+	--text-shadow-mm: 0 0 8px rgb(0 255 204 / 0.45);
+	--text-shadow-mm-pink: 0 0 8px rgb(236 77 120 / 0.55);
+	/* RGB split: blue copy left, rose copy right, plus phosphor halo */
+	--text-shadow-mm-split:
+		-0.06em 0 0 rgb(63 127 208 / 0.75), 0.06em 0 0 rgb(214 64 106 / 0.75),
+		0 0 12px rgb(0 255 204 / 0.4);
 }
 
 html,
@@ -263,20 +270,84 @@ html {
 	animation: fadeOut 0.3s ease-in-out forwards;
 }
 
-/* CRT overlays for the Matt' Max terminal - stacked over the log, never clickable */
-.term-scanlines {
+/* Matt' Max 2026 - tube scanlines: one band in two slightly lighter */
+.mm-scanlines {
 	background-image: repeating-linear-gradient(
 		to bottom,
-		rgb(51 255 102 / 0.055) 0px,
-		rgb(51 255 102 / 0.055) 1px,
-		transparent 1px,
-		transparent 3px
+		var(--color-mm-bg-row) 0px,
+		var(--color-mm-bg-row) 2px,
+		transparent 2px,
+		transparent 4px
 	);
+	mix-blend-mode: lighten;
 }
-.term-vignette {
+/* Slow light band drifting down the tube */
+.mm-sweep {
+	background: linear-gradient(
+		to bottom,
+		transparent 0%,
+		rgb(0 255 204 / 0.035) 50%,
+		transparent 100%
+	);
+	background-size: 100% 30%;
+	background-repeat: no-repeat;
+	animation: mm-sweep 9s linear infinite;
+}
+@keyframes mm-sweep {
+	from {
+		background-position: 0 -40%;
+	}
+	to {
+		background-position: 0 140%;
+	}
+}
+/* Square cell grid, always very dark */
+.mm-grid {
+	background-image:
+		linear-gradient(var(--color-mm-grid) 1px, transparent 1px),
+		linear-gradient(90deg, var(--color-mm-grid) 1px, transparent 1px);
+	background-size: 10vh 10vh;
+	background-position: center center;
+}
+.mm-vignette {
 	background: radial-gradient(
 		ellipse at center,
-		transparent 55%,
-		rgb(0 0 0 / 0.55) 100%
+		transparent 50%,
+		rgb(4 7 14 / 0.85) 100%
 	);
+}
+/* Striped big type: mint / dark mint bands, ~15 per cap height */
+.mm-stripes {
+	background: repeating-linear-gradient(
+		to bottom,
+		var(--color-mm-mint) 0,
+		var(--color-mm-mint) 0.035em,
+		var(--color-mm-mint-dk) 0.035em,
+		var(--color-mm-mint-dk) 0.05em
+	);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+	/* text-shadow would paint over a clipped background - use filters */
+	filter: drop-shadow(-0.04em 0 0 rgb(63 127 208 / 0.7))
+		drop-shadow(0.04em 0 0 rgb(214 64 106 / 0.6))
+		drop-shadow(0 0 10px rgb(0 255 204 / 0.35));
+}
+/* Block cursor that blinks once typing is done */
+.mm-cursor {
+	animation: mm-blink 1s steps(1) infinite;
+}
+@keyframes mm-blink {
+	50% {
+		opacity: 0;
+	}
+}
+.mm-input {
+	caret-shape: block;
+}
+@media (prefers-reduced-motion: reduce) {
+	.mm-sweep,
+	.mm-cursor {
+		animation: none;
+	}
 }
