@@ -4,10 +4,10 @@
 
 SABS (San Andreas Broadcast Service) is a **Next.js 16 marketing site** for a GTA-RP audiovisual/broadcast crew. It ships four things:
 
-1. **Public landing page** (`/`) - hero, presentation, project portfolio, team, contact form.
+1. **Public landing page** (`/`) - sticky Matt'Max 2026 countdown banner, hero, presentation, project portfolio, team, contact form.
 2. **OBS overlay scenes** (`/obs/*`) - browser-source screens configured entirely from URL query params.
 3. **PIN-gated dashboard** (`/dashboard`) - currently a placeholder ("En construction") behind JWT auth.
-4. **Matt' Max terminal** (`/mattmax`) - a fake shell teasing an event; answers are gated behind a `sudo` prefix.
+4. **Matt' Max terminal** (`/mattmax`) - a one-screen fake shell teasing the MATT'MAX 2026 festival; some answers are gated behind a `sudo` prefix.
 
 There is **no live stream monitoring**: no MediaMTX client, no RTMP status endpoint, no SWR polling. Do not assume any of those exist.
 
@@ -59,6 +59,7 @@ Page content lives in `src/data/`, not inline in components. Components import i
 | `features.ts` | `Feature`, `FeatureId`, `FEATURES` (presentation cards) |
 | `eventTypes.ts` | `EVENT_TYPES` (contact form select) |
 | `dashboardCards.ts` | `DashboardCard`, `COMING_SOON_CARDS` |
+| `mattmaxEvent.ts` | `MattMaxEvent`, `MATTMAX_EVENT` (name, venue, `startsAt` for the countdowns) |
 | `mattmaxTerminal.ts` | `LineTone`, `TerminalLine`, `TerminalCommand`, `PROMPT_USER`, `PROMPT_HOST`, `BANNER`, `COMMANDS`, `permissionDeniedLines()`, `unknownCommandLines()` |
 
 **Rules:**
@@ -72,17 +73,17 @@ Page content lives in `src/data/`, not inline in components. Components import i
 
 ### Component Organization
 
-- **`src/components/*.tsx`** → landing sections (Hero, Presentation, Projects, Team, Contact, Footer, Multiview)
+- **`src/components/*.tsx`** → landing sections (MattMaxBanner, Hero, Presentation, Projects, Team, Contact, Footer, Multiview)
 - **`src/components/auth/`** → `AuthGuard` (PIN form), `ProtectedRoute` (guard)
 - **`src/components/dasboard/`** → `DashboardGrid`, `DashboardHeader`, `DashboardLayout` (note: typo "dasboard" is intentional, keep it)
 - **`src/components/obs/`** → `createObsPage`, `ObsScene`, `Countdown`, `ProjectsMarquee`, `params.ts`
 - **`src/components/reactbits/`** → vendored effects: `Aurora`, `GlitchText`, `LetterGlitch`, `ScrollReveal`
-- **`src/components/mattmax/`** → `Terminal` (fake shell for `/mattmax`)
+- **`src/components/mattmax/`** → `Terminal` (fake shell for `/mattmax`), `EventCountdown` (`compact` for the banner, `large` for `/mattmax`)
 - **`src/components/three/`** → `ParticleField` (react-three-fiber)
 - **`src/contexts/`** → `AuthProvider.tsx`
 - **`src/data/`** → static content (see above)
-- **`src/hooks/`** → `useAuthSimple`, `useGsapContext`, `useLogout`
-- **`src/lib/`** → `session.ts` (JWT/cookies), `projectMedia.ts` (thumbnails, date formatting), `fonts.ts`
+- **`src/hooks/`** → `useAuthSimple`, `useCountdown`, `useGsapContext`, `useLogout`
+- **`src/lib/`** → `session.ts` (JWT/cookies), `projectMedia.ts` (thumbnails, date formatting), `fonts.ts` (`beVietnam`, `jetBrainsMono` for Matt'Max)
 
 **Naming:** React component files are PascalCase (`Team.tsx`); everything else is camelCase (`useAuthSimple.ts`, `projectMedia.ts`, `dashboardCards.ts`). Typo "dasboard" is in original codebase.
 
@@ -231,7 +232,7 @@ Wrap page in `<AuthProvider>` + `<ProtectedRoute>`. Example: `src/app/dashboard/
 
 - **Turbopack** is default for `bun run dev` (much faster than Webpack); `bun run build` uses the standard builder
 - **Heavy visuals are `next/dynamic` with `ssr: false`** - `ParticleField` (Hero), `LetterGlitch` (Presentation) - keep new WebGL/canvas work behind the same pattern, and out of shared layouts
-- **Terminal palette** - `/mattmax` uses its own `--color-term-*` / `--text-shadow-term*` tokens in `globals.css`, plus the `.term-scanlines` and `.term-vignette` CRT overlays. It is intentionally off-brand; do not swap it for `sabs-*` tokens.
+- **Matt'Max palette** - `/mattmax` and the landing banner follow the MATT'MAX 2026 DA (`D:\Documents\Matt' Max6\DA.md`): `--color-mm-*` / `--text-shadow-mm*` tokens in `globals.css` plus the `.mm-grid`, `.mm-scanlines`, `.mm-sweep`, `.mm-vignette`, `.mm-stripes` and `.mm-cursor` utilities, set in JetBrains Mono. Mint carries the brand, pink is the single rare accent. Do not swap them for `sabs-*` tokens. Logos live in `public/img/mattmax2026/`.
 - **Tailwind v4 JIT** compiles only used classes, so dynamic class strings must appear as full literals (see `RAINBOW_TEXT_CLASS` in `Projects.tsx`)
 - **`useGsapContext`** scopes GSAP animations to a ref and reverts them on unmount; avoid raw `gsap.to` in effects
 - `public/` is ~32 MB of imagery and ships into the Docker image as-is
