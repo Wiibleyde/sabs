@@ -232,7 +232,7 @@ Wrap page in `<AuthProvider>` + `<ProtectedRoute>`. Example: `src/app/dashboard/
 
 - **Turbopack** is default for `bun run dev` (much faster than Webpack); `bun run build` uses the standard builder
 - **Heavy visuals are `next/dynamic` with `ssr: false`** - `ParticleField` (Hero), `LetterGlitch` (Presentation) - keep new WebGL/canvas work behind the same pattern, and out of shared layouts
-- **Matt'Max palette** - `/mattmax` and the landing banner follow the MATT'MAX 2026 DA (`D:\Documents\Matt' Max6\DA.md`): `--color-mm-*` / `--text-shadow-mm*` tokens in `globals.css` plus the `.mm-grid`, `.mm-scanlines`, `.mm-sweep`, `.mm-vignette`, `.mm-stripes` and `.mm-cursor` utilities, set in JetBrains Mono. Mint carries the brand, pink is the single rare accent. Do not swap them for `sabs-*` tokens. Logos live in `public/img/mattmax2026/`.
+- **Matt'Max palette** - `/mattmax` and the landing banner follow the MATT'MAX 2026 DA (`D:\Documents\Matt' Max\2026\DA.md`): `--color-mm-*` / `--text-shadow-mm*` tokens in `globals.css` plus the `.mm-grid`, `.mm-scanlines`, `.mm-sweep`, `.mm-vignette`, `.mm-stripes` and `.mm-cursor` utilities, set in JetBrains Mono. Mint carries the brand, pink is the single rare accent. Do not swap them for `sabs-*` tokens. Logos live in `public/img/mattmax2026/`.
 - **Tailwind v4 JIT** compiles only used classes, so dynamic class strings must appear as full literals (see `RAINBOW_TEXT_CLASS` in `Projects.tsx`)
 - **`useGsapContext`** scopes GSAP animations to a ref and reverts them on unmount; avoid raw `gsap.to` in effects
 - `public/` is ~32 MB of imagery and ships into the Docker image as-is
