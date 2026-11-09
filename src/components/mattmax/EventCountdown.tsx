@@ -7,7 +7,14 @@ type Size = "compact" | "large";
 
 const SIZE_CLASS: Record<
 	Size,
-	{ row: string; value: string; unit: string; sep: string; live: string }
+	{
+		row: string;
+		value: string;
+		unit: string;
+		sep: string;
+		live: string;
+		detail: string;
+	}
 > = {
 	compact: {
 		row: "gap-1.5 sm:gap-2",
@@ -15,6 +22,7 @@ const SIZE_CLASS: Record<
 		unit: "text-[9px] sm:text-[10px] text-mm-teal",
 		sep: "text-sm sm:text-base text-mm-dim",
 		live: "text-xs sm:text-sm text-mm-pink text-shadow-mm-pink",
+		detail: "hidden",
 	},
 	large: {
 		row: "gap-3 sm:gap-6",
@@ -22,14 +30,46 @@ const SIZE_CLASS: Record<
 		unit: "mt-1 text-[10px] sm:text-xs tracking-[0.4em] text-mm-teal",
 		sep: "text-[clamp(1.6rem,min(6vw,7svh),3.5rem)] leading-none text-mm-dim",
 		live: "text-[clamp(1.5rem,5vw,3rem)] tracking-[0.08em] text-mm-pink text-shadow-mm-pink",
+		detail: "text-[10px] sm:text-xs tracking-[0.3em] text-mm-teal",
 	},
 };
 
 const pad = (n: number) => n.toString().padStart(2, "0");
 
-/** Countdown to MATT'MAX 2026, in the event DA. Shows `--` until mounted. */
+/**
+ * Countdown to MATT'MAX 2026, in the event DA. Shows an error line while the
+ * festival has no date (`startsAt: null`).
+ */
 export function EventCountdown({ size = "compact" }: { size?: Size }) {
-	const parts = useCountdown(MATTMAX_EVENT.startsAt);
+	const { startsAt } = MATTMAX_EVENT;
+	return startsAt ? (
+		<Countdown iso={startsAt} size={size} />
+	) : (
+		<DateError size={size} />
+	);
+}
+
+function DateError({ size }: { size: Size }) {
+	const cls = SIZE_CLASS[size];
+	return (
+		<div
+			role="status"
+			className="flex flex-col items-center gap-2 text-center uppercase"
+		>
+			<p className={`font-extrabold ${cls.live}`}>
+				&gt; {MATTMAX_EVENT.dateError}
+				<span className="mm-cursor">_</span>
+			</p>
+			<p className={`font-medium ${cls.detail}`}>
+				{MATTMAX_EVENT.dateErrorDetail}
+			</p>
+		</div>
+	);
+}
+
+/** Shows `--` until mounted. */
+function Countdown({ iso, size }: { iso: string; size: Size }) {
+	const parts = useCountdown(iso);
 	const cls = SIZE_CLASS[size];
 
 	if (parts?.done) {

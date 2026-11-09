@@ -59,7 +59,7 @@ Page content lives in `src/data/`, not inline in components. Components import i
 | `features.ts` | `Feature`, `FeatureId`, `FEATURES` (presentation cards) |
 | `eventTypes.ts` | `EVENT_TYPES` (contact form select) |
 | `dashboardCards.ts` | `DashboardCard`, `COMING_SOON_CARDS` |
-| `mattmaxEvent.ts` | `MattMaxEvent`, `MATTMAX_EVENT` (name, venue, `startsAt` for the countdowns) |
+| `mattmaxEvent.ts` | `MattMaxEvent`, `MATTMAX_EVENT` (name, venue, `startsAt` for the countdowns - `null` while postponed, countdowns then show `dateError`) |
 | `mattmaxTerminal.ts` | `LineTone`, `TerminalLine`, `TerminalCommand`, `PROMPT_USER`, `PROMPT_HOST`, `BANNER`, `COMMANDS`, `permissionDeniedLines()`, `unknownCommandLines()` |
 
 **Rules:**

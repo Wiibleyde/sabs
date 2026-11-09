@@ -203,4 +203,18 @@ export const projects: Project[] = [
 		description:
 			"Régie vidéo et diffusion en direct pour la course de rallye organisée par le Benny's.",
 	},
+	{
+		id: "gordo-farm-halloween-2026",
+		title: "Gordo Farm Halloween",
+		date: "2026-10-31",
+		medias: [
+			{
+				type: "youtube",
+				url: "https://youtu.be/kt5_1CXz8So",
+			},
+		],
+		competencies: ["Pyrotechnie", "Régie Lumière", "Régie mapping écran"],
+		description:
+			"Show lumière, mapping écran et effets pyrotechniques pour la soirée Halloween de la Gordo Farm.",
+	},
 ];

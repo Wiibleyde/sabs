@@ -123,7 +123,10 @@ export const COMMANDS: TerminalCommand[] = [
 		name: "when",
 		description: "Quand ça se passe",
 		requiresSudo: true,
-		output: [{ text: "Le 19 novembre.", tone: "accent" }],
+		output: [
+			{ text: "when: erreur: date introuvable", tone: "error" },
+			{ text: "Festival reporté. Nouvelle date à venir.", tone: "muted" },
+		],
 	},
 ];
 
